@@ -1,0 +1,141 @@
+{==============================================================================\
+|                         MSI Group Scripting Include                          |
+|                              WoodCutting.scar                                |
+|==============================================================================|
+| For all woodcutting routines.                                                |
+|                                                                              |
+ \_____________________________________________________________________________}
+
+
+{******************************************************************************}
+{ Procedure WaitWhileChoppingEx(TreeX, TreeY: Integer; TreeInfo: TMSObject);   }
+{ By: marpis                                                                   }
+{ Rev: 42                                                                      }
+{ Date: 12 Dec 09                                                              }
+{ Description: Wait while tree's been cut                                      }
+{******************************************************************************}
+Procedure MSI_WaitWhileChopping(TreeX, TreeY: Integer; TreeInfo: TMSObject);
+Var
+  Speed2Mods: TExtendedArray;
+  tmp_Tol, CTS, HalfWidth, HalfHeight, L, I, T, OldInvCount, NewInvCount: Integer;
+  TotalChopTime, R, CT: Integer;
+  ATPA: T2DPointArray;
+  TPA: TPointArray;
+  B: TBox;
+  TreeExists: Boolean;
+Begin
+  CTS := GetColorToleranceSpeed;
+  SetColorSpeed2Modifiers(TreeInfo.Hue, TreeInfo.Sat);
+
+  HalfWidth := (TreeInfo.W / 2);
+  HalfHeight := (TreeInfo.H / 2);
+  B := IntToBox(TreeX - HalfWidth, TreeY - HalfHeight, TreeX + HalfWidth, TreeY + HalfHeight);
+
+  L := Length(TreeInfo.Colors);
+  SetLength(ATPA, L);
+  Dec(L);
+  OldInvCount := InvCount;
+  T := GetSystemTime + 20000 + Random(5000);
+  TotalChopTime := GetSystemTime;
+
+  Repeat
+    If InvFull Then Break;
+
+    MSI_AntiBan(RandomRange(0, 10000));
+
+    { Check if the tree Exists }
+    For I := 0 To L Do
+      FindColorsTolerance(ATPA[I], TreeInfo.Colors[I], B.X1, B.Y1, B.X2, B.Y2, TreeInfo.Tol);
+    TPA := MergeATPA(ATPA);
+    WriteLn(Length(TPA));
+
+    TreeExists := Length(TPA) >= TreeInfo.Accuracy;
+    If (TreeExists) Then
+      If (Random(4) <> 0) Then
+        Sleep(200 + Random(50))
+      Else
+        SleepAndMoveMouse(200 + Random(50));
+    FindNormalRandoms;
+
+    { InvCount check }
+    NewInvCount := InvCount;
+    If (NewInvCount > OldInvCount) Then
+    Begin
+      OldInvCount := NewInvCount;
+      T := GetSystemTime + 20000 + Random(5000);
+    End;
+
+    { Prevent logout }
+    If ((GetSystemTime - TotalChopTime) > 60000) Then
+    Begin
+      CT := GetCurrentTab;
+      Repeat
+        R := RandomRange(Tab_Combat, Tab_Notes);
+      Until(R <> CT);
+      GameTab(R);
+    End;
+
+  Until(Not TreeExists) Or (GetSystemTime > T) Or (Not LoggedIn);
+End;
+
+{******************************************************************************}
+{ Function MSI_ChopTree(Which: TIntegerArray): Boolean;                        }
+{ By: marpis                                                                   }
+{ Description: Chops tree                                                      }
+{******************************************************************************}
+Function MSI_ChopTree(Which: TIntegerArray): Boolean;
+Var
+  X, Y, TreeIndex: Integer;
+  Trees: TMSObjectArray;
+Begin
+  Trees := MSI_GetObjects(Which);
+  If MSI_FindObjects(Trees, TreeIndex, ClickLeft) Then
+  Begin
+    X := Trees[TreeIndex].X;
+    Y := Trees[TreeIndex].Y;
+    If MSI_FindObjectIn(Trees[TreeIndex], X - 20, Y - 20, X + 20, Y + 20, Nothing) Then
+    Begin
+      Result := True;
+      MSI_WaitWhileChopping(X, Y, Trees[TreeIndex]);
+    End;
+  End;
+End;
+
+{******************************************************************************}
+{ Function MSI_ChopInvFull(Which: TIntegerArray): Boolean;                     }
+{ By: marpis                                                                   }
+{ Description: Chops trees until inventory is full                             }
+{******************************************************************************}
+Function MSI_ChopInvFull(Which: TIntegerArray): Boolean;
+Var
+  T: Integer;
+Begin
+  T := GetSystemTime + 5*60000;
+  While (Not InvFull) And (LoggedIn) And (GetSystemTime < T) Do
+  Begin
+    If MSI_ChopTree(Which) Then
+      T := GetSystemTime + 5*60000;
+  End;
+  Result := InvFull;
+End;
+
+{******************************************************************************}
+{ Procedure MSI_PowerChop(Which: TIntegerArray; Time: Integer);                }
+{ By: marpis                                                                   }
+{ Description: Chops trees until inventory is full, then drops and repeat.     }
+{              Time is in milliseconds.                                        }
+{******************************************************************************}
+Procedure MSI_PowerChop(Which: TIntegerArray; Time: Integer);
+Var
+  T, TT: Integer;
+Begin
+  T := GetSystemTime + Time;
+  TT := GetSystemTime + 30*60000;
+  Repeat
+    Repeat
+      If MSI_ChopInvFull(Which) Then
+        TT := GetSystemTime + 30*60000;
+    Until(InvFull) Or (Not LoggedIn) Or (GetSystemTime > TT);
+    MSI_ClickItems([Logs_Regular, Logs_Oak], 'rop');
+  Until(GetSystemTime > T) Or (Not LoggedIn);
+End;
