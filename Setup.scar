@@ -1,0 +1,41 @@
+{==============================================================================\
+|                         MSI Group Scripting Include                          |
+|                               Setup.scar                                     |
+|==============================================================================|
+| For All MSI Setuping up needs that are not skill-related                     |
+| Procedure SetupMSI;               : By MSI SL Team                           |
+ \_____________________________________________________________________________}
+
+//SRL Includes
+//{.include srl/srl/misc/smart.scar}  --> disabled for now, not to be a pain in the ass while deving
+{.include srl/srl.scar}
+{$IFDEF REFLECTION}
+//{.include srl/srl/reflection/reflection.scar}
+{$ENDIF}
+{.include srl/srl/misc/Reports.scar}
+
+//MSI Script
+{.include srl/srl/MSI/Globals.scar}
+{.include srl/srl/MSI/Debug.scar}
+{.include srl/srl/MSI/ItemInfo.scar}
+{.include srl/srl/MSI/Objects.scar}
+{.include srl/srl/MSI/Banking.scar}
+{.include srl/srl/MSI/AutoColors.scar}
+{.include srl/srl/MSI/Walking.scar}
+
+//MSI Skill Files
+{.include srl/srl/MSI/Skills/Woodcutting.scar}
+
+//MSI Skill Loops, AI and Mainloop
+{.include srl/srl/MSI/Skills.scar}
+{.include srl/srl/MSI/MainLoop.scar}
+ 
+Procedure SetupMSI;
+var
+  Timer: integer;
+begin
+  MarkTime(Timer);
+  SetLength(ProgressReportArray, HowManyPlayers);
+  Debug_LevelToDebug := Debug_Everything;
+  writeln('Setting up MSI took '+IntToStr(TimeFromMark(Timer))+' ms.');
+end;

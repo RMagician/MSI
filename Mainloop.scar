@@ -1,0 +1,171 @@
+{==============================================================================\
+|                         MSI Group Scripting Include                          |
+|                                Mainloop.scar                                 |
+|==============================================================================|
+| For all the script Artificial Inteligence                                    |
+|                                                                              |
+| * function MSI_BestTool: Integer;                * by Coh3n                  |
+| * function function MSI_SetupPlayer: Boolean;    * by Coh3n                  |
+| * procedure MSI_AntiBan(HowLong : Integer);      * by Naum, edited by Coh3n  |
+ \_____________________________________________________________________________}
+
+{ const Hatchet/Pickaze requirements.
+  Constants representing the requirements to use each pickaxe/hatchet. }
+const
+  REQ_BRONZE    = 1;
+  REQ_IRON      = 1;
+  REQ_STEEL     = 6;
+  REQ_MITHRIL   = 21;
+  REQ_ADAMANT   = 31;
+  REQ_RUNE      = 41;
+  REQ_MAX_LEVEL = 99;
+
+{******************************************************************************}
+{ function MSI_BestTool: Integer;                                              }
+{ By: Coh3n                                                                    }
+{ Rev: 55                                                                      }
+{ Date: 26 Dec 09                                                              }
+{ Description: Determines the best tool for the job at hand.                   }
+{******************************************************************************}
+function MSI_BestTool: Integer;
+var
+  skillsArr: TStringArray;
+  currSkill, currLevel: Integer;
+begin
+  { In order for this to work properly, the skillsArr indexes must correspond
+    to the skills constants in SRL's Players.scar }
+  skillsArr := [ 'attack', 'strength', 'defence', 'range', 'prayer', 'magic',
+                 'runecrafting', 'hitpoints', 'agility', 'herblore', 'thieving',
+                 'crafting', 'fletching', 'slayer', 'mining', 'smithing',
+                 'fishing', 'cooking', 'firemaking', 'woodcutting', 'farming',
+                 'construction', 'hunting', 'summoning' ];
+
+  { Get the current level of the chosen skill, and then look for the required
+    tool, starting with the best one for that player's skill level. }
+  currSkill := Players[CurrentPlayer].Integers[P_SKILL] - 1;
+  currLevel := GetSkillLevel(skillsArr[currSkill]);
+
+  MSI_Debug('MSI_PlayerSetup', 'Current ' + Capitalize(skillsArr[currSkill])
+            + ' level is ' + IntToStr(currLevel) + '.', debug_Functions);
+
+  case (Players[CurrentPlayer].Integers[P_SKILL]) of
+    SKILL_WOODCUTTING, SKILL_MINING:
+      case (currLevel) of
+        REQ_RUNE..REQ_MAX_LEVEL: Result := HATCHET_RUNE;
+        REQ_ADAMANT..REQ_RUNE: Result := HATCHET_ADAMANT;
+        REQ_MITHRIL..REQ_ADAMANT: Result := HATCHET_MITHRIL;
+        REQ_STEEL..REQ_MITHRIL: Result := HATCHET_STEEL;
+
+        else
+          Result := REQ_IRON;
+      end;
+  end;
+end;
+
+{******************************************************************************}
+{ function MSI_SetupPlayer: Boolean;                                           }
+{ By: Coh3n                                                                    }
+{ Rev: 54                                                                      }
+{ Date: 21 Dec 09                                                              }
+{ Description: Sets up the player for autoing.                                 }
+{******************************************************************************}
+function MSI_SetupPlayer: Boolean;
+var
+  bestTool, x, y, i, k: Integer;
+  bankCheck: Boolean;
+begin
+  if (not LoggedIn) then
+    LoginPlayer;
+
+  SetAngle(True);
+  SetRun(True);
+
+  { Starts by looking for the best tool for that player's skill level, and
+    moves down from there. }
+  bestTool := MSI_BestTool;
+  for i := bestTool downto 0 do
+  begin
+    Result := MSI_FindTool(i, x, y);
+    if (Result) then
+      Break;
+  end;
+
+  { If the required tool isn't found, then will open the bank and attempt to
+    withdraw the proper tool. }
+  if (not Result) then
+  begin
+    case (Players[CurrentPlayer].Integers[P_LOC]) of
+      LOC_VEBANK:
+        bankCheck := MSI_OpenBank('veb', Players[CurrentPlayer].Pin);
+
+      else
+        MSI_Debug('MSI_SetupPlayer', 'Invalid Player.Integers[P_LOC].',
+                  debug_Functions);
+    end;
+
+    if bankCheck then
+      for k := bestTool downto 0 do
+      begin
+        Result := MSI_Withdraw([k], [1]);
+        if (Result) then
+          Break
+        else
+
+        begin
+          CloseBank;
+          MSI_Debug('MSI_PlayerSetup', 'Couldn''t Withdraw Tool.',
+                    debug_Functions);
+        end;
+      end
+    else
+      MSI_Debug('MSI_SetupPlayer', 'Unable to Open Bank.', debug_Functions);
+  end;
+end;
+
+{******************************************************************************}
+{ Procedure MSI_AntiBan(HowLong : Integer);                                    }
+{ By: Naum, edited by Coh3n                                                    }
+{ Rev: 54                                                                      }
+{ Date: 21 Dec 09                                                              }
+{ Description: The AntiBan procedure to be used throughout the scripts.        }
+{******************************************************************************}
+Procedure MSI_AntiBan(HowLong : Integer);
+Var CurTab, I : Integer;
+Begin
+  Case HowLong Of
+    0..2000 : Case Random(30) Of
+                0 : SleepAndMoveMouse(HowLong + Random(HowLong/10));
+                1 : Begin
+                      CurTab := GetCurrentTab;
+                      GameTab(RandomRange(TAB_Combat, TAB_LogOut));
+                      Wait(HowLong + Random(HowLong/10));
+                      GameTab(CurTab);
+                    End;
+                2 : RandomRClick;
+              End;
+
+    2001..5000 : Case Random(40) Of
+                   0 : HoverSkill('Random', False);
+                   1 : PickUpMouse;
+                   2 : SleepAndMoveMouse(HowLong + Random(HowLong/10));
+                   3 : For I := 0 To Round(HowLong/800) Do
+                         If I Mod 2 = 0 Then
+                           ExamineInv;
+                 End;
+
+    5001..10000 : If Random(20) = 1 Then
+                    RandomMovement
+                  Else
+                  If Random(20) = 10 Then
+                    MSI_AntiBan(Round(HowLong/2) + Random(1000));
+
+    10001..20000 : Case Random(30) Of
+                     0 : MSI_AntiBan(Round(HowLong/2) + Random(1000));
+                     1 : BoredHuman;
+                     2 : RandomAngle(1);
+                   End;
+
+    20001..999999 : If Random(10) = 5 Then
+                      MSI_AntiBan(7000 + Random(200));
+  End;
+End;

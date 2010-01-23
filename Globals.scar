@@ -1,0 +1,123 @@
+{==============================================================================\
+|                         MSI Group Scripting Include                          |
+|                               Globals.scar                                   |
+|==============================================================================|
+| Used to store all necessary global types, consts and vars                    |
+|                                                                              |
+| type TMSObj                 : by MSI SL Team                                 |
+| type TItem                  : by MSI SL Team                                 |
+| type TWalk                  : by MSI SL Team                                 |
+| type TPlayerSkillInfo       : by MSI SL Team                                 |
+| type TProggy                : by MSI SL Team                                 |
+| var ProgressReportArray     : by MSI SL Team                                 |
+| conts Debug                 : by MSI SL Team                                 |
+| const Players               : by MSI SL Team                                 |
+| var   LevelToDebug          : by MSI SL Team                                 |
+ \_____________________________________________________________________________}
+ 
+Type
+
+{ Type TMSObject
+    Description: To be used for finding on the MS. Stores all necessary
+    information. }
+  TMSObject = Record
+    X, Y             : Integer;
+    UpText           : String;
+    Option           : String;
+    Colors           : TIntegerArray;
+    FindAllColors    : Boolean; // Result False if not ALL colors are found
+    Tol              : Integer;
+    Hue              : Extended;
+    Sat              : Extended;
+    W, H             : Integer;
+    Accuracy         : Integer; // Min pixels to be found
+    ExcludeSelf      : Boolean; // Exclude pixels in a box, the box might need revamping / making it dynamic
+    RightClickOnly   : Boolean;
+    Tries            : Integer;
+    Anim             : Boolean; // Result False if not animating
+    WaitToMove       : Boolean; // When ClickLeft, wait till we have stopped moving?
+    BadColors        : TIntegerArray;
+    BadColorTolerance: Integer;
+  End;
+  TMSObjectArray = Array of TMSObject;
+  
+{ Type TItem
+    Description: To be used for handling Items in all situations. }
+  TItem = Record
+    Name      : String;
+    UpText    : TStringArray;
+    ItemP     : TPoint;
+    Stackable : Boolean;
+    Colors    : TIntegerArray;
+    Tol       : Integer;
+    DTM       : Integer;
+    BMP       : Integer;
+  End;
+  {Used in Banking.Scar}
+  Type MSI_TItemArray = Array Of TItem;
+
+{ Type TWalk
+    Description: Stores all needed tilewalking information. }
+  TWalk = Record
+    City  : integer;
+    Loc   : integer;
+    Path  : TPointArray;
+  End;
+
+{ Type TMMLocation
+    Description: Stores all needed colorwalking information. }
+  TMMLocation = Record
+    Symbol     : String;
+    DTM        : Integer;
+    W, H       : Integer;
+    Colors     : TIntegerArray;
+    Tolerances : TIntegerArray;
+    Counts     : TIntegerArray;
+  End;
+
+{ Type TPlayerSkillInfo
+    Description: Stores information for one player for one skill. }
+  TPlayerSkillInfo = record
+    SkillTime : integer;
+    TotalObj  : integer;
+    TotalEXP  : extended;
+    ObjQuants : array of integer;
+    //TProggy.SkillInfo[Skill_Mining].ObjQuants[Ore_Iron]
+  end;
+
+{ Type TProggy
+    Description: Stores information all progress related information for one
+    player.  }
+  TProggy = record
+    PlayerName  : string;
+    PlayerStatus: boolean;
+    PlayerRandom: string;
+    PlayerWhere : TWalk;
+    SkillInfo   : Array of TPlayerSkillInfo;
+  end;
+  
+var
+  ProgressReportArray: Array of TProggy;
+  { Description: To be used to store information for Players individually }
+
+{ Debug constants
+    Description: The several debugging levels, so the user receives as much
+      detail as he wishes to receive. }
+const
+  Debug_Force         = 10;  // For MSI SLs to force it to be debuged, not for Script Users!
+  Debug_Proggie       = 7;   // Only debug proggie and more important things
+  Debug_PlayerActions = 5;   // Only debug proggie, Player Actions and more important things
+  Debug_Functions     = 3;   // Debug the at the start of each function, Player Actions, Proggie and +
+  Debug_SmallDetails  = 1;   // Debug small details and more important
+  Debug_Everything    = 0;   // For Script Users to have everything in debug box.
+  
+{ const Players.
+  Constants representing the different Players array integers. }
+const
+  P_SKILL  = 0;
+  P_LOC    = 1;
+
+var
+  Debug_LevelToDebug: integer;
+  { Description: For script user to choose how much to debug. }
+

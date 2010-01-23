@@ -1,0 +1,231 @@
+{==============================================================================\
+|                         MSI Group Scripting Include                          |
+|                               Banking.scar                                   |
+|==============================================================================|
+| All Banking related routines.                                                |
+|                                                                              |
+|  Function MSI_OpenBank   *By Naum & NCDS                                     |
+|  Function MSI_Deposit    *By Naum                                            |
+|  Function MSI_Withdraw   *By Naum                                            |
+|                                                                              |
+ \_____________________________________________________________________________}
+
+
+const
+  Bank_VE = 'veb';
+  Bank_VW = 'vwb';
+  Bank_GE = 'ge';
+
+{******************************************************************************}
+{ Function MSI_OpenBank(Bank, tPin : String) : Boolean;                        }
+{ By: NaumanAkhlaQ & NCDS                                                      }
+{ Rev: 22                                                                      }
+{ Date: 25 Oct 09                                                              }
+{ Description: Opens a bank using the best openers first. Currently for        }
+{              Varrock.                                                        }
+{              tPin = RS Bank Pin leave as '' if no pin.                       }
+{******************************************************************************}
+
+Function MSI_OpenBank(Bank, tPin : String) : Boolean;
+Var ProcedureArray, Order : TStringArray;
+    BankArray : TStringArray;
+    { 1 = OpenBankFast; 2 = OpenBankQuiet; 3 = OpenBankGlass;
+      4 = OpenBankNPC and 5 = OpenBank.}
+    Mark, I : Integer;
+Begin
+  BankArray := [Bank_VE, Bank_VW];
+  Order := ['4-1-2-3-5', '1-4-5-3-2'];
+
+  If InStrArrEx(Bank, BankArray, I) Then
+    ProcedureArray := SRL_Explode(Order[I], '-');
+
+  For I := 0 To High(ProcedureArray) Do
+  Begin
+    Mark := GetSystemTime + 10000 + Random(3000);
+    Case ProcedureArray[I] Of
+      '1' : While (Not OpenBankFast(Bank)) And (GetSystemTime < Mark) Do
+              Wait(1);
+      '2' : While (Not OpenBankQuiet(Bank)) And (GetSystemTime < Mark) Do
+              Wait(1);
+      '3' : While (Not OpenBankGlass(Bank, False, True)) And (GetSystemTime < Mark) Do
+              Wait(1);
+      '4' : While (Not OpenBankNPC) And (GetSystemTime < Mark) Do
+              Wait(1);
+    Else
+      While (Not OpenBank(Bank, False, True)) And (GetSystemTime < Mark) Do
+        Wait(1);
+    End;
+  End;
+
+  If Not BankScreen And Not PinScreen Then Exit;
+  If PinScreen And (Length(tPin) > 1) Then
+    InPin(tPin);
+
+  Result := WaitFunc(@BankScreen, 200, 15000);
+  If Result Then
+    MSI_Debug('MSI_OpenBank', 'Successfuly Opened The Bank - '+Bank,
+              Debug_SmallDetails)
+  Else
+    MSI_Debug('MSI_OpenBank', 'Could NOT Open The Bank - '+Bank,
+              Debug_SmallDetails);
+End;
+
+{******************************************************************************}
+{ Function MSI_Deposit(Items, Amount : TIntegerArray) : Boolean                }
+{ By: NaumanAkhlaQ                                                             }
+{ Rev: 18                                                                      }
+{ Date: 16 Oct 09                                                              }
+{ Description: Deposits an Item using the TItem type                           }
+{******************************************************************************}
+
+Function MSI_Deposit(Items, Amount: TIntegerArray) : Boolean;
+Var ATPA2 : Array Of TPointArray;  //The length is the same as items.colors
+    ATPA : T2DPointArray;
+    I, BX, BY, II, DX, DY, XX, YY, Tol : Integer;
+    BitmapCheck, TextCheck, DTMCheck : Boolean;
+    TB : TBox;
+
+Begin
+  SetArrayLength(Items, Length(Amount));
+  MSI_LoadItems(Items);
+  If Not WaitFunc(@BankScreen, 70, 1300) Then  //Just in case
+    Exit
+  Else
+  For I := 0 To High(Items) Do
+  Begin
+    Tol := 0;
+    Repeat
+      BitmapCheck := FindBitmapToleranceIn(MSI_Item[Items[I]].BMP, BX, BY, MIX1, MIY1, MIX2, MIY2, Tol);
+      IncEx(Tol, 5);
+    Until(BitmapCheck) xOr (Tol > 40);
+
+    If Not BitmapCheck Then
+    Begin
+      SetArrayLength(ATPA2, High(MSI_Item[Items[I]].Colors)+1)
+
+      For II := 0 To High(MSI_Item[Items[I]].Colors) Do
+        FindColorsTolerance(ATPA2[II], MSI_Item[Items[I]].Colors[II], MIX1, MIY1, MIX2, MIY2, 15);
+
+      ATPA2[0] := MergeATPA(ATPA2);
+      ATPA := SplitTPA(ATPA2[0], 5);
+
+      For II := 0 To High(ATPA) Do
+      Begin
+        TB := IntToBox(ATPA[II][0].x - 50, ATPA[II][0].y - 50,
+              ATPA[II][0].x + 43, ATPA[II][0].y + 44);
+
+        DTMCheck := DTMRotated(MSI_Item[Items[I]].DTM, DX, DY, TB.x1, TB.y1, TB.x2, TB.y2);
+        MMouse(DX, DY, 2, 3);
+        TextCheck := WaitUpTextMulti(MSI_Item[Items[I]].UpText, 150+Random(30));
+        If TextCheck Then Break;
+      End;
+    End;
+
+    If BitmapCheck Or TextCheck Then
+    Begin
+      If BX + BY > 0 Then
+        MMouse(BX, BY, 2, 3);
+
+      TextCheck := WaitUpTextMulti(MSI_Item[Items[I]].UpText, 1200);
+      GetMousePos(XX, YY);
+      Result := TextCheck;
+
+      If Result Then
+      Begin
+        Mouse(XX, YY, 0, 0, False);
+
+        If Amount[I] >= 28 Then
+          Result := WaitOption('-All', 1200);
+
+        If InIntArray([1, 5, 10], Amount[I]) Then
+          Result := WaitOption('-'+IntToStr(Amount[I]), 1200)
+        Else
+        Begin
+          If WaitOption('-X', 900) Then
+           If WaitColor(254, 401, ClBlack, 0, 1200) Then
+             TypeSend(IntToStr(Amount[I]));
+
+             Result := True;
+        End;
+
+        If Result Then Exit;
+
+       MSI_Debug('MSI_Deposit', 'Deposited Amount '+IntToStr(Amount[I])+
+                 ' Of Item : ''' +MSI_Item[Items[I]].Name+'''', Debug_SmallDetails);
+      End;
+    End;
+  End;
+End;
+
+
+{******************************************************************************}
+{ Function MSI_Withdraw(Items, Amount : TIntegerArray) : Boolean               }
+{ By: NaumanAkhlaQ                                                             }
+{ Rev: 18                                                                      }
+{ Date: 16 Oct 09                                                              }
+{ Description: Widthraws an Item using the TItem type                          }
+{******************************************************************************}
+
+Function MSI_Withdraw(Items, Amount : TIntegerArray) : Boolean;
+Var ATPA2 : Array Of TPointArray;  //The length is the same as items.colors
+    ATPA : T2DPointArray;
+    I, BX, BY, II, DX, DY, XX, YY, Tol : Integer;
+    BitmapCheck, TextCheck, DTMCheck : Boolean;
+    WithdrawP : TPoint;
+    TB : TBox;
+
+Begin
+  MSI_LoadItems(Items);
+  If Not WaitFunc(@BankScreen, 70, 1300) Then  //Just in case
+    Exit
+  Else
+  For I := 0 To High(Items) Do
+  Begin
+    Tol := 0;
+    Repeat
+      BitmapCheck := FindBitmapToleranceIn(MSI_Item[Items[I]].BMP, BX, BY, MBX1, MBY1, MBX2, MBY2, Tol);
+      IncEx(Tol, 5);
+    Until(BitmapCheck) xOr (Tol > 40);
+
+    If Not BitmapCheck Then
+    Begin
+      SetArrayLength(ATPA2, High(MSI_Item[Items[I]].Colors)+1)
+
+      For II := 0 To High(MSI_Item[Items[I]].Colors) Do
+        FindColorsTolerance(ATPA2[II], MSI_Item[Items[I]].Colors[II], MBX1, MBY1, MBX2, MBY2, 15);
+
+      ATPA2[0] := MergeATPA(ATPA2);
+      ATPA := SplitTPA(ATPA2[0], 5);
+
+      For II := 0 To High(ATPA) Do
+      Begin
+        TB := IntToBox(ATPA[II][0].x - 50, ATPA[II][0].y - 50,
+              ATPA[II][0].x + 50, ATPA[II][0].y + 50);
+
+        DTMCheck := DTMRotated(MSI_Item[Items[I]].DTM, DX, DY, TB.x1, TB.y1, TB.x2, TB.y2);
+        MMouse(DX, DY, 2, 3);
+        TextCheck := WaitUpTextMulti(MSI_Item[Items[I]].UpText, 150+Random(30));
+        If TextCheck Then Break;
+      End;
+    End;
+
+    If BitmapCheck Or TextCheck Then
+    Begin
+      If BX + BY > 0 Then
+        MMouse(BX, BY, 2, 3);
+
+      TextCheck := WaitUpTextMulti(MSI_Item[Items[I]].UpText, 1200);
+      GetMousePos(XX, YY);
+      Result := TextCheck;
+
+      If Result Then
+      Begin
+        MSI_Item[Items[I]].ItemP := Point(XX, YY);
+        WithDrawP := MSTPointToBankPoint(Point(XX, YY));
+        Withdraw(WithDrawP.X, WithDrawP.Y, Amount[I]);
+        MSI_Debug('MSI_Withdraw', 'Withdrew Amount '+IntToStr(Amount[I])+
+                 ' Of Item : ''' +MSI_Item[Items[I]].Name+'''', Debug_SmallDetails);
+      End;
+    End;
+  End;
+End;

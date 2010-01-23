@@ -1,0 +1,220 @@
+{==============================================================================\
+|                         MSI Group Scripting Include                          |
+|                                 Debug.scar                                   |
+|==============================================================================|
+| For all debugging and progress report routines                               |
+|                                                                              |
+| Procedure MSIDebug(ProcName, TheMessage: string; DebugLevel:integer); by: Rasta Magician
+ \_____________________________________________________________________________}
+ 
+
+{******************************************************************************}
+{ Procedure MSI_Debug(ProcName, TheMessage: string; DebugLevel:integer);        }
+{ By: Rasta Magician                                                           }
+{ Rev: 10                                                                      }
+{ Date: 13 Sep 09                                                              }
+{ Description: Used for Debugging. Will debug to DebugBox if                   }
+{                DebugLevel >= Debug_LevelToDebug                              }
+{******************************************************************************}
+Procedure MSI_Debug(ProcName, TheMessage: string; DebugLevel:integer);
+var
+  DebugMSG: string;
+begin
+  if DebugLevel < Debug_LevelToDebug then exit;
+  DebugMSG := TheTime+': ';
+
+  try
+    DebugMSG := DebugMSG + Players[CurrentPlayer].Name+': ';
+  except end;
+  
+  case DebugLevel of
+    //to add some more detail
+    Debug_PlayerActions: DebugMSG := DebugMSG + 'Player Action: ';
+    Debug_Functions    : DebugMSG := DebugMSG + 'Entering Func: ';
+    Debug_SmallDetails : DebugMSG := DebugMSG + 'Detail: ';
+  end;
+  
+  DebugMSG := DebugMSG + ProcName + ': ';
+  DebugMSG := DebugMSG + TheMessage;
+  writeln(DebugMSG);
+end;
+
+Procedure AddToProggy(Skill, WhichItem, Quantity: integer);
+begin
+  IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[Skill].ObjQuants[WhichItem], Quantity);
+end;
+
+Function SkillTextArray(what: integer): TStringArray;
+begin
+  case what of
+    Skill_Attack        : Result := ['Attacking', 'Attacked'];
+    Skill_Strength      : Result := ['Stengthing', 'Strengthed'];
+    Skill_Defense       : Result := ['Defending', 'Defended'];
+    Skill_Range         : Result := ['Ranging', 'Ranged'];
+    Skill_Prayer        : Result := ['Praying', 'Prayed'];
+    Skill_Mage          : Result := ['Maging', 'Maged'];
+    Skill_RuneCrafting  : Result := ['RuneCrafting', 'RuneCrafted'];
+    Skill_HP            : Result := ['HPing', 'HPed'];
+    Skill_Agility       : Result := ['Agilising', 'Agilised'];
+    Skill_Herblore      : Result := ['Herbloring', 'Herblored'];
+    Skill_Thieving      : Result := ['Thieving', 'Thieved'];
+    Skill_Crafting      : Result := ['Crafting', 'Crafted'];
+    Skill_Fletching     : Result := ['Flecthing', 'Flecthed'];
+    Skill_Slayer        : Result := ['Slaying', 'Slayed'];
+    Skill_Mining        : Result := ['Mining', 'Mined'];
+    Skill_Smithing      : Result := ['Smithing', 'Smithed'];
+    Skill_Fishing       : Result := ['Fishing', 'Fished'];
+    Skill_Cooking       : Result := ['Cooking', 'Cooked'];
+    Skill_FireMaking    : Result := ['FireMaking', 'Burned'];
+    Skill_WoodCutting   : Result := ['Woodcutting', 'Chopped'];
+    Skill_Farming       : Result := ['Farming', 'Farmed'];
+    Skill_Construction  : Result := ['Constructing', 'Constructed'];
+    Skill_Hunter        : Result := ['Hunting', 'Hunted'];
+    Skill_Summoning     : Result := ['Summoning', 'Summoned'];
+  end;
+end;
+
+Function ObjTextArray(Skill, WhatItem:integer): TStringArray;
+begin
+  case WhatItem of
+    Skill_Attack        :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_Strength      :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_Defense       :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_Range         :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_Prayer        :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_Mage          :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_RuneCrafting  :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_HP           :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_Agility       :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_Herblore      :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_Thieving      :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_Crafting      :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_Fletching     :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_Slayer        :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_Mining        :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_Smithing      :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_Fishing       :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_Cooking       :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_FireMaking    :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_WoodCutting   :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_Farming       :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_Construction  :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_Hunter        :
+      case WhatItem of
+        0: Result := [];
+      end;
+    Skill_Summoning     :
+      case WhatItem of
+        0: Result := [];
+      end;
+  end;
+end;
+
+Function LocToText(City: boolean; Which: TWalk): string;
+begin
+
+end;
+
+Procedure ProgressReport;
+var
+  i, WhichSkill: integer;
+  SkillArray, ObjArray : TStringArray;
+  MyName: string;
+begin
+  for i:= 0 to (HowManyPlayers - 1) do
+  begin
+    MyName := ProgressReportArray[i].PlayerName;
+    // __________________________________________________________________
+    writeln(' '+ Replicate('_', 78) + ' ');
+    //|                 MSI Player Extreme Report                        |
+    writeln('|' + Padl(Padr('MSI Player Extreme Report', 78/2), 78)+'|');
+    //|------------------------------------------------------------------|
+    writeln(' '+ Replicate('-', 78) + ' ');
+    with ProgressReportArray[i] do
+    //| PlayerName in PlayerCity at PlayerLoc                            |
+      writeln('| '+Padr(MyName+' in '+LocToText(true, PlayerWhere)+
+              ' at '+LocToText(false, PlayerWhere), 78)+'|');
+    //|                                                                  |
+    writeln('|'+Replicate(' ', 78)+'|');
+    for WhichSkill := 0 to High(ProgressReportArray[i].SkillInfo) do
+    begin
+      with ProgressReportArray[i].SkillInfo[WhichSkill] do
+      begin
+        if SkillTime <= 0 then Continue;
+        SkillArray := SkillTextArray(WhichSkill);
+    //| PlayerName is at Fishing(skill1) level FishingLevel              |
+        writeln('| '+Padr(MyName+' is at '+ SkillArray[0] +' level '+
+                IntToStr(Players[i].Level[WhichSkill])+'.', 78)+'|');
+    //| PlayerName was Fishing for Time                                  |
+        writeln('| '+Padr(MyName +' was '+SkillArray[0]+' for '
+                + MsToTime(SkillTime, Time_Short), 78)+'|');
+      end;
+    end;
+  end;
+end;

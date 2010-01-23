@@ -1,0 +1,557 @@
+{==============================================================================\
+|                         MSI Group Scripting Include                          |
+|                                Objects.scar                                  |
+|==============================================================================|
+| Object and Item finding routines                                             |
+|                                                                              |
+| * function MSI_FindTool(Tool: TItem; var X, Y: Integer): Boolean;            | * by Coh3n
+|                                                                              |
+ \_____________________________________________________________________________}
+ 
+ 
+const
+  { Trees }
+  Obj_Tree              = 0;
+  Obj_Oak               = 1;
+  Obj_Willow            = 2;
+  Obj_Yew               = 3;
+  { Rocks }
+  Obj_Rock_Clay         = 4;
+  Obj_Rock_Tin          = 5;
+  Obj_Rock_Copper       = 6;
+  Obj_Rock_Iron         = 7;
+  Obj_Rock_Silver       = 8;
+  
+
+{*******************************************************************************
+Function MSI_GetObject(Which: Integer): TMSObject;
+By: marpis
+Description: Load object info
+*******************************************************************************}
+Function MSI_GetObject(Which: Integer): TMSObject;
+Begin
+  Case Which Of
+    Obj_Tree:
+    With Result Do
+    Begin
+      UpText             := 'Tree';
+      Option             := 'Chop down';
+      Colors             := [736046];
+      Tol                := 5;
+      Hue                := 0.20;
+      Sat                := 0.20;
+      FindAllColors      := False;
+      W                  := 30;
+      H                  := 30;
+      Accuracy           := 10;
+      ExcludeSelf        := True;
+      RightClickOnly     := False;
+      Tries              := 5;
+      Anim               := False;
+      WaitToMove         := True;
+      BadColors          := [];
+      BadColorTolerance  := 10;
+    End;
+    
+    Obj_Oak:
+    With Result Do
+    Begin
+      UpText             := 'Oak';
+      Option             := 'Chop down';
+      Colors             := [736046];
+      Tol                := 5;
+      Hue                := 0.2;
+      Sat                := 0.2;
+      FindAllColors      := False;
+      W                  := 30;
+      H                  := 30;
+      Accuracy           := 10;
+      ExcludeSelf        := True;
+      RightClickOnly     := False;
+      Tries              := 5;
+      Anim               := False;
+      WaitToMove         := True;
+      BadColors          := [];
+      BadColorTolerance  := 10;
+    End;
+  End;
+End;
+
+
+{*******************************************************************************
+Function MSI_GetObjects(Which: TIntegerArray): TMSObjectArray;
+By: marpis
+Description: Load object info
+*******************************************************************************}
+Function MSI_GetObjects(Which: TIntegerArray): TMSObjectArray;
+Var
+  I, H: Integer;
+Begin
+  H := High(Which);
+  SetLength(Result, H + 1);
+
+  For I := 0 To H Do
+    Result[I] := MSI_GetObject(Which[I]);
+End;
+  
+
+{*******************************************************************************}
+{ function MSI_FindTool(Tool: TItem; var X, Y: Integer): Boolean;               }
+{ By: Coh3n                                                                     }
+{ Rev: 25                                                                       }
+{ Date: 12 Nov 09                                                               }
+{ Description: Finds the specified tool when equipped or when in the inventory. }
+{*******************************************************************************}
+function MSI_FindTool(Tool: Integer; var X, Y: Integer): Boolean;
+var
+  SearchLocation: TIntegerArray;
+  ColorsArr: TPointArray;
+  BoxArr: T2DPointArray;
+  I, II, III, H, HH, X1, X2, Y1, Y2, MIDX, MIDY, Tol: Integer;
+  FoundBitmap, FoundDTM: Boolean;
+begin
+  if not LoggedIn then Exit;
+  
+  MSI_GetItem(Tool);
+  SearchLocation := [tab_Inv, tab_Equip];
+
+ { Checks both the inventory and equipment tab. }
+  for II := 0 to 1 do
+  begin
+    GameTab(SearchLocation[II]);
+    MSI_Debug('MSI_FindTool', 'Searching GameTab: ' + IntToStr(I) + '.', Debug_Functions);
+
+    if II = 0 then
+    begin
+     { Edited MI Coords }
+      X1 := 550;  X2 := 735;
+      Y1 := 209;  Y2 := 459;
+    end else begin
+     { Weapon Equipment Slot }
+      X1 := 570;  X2 := 602;
+      Y1 := 289;  Y2 := 322;
+    end;
+
+   { Loops through the item's color record array. }
+    H := High(MSI_Item[Tool].Colors);
+    for I := 0 to H do
+      if FindColorsTolerance(ColorsArr, MSI_Item[Tool].Colors[I], X1, Y1, X2, Y2, MSI_Item[Tool].Tol) then
+      begin
+        MSI_Debug('MSI_FindTool', 'Found Color: ' + IntToStr(MSI_Item[Tool].Colors[I]) +
+                                  '. For Tool: ' + MSI_Item[Tool].Name + '.', Debug_Functions);
+        BoxArr := TPAToATPA(ColorsArr, 5);
+        // DebugATPA(BoxArr, '');
+
+        HH := High(BoxArr);
+        for III := 0 to HH do
+        begin
+          MiddleTPAEx(BoxArr[III], MIDX, MIDY);
+
+         { Look for the DTM in a 50 x 50 box around the middle color of the BoxArr. }
+          FoundDTM := FindDTM(MSI_Item[Tool].DTM, X, Y, MIDX - 25, MIDY - 25, MIDX + 25, MIDY + 25);
+          if FoundDTM then
+          begin
+            MSI_Debug('MSI_FindTool', 'Found DTM: ' + MSI_Item[Tool].Name + '.', Debug_Functions);
+            Break;
+          end;
+        end;
+
+        if FoundDTM then
+          Break;
+      end;
+
+   { Looks for the Bitmap, only if the DTM isn't found. }
+    if not FoundDTM then
+    begin
+      MSI_Debug('MSI_FindTool', 'Error Finding DTM: ' + MSI_Item[Tool].Name + '.', Debug_Functions);
+      Tol := 0;
+      repeat
+        FoundBitmap := FindBitmapToleranceIn(MSI_Item[Tool].BMP, X, Y, X1, Y1, X2, Y2, Tol);
+        
+       { Increases the tolerance by 2 if the bitmap isn't found until it is greater than or equal to 20. }
+        IncEx(Tol, 2);
+      until((Tol >= 20) or FoundBitmap);
+
+      if FoundBitmap then
+        MSI_Debug('MSI_FindTool', 'Found Bitmap For Item: ' + MSI_Item[Tool].Name + '.', Debug_Functions);
+    end;
+
+   { Returns true if the DTM is found in the box, or if the Bitmap is found. }
+    Result := FoundDTM or FoundBitmap;
+    if Result then
+    begin
+      MSI_Debug('MSI_FindTool', 'Successfully Found Tool: ' + MSI_Item[Tool].Name + '.', Debug_Functions);
+      Break;
+    end;
+
+  end; { of GameTab for..to..do loop. }
+
+  MSI_FreeItemEx(Tool);
+end;
+
+
+{*******************************************************************************}
+{ Function MSI_FindItemSlots(ItemID: Integer): TIntegerArray;                   }
+{ By: marpis                                                                    }
+{ Description: Returns itemslots in which item "ItemID" is found                }
+{*******************************************************************************}
+Function MSI_FindItemSlots(ItemID: Integer): TIntegerArray;
+Var
+  I, II, H, tmp: Integer;
+  B: TBox;
+  Found: Boolean;
+Begin
+  MSI_GetItem(ItemID);
+  GameTab(Tab_Inv);
+  
+  For I := 1 To 28 Do
+  Begin
+    B := InvBox(I);
+    { Bitmap }
+    Found := FindBitmapToleranceIn(MSI_Item[ItemID].BMP, tmp, tmp, B.X1, B.Y1, B.X2, B.Y2, MSI_Item[ItemID].Tol);
+    
+    { DTM }
+    If (Not Found) Then
+      Found := FindDTM(MSI_Item[ItemID].DTM, tmp, tmp, B.X1, B.Y1, B.X2, B.Y2);
+      
+    { Color }
+    If (Not Found) Then
+    Begin
+      H := High(MSI_Item[ItemID].Colors);
+      For II := 0 To H Do
+        If (Not FindColorTolerance(tmp, tmp, MSI_Item[ItemID].Colors[II], B.X1, B.Y1, B.X2, B.Y2, MSI_Item[ItemID].Tol)) Then
+          Break;
+      Found := (II > H);
+    End;
+    
+    If Found Then
+    Begin
+      H := Length(Result);
+      SetLength(Result, H + 1);
+      Result[H] :=I;
+    End;
+  End;
+End;
+
+{*******************************************************************************}
+{ Procedure MSI_ClickItems(ItemIDs: TIntegerArray; Option: String);             }
+{ By: marpis                                                                    }
+{ Description: Clicks all items declared in ItemIDs array.                      }
+{*******************************************************************************}
+Procedure MSI_ClickItems(ItemIDs: TIntegerArray; Option: String);
+Var
+  I, L, X, Y: Integer;
+  Slots: TIntegerArray;
+Begin
+  L := High(ItemIDs);
+  For I := 0 To L Do
+    Slots := CombineIntArray(Slots, MSI_FindItemSlots(ItemIDs[I]));
+  ClearSameIntegers(Slots);
+  L := High(Slots);
+  
+  If (L < 0) Then
+    Exit;
+    
+  For I := 0 To L Do
+  Begin
+    MMouseItem(Slots[I]);
+    GetMousePos(X, Y);
+    If WaitUpText(Option, 100 + Random(20)) Then
+      Mouse(X, Y, 0, 0, True)
+    Else
+    Begin
+      Mouse(X, Y, 0, 0, False);
+      WaitOption(Option, 250 + Random(50));
+    End;
+  End;
+
+End;
+
+Function MSI_ReturnPointsInBox(TPA: TPointArray; B: TBox): TPointArray; Forward;
+{*******************************************************************************
+Function MSI_FindObjectsTPA( ... ): Boolean;
+By: marpis
+Description: Finds objects in mainscreen, saves co-ords in TPA
+*******************************************************************************}
+Function MSI_FindObjectsTPA(Var Objs: TPointArray; Width, Height: Integer;
+                           Colors: TIntegerArray; Accuracy, Tolerance: Integer; HueMod, SatMod: Extended;
+                           FindAllColors: Boolean;
+                           X1, Y1, X2, Y2: Integer;
+                           ExcludeSelf, CheckAnimation: Boolean;
+                           BadColors: TIntegerArray; BadColorTolerance: Integer): Boolean;
+Var
+  TPA, TempTPA: TPointArray;
+  ATPA: T2DPointArray;
+  I, II, CTS, TMP, H: Integer;
+  Box: TBox;
+  Boxes: TBoxArray;
+  Animating2: TBooleanArray;
+  BadPoint: Boolean;
+Begin
+ If (Not LoggedIn) Then Exit;
+
+ CTS := GetColorToleranceSpeed;
+ ColorToleranceSpeed(2);
+ SetColorSpeed2Modifiers(HueMod, SatMod);
+ Box := IntToBox(228, 150, 275, 200);
+
+ H := High(Colors);
+ SetLength(ATPA, H + 1);
+
+ For I := 0 To H Do
+   FindColorsSpiralTolerance(MSCX, MSCY, ATPA[I], Colors[I], X1, Y1, X2, Y2, Tolerance);
+
+ ColorToleranceSpeed(CTS);
+ SetColorSpeed2Modifiers(0.2, 0.2);
+
+ { Check if some of the colors was not on MS. }
+ If FindAllColors Then
+   For I := 0 To H Do
+     If (Length(ATPA) < 1) Then
+     Begin
+       MSI_Debug('MSI_FindObjectsTPA', 'All colors weren''t found!', Debug_SmallDetails);
+       Objs := [];
+       Exit;
+     End;
+
+ { Check if we have enough pixels on MS. }
+ TPA := MergeATPA(ATPA);
+ //DrawDots(TPA, 1000);
+ 
+ If (Length(TPA) < Accuracy) Then
+ Begin
+   MSI_Debug('MSI_FindObjectsTPA', 'No colors found!', Debug_SmallDetails);
+   Objs := [];
+   Exit;
+ End;
+
+ ATPA := TPAtoATPAEx(TPA, Width, Height);
+ SortATPAFrom(ATPA, Point(MMCX, MMCY));
+ H := High(ATPA);
+ SetLength(TPA, H + 1);
+
+ For I := 0 To H Do
+   TPA[I] := MiddleTPA(ATPA[I]);
+
+ H := High(TPA);
+ SetLength(Boxes, H + 1);
+
+ For I := 0 To H Do
+ Begin
+   Boxes[I].X1 := TPA[I].X - (Width / 2);
+   Boxes[I].Y1 := TPA[I].Y - (Height / 2);
+   Boxes[I].X2 := TPA[I].X + (Width / 2);
+   Boxes[I].Y2 := TPA[I].Y + (Width / 2);
+ End;
+
+ If CheckAnimation Then
+   Animating2 := AnimatingMulti(Boxes, 100, 1);
+
+ For I := 0 To High(TPA) Do
+ Begin
+   BadPoint := False;
+   //DrawBox(Boxes[I], 200);
+   
+   { Animation }
+   If (Not BadPoint) Then
+   If CheckAnimation Then
+     If (Not Animating2[I]) Then
+     Begin
+       MSI_Debug('MSI_FindObjectsTPA', 'Not animating!', Debug_SmallDetails);
+       BadPoint := True;
+     End;
+
+   { Exclude own character }
+   If (Not BadPoint) Then
+   If ExcludeSelf Then
+     If PointInBox(TPA[I], Box) Then
+     Begin
+       MSI_Debug('MSI_FindObjectsTPA', 'Own character!', Debug_SmallDetails);
+       BadPoint := True;
+     End;
+
+   { Invalid point }
+   If (Not BadPoint) Then
+   If ((TPA[I].X + TPA[I].Y) < 1) Then
+   Begin
+     MSI_Debug('MSI_FindObjectsTPA', 'Invalid point!', Debug_SmallDetails);
+     BadPoint := True;
+   End;
+
+   { Accuracy }
+   If (Not BadPoint) Then
+   If (Length(ATPA[I]) < Accuracy) Then
+   Begin
+     MSI_Debug('MSI_FindObjectsTPA', 'Not enough points!', Debug_SmallDetails);
+     BadPoint := True;
+   End;
+
+   { Bad colors }
+   If (Not BadPoint) Then
+   For II := 0 To High(BadColors) Do
+   Begin
+     MSI_Debug('MSI_FindObjectsTPA', 'Looking for bad color: '+IntToStr(BadColors[II]), Debug_SmallDetails);
+     If FindColorSpiralTolerance(TMP, TMP, BadColors[II], TPA[I].X - (Width / 2), TPA[I].Y - (Height / 2), TPA[I].X + (Width / 2), TPA[I].Y + (Height / 2), BadColorTolerance) Then
+     Begin
+       MSI_Debug('MSI_FindObjectsTPA', 'Bad color found!', Debug_SmallDetails);
+       BadPoint := True;
+       Break;
+     End;
+   End;
+
+   { FindAllColors }
+   If (Not BadPoint) Then
+     If FindAllColors Then
+     For II := 0 To H Do
+     Begin
+       TempTPA := MSI_ReturnPointsInBox(ATPA[II], IntToBox(TPA[I].X - (Width / 2), TPA[I].Y - (Height / 2), TPA[I].X + (Width / 2), TPA[I].Y + (Height / 2)));
+       If (Length(TempTPA) < 1) Then
+       Begin
+         MSI_Debug('MSI_FindObjectsTPA', 'All colors weren''t found!', Debug_SmallDetails);
+         BadPoint := True;
+         Break;
+       End;
+     End;
+
+   { Valid point! }
+   If (Not BadPoint) Then
+   Begin
+     SetLength(Objs, Length(Objs) + 1);
+     Objs[High(Objs)] := TPA[I];
+   End;
+ End;
+
+ Result := (Length(Objs) > 0);
+End;
+
+
+
+
+{*******************************************************************************
+Function MSI_FindObjectsIn
+By: marpis
+Description: Finds objects in mainscreen
+*******************************************************************************}
+function MSI_IsMoving: boolean; Forward;
+Function MSI_FindObjectsIn(Objs: TMSObjectArray; Var IndexFound: Integer; X1, Y1, X2, Y2: Integer; Action: fnct_ActionOptions): Boolean;
+Var
+  TPA: TPointArray;
+  Options, UpTexts: TStringArray;
+  I, II, III, HH, HHH, Hi: Integer;
+  CheckUpText: Boolean;
+Begin
+  Hi := High(Objs);
+
+  SetLength(Options, Hi + 1);
+  SetLength(UpTexts, Hi + 1);
+  For I := 0 To Hi Do
+  Begin
+    UpTexts[I] := Objs[I].UpText;
+    Options[I] := Objs[I].Option;
+  End;
+
+  For II := 0 To Hi Do
+    With Objs[II] Do
+    If MSI_FindObjectsTPA(TPA, W, H, Colors, Accuracy, Tol, Hue, Sat, FindAllColors,
+                          X1, Y1, X2, Y2,
+                          ExcludeSelf, Anim, BadColors, BadColorTolerance) Then
+    Begin
+      HH := Min((Objs[II].Tries - 1), High(TPA));
+
+      For I := 0 to HH Do
+      Begin
+        MSI_Debug('MSI_FindObjects', IntToStr(Length(TPA))+' objects found!', Debug_SmallDetails);
+        X := Objs[II].X;
+        Y := Objs[II].Y;
+        IndexFound := II;
+
+        If (Action = Nothing) Then
+        Begin
+          Result := True;
+          Exit;
+        End;
+
+        HHH := High(UpTexts);
+        CheckUpText := True;
+        For III := 0 To HHH Do
+          If (UpTexts[III] = '') Then
+          Begin
+            CheckUpText := False;
+            Break;
+          End;
+          
+        MMouse(TPA[I].X, TPA[I].Y, 2, 2);
+        
+        If CheckUpText Then
+          Result := WaitUpTextMulti(UpTexts, 50 + Random(20))
+        Else
+          Result := True;
+          
+        If (Action = Move) Then
+          Exit;
+
+        If Result Then
+        Begin
+          GetMousePos(X, Y);
+          If (Objs[II].RightClickOnly) Or InRange(Random(100), 0, 80) Or (Action = ClickRight) Then
+          Begin
+            Mouse(X, Y, 0, 0, False);
+            If (Action = ClickLeft) Then
+              Result := WaitOptionMulti(Options, 500 + Random(100))
+            Else
+              Result := True;
+          End Else
+          Begin
+            Mouse(X, Y, 0, 0, True);
+            Result := DidRedClick;
+          End;
+
+          If Objs[II].WaitToMove Then
+            If WaitFunc(@MSI_IsMoving, 15, 2000 + Random(200)) Then
+              While MSI_IsMoving Do
+                Wait(10 + Random(5));
+
+          Exit;
+        End Else
+          MSI_Debug('MSI_FindObjects', 'Uptext didn''t match!', Debug_SmallDetails);
+      End;
+    End;
+
+  MSI_Debug('MSI_FindObjects', 'Objects not found!', Debug_SmallDetails);
+End;
+
+
+{*******************************************************************************
+Function MSI_FindObjects
+By: marpis
+Description: Finds objects in mainscreen
+*******************************************************************************}
+Function MSI_FindObjects(Objs: TMSObjectArray; Var IndexFound: Integer; Action: fnct_ActionOptions): Boolean;
+Begin
+  Result := MSI_FindObjectsIn(Objs, IndexFound, MSX1, MSY1, MSX2, MSY2, Action);
+End;
+
+
+{*******************************************************************************
+Function MSI_FindObjectIn
+By: marpis
+Description: Finds object in mainscreen
+*******************************************************************************}
+Function MSI_FindObjectIn(Obj: TMSObject; X1, Y1, X2, Y2: Integer; Action: fnct_ActionOptions): Boolean;
+Var
+  TMP: Integer;
+Begin
+  Result := MSI_FindObjectsIn([Obj], TMP, X1, Y1, X2, Y2, Action);
+End;
+
+{*******************************************************************************
+Function MSI_FindObject
+By: marpis
+Description: Finds object in mainscreen
+*******************************************************************************}
+Function MSI_FindObject(Obj: TMSObject; Action: fnct_ActionOptions): Boolean;
+Var
+  TMP: Integer;
+Begin
+  Result := MSI_FindObjectsIn([Obj], TMP, MSX1, MSY1, MSX2, MSY2, Action);
+End;

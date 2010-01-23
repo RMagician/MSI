@@ -1,0 +1,17 @@
+{==============================================================================\
+|                         MSI Group Scripting Include                          |
+|                                 RunMe.scar                                   |
+|==============================================================================|
+| For the script User to just simply press play                                |
+|                                                                              |
+ \_____________________________________________________________________________}
+
+program MSIScript;
+{.include srl/srl/MSI/Setup.scar}
+
+
+begin
+  SetupSRL;
+  //SRLPlayerForm
+  SetupMSI;
+end.

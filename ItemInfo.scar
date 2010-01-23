@@ -1,0 +1,422 @@
+{==============================================================================\
+|                         MSI Group Scripting Include                          |
+|                               ItemInfo.scar                                  |
+|==============================================================================|
+| Used to store and load all information on items and objects                  |
+|                                                                              |
+|  Function MSI_GetItem : Boolean;            *By Coh3n and Naum               |
+|  Procedure MSI_LoadItems;                   *By Naum                         |
+|  Procedure MSI_LoadItemRange;               *By Naum edited by RM            |
+|  Procedure MSI_FreeItemEx;                  *By Naum                         |
+|  Procedure MSI_FreeItemArray;               *By Naum                         |
+|  Procedure MSI_FreeItems;                   *By Naum                         |
+|  Procedure MSI_FreeItemRange;               *By Naum edited by RM            |
+ \_____________________________________________________________________________}
+
+Const MSI_TItemCount = 15;  //Change this to the number of items
+
+Var
+  MSI_Item : Array[0..(MSI_TItemCount - 1)] Of TItem;
+
+           {Add consts for TItemInfo here :)}
+Const
+  Cavada_Berries = 0; //test item
+
+  Pickaxe_Bronze = 1;    //Pickaxe for mining
+  Pickaxe_Iron = 2;
+  Pickaxe_Steel = 3;
+  Pickaxe_Mithril = 4;
+  Pickaxe_Adamant = 5;
+  Pickaxe_Rune = 6;
+
+  Hatchet_Bronze = 7;   //Hatchets for wood cutting :D
+  Hatchet_Iron = 8;
+  Hatchet_Steel = 9;
+  Hatchet_Mithril = 10;
+  Hatchet_Adamant = 11;
+  Hatchet_Rune = 12;
+  
+  Logs_Regular = 13;
+  Logs_Oak = 14;
+
+{********************************************************************************}
+{ Function MSI_GetItem(ID : Integer) : Boolean;                                  }
+{ By: Coh3n and Naum                                                             }
+{ Rev: 29                                                                        }
+{ Date: 15 Nov 09                                                                }
+{ Description: Gets the TItem record for a certain item defined by 'ID'          }
+{********************************************************************************}
+
+Function MSI_GetItem(ID : Integer) : Boolean;
+Begin
+  Case ID Of
+    //Test item xP
+    Cavada_Berries :
+    With MSI_Item[Cavada_Berries] Do
+    Begin
+      Name := 'Cadava Berries';
+      UpText := ['dava ber'];
+      ItemP := Point(0, 0);
+      Colors := [10033858, 8984493, 7804054, 6558079, 12001255, 9705915];
+      Stackable := True;
+      DTM := DTMFromString('78DA63CC616260E0606440066EBA9C0C22401A26CA980554C386A6C6'+
+             'C118554D0EA61A902C86391C04D4E401D570A1AA392A3D07D32E2EFC6E0600B439067C');
+
+      BMP := BitmapFromString(7, 7, 'beNoTrfVwMPGwM3G2NmRgYHTT5XTRASE3B2MIAgraa3A'+
+                'ASYggUDGEbaTABmEASSAyV2YH6oWwgYxpIuUdQjlAtoc+F5B8pbDzkfzmWsHkqSJlEAXXZFcdlZ6zVbI/lz8Mogto1G7JKWvFO+cCACNQHR0=');
+    End;
+
+    //Pickaxe's
+    Pickaxe_Bronze :
+    with MSI_Item[Pickaxe_Bronze] do
+    begin
+      Name := 'Bronze Pickaxe';
+      UpText := ['onze pic'];
+      ItemP := Point(0, 0);
+      Colors := [3100779, 4024716, 3430775];
+      Tol := 10;
+      Stackable := False;
+      DTM := DTMFromString('78DA6354656160D8CBC8800C4E4C0B67E007D' +
+           '230514645A09AFDA86A18189820723035624035FB08A85106AAD9' +
+           '45408D3E50CD01026AD408AB0100EDC50741');
+
+      BMP := BitmapFromString(4, 5, 'beNrTlMgO0O/Ptgu' +
+           'wUYpwUgMiIHdPT9CJaeHRLuqFoYblkSZ9WXa+VopW2pI2ulKOhjJA' +
+           'hr6yiIm6uDkAMJYQhg==');
+    end;
+
+    Pickaxe_Iron :
+    with MSI_Item[Pickaxe_Iron] do
+    begin
+      Name := 'Iron Pickaxe';
+      UpText := ['on picka'];
+      ItemP := Point(0, 0);
+      Colors := [12500679, 11711162];
+      Tol := 5;
+      Stackable := False;
+      DTM := DTMFromString('78DA63F4676160D8CBC8800C6E5EB8C0C00FA' +
+             '441A2FF8180D11BA8663FAA1A0606263009136574C03407438D2F' +
+             '50CD2E026AA2806A0E12501340580D00D5350CFF');
+
+      BMP := BitmapFromString(4, 5, 'beNqLjMzPzpo1eXK' +
+             'AjVKEk1p8dHRxXt7pw4duXriQHB9fXVbWWF0NkvXxAUqlJiZmp6fb' +
+             'WFkBuWHBQbEAKO0ZXg==');
+    end;
+
+    Pickaxe_Steel :
+    with MSI_Item[Pickaxe_Steel] do
+    begin
+      Name := 'Steel Pickaxe';
+      UpText := ['eel pick'];
+      ItemP := Point(0, 0);
+      Tol := 5;
+      Colors := [13684953, 12764107];
+      Stackable := False;
+      DTM := DTMFromString('78DA63CC616260B8C580026E5EB8C0C00FA41' +
+             '981F83F1030A603D5DC6640034C609211CA638CC53407434D3690' +
+             '7F9D809A7220FF1E0135B984D5000072E10E48');
+
+      BMP := BitmapFromString(4, 5, 'beNozNy/MyenraA+' +
+             'wUYpwUosIDSktKNi1adPxfftSExOL8/Kqy8omdnf7ennZWFnZ29i4' +
+             'ODpamZsbGRiYm5paAQDj0hYh');
+    end;
+
+    Pickaxe_Mithril :
+    with MSI_Item[Pickaxe_Mithril] do
+    begin
+      Name := 'Mithril Pickaxe';
+      UpText := ['thril pi'];
+      ItemP := Point(0, 0);
+      Colors := [12878722, 12024441];
+      Tol := 5;
+      Stackable := False;
+      DTM := DTMFromString('78DA635CCCC2C0B09791011934351F61E007D' +
+             '23051C6F940350750D530303041E4606AA6609A83A1661150CD2E' +
+             '026AD601D51C24A006E4E643F8D500006EC40A4D');
+
+      BMP := BitmapFromString(4, 5, 'beNrTd3NxiYiN7Qm' +
+             'wUYpwUtPWcbS1Dais2t7UfMTExMXJKczVLTokJFdN3UpP383IyNvU' +
+             'NEBWVgfIBarUAwAohhCm');
+    end;
+
+    Pickaxe_Adamant :
+    with MSI_Item[Pickaxe_Adamant] do
+    begin
+      Name := 'Adamant Pickaxe';
+      UpText := ['amant pi'];
+      ItemP := Point(0, 0);
+      Colors := [10467487, 9809301];
+      Tol := 5;
+      Stackable := False;
+      DTM := DTMFromString('78DA635465616078C8C8800CE6EF98CFC00FA' +
+             '461A28C8A40358F51D530303041E4606AC430CDC150A30254738F' +
+             '801A7DA09A2704D4A801D53CC5AF060084FD085B');
+
+      BMP := BitmapFromString(4, 5, 'beNqzMvKL9itqKQ6' +
+             'wUYpwUtM10XUNcJ26dur8HfOtXKydfZ3dg9xDk8M09DVNbEzM7M2A' +
+             'gnLKctpG2gbmBkYAQW8RIg==');
+    end;
+
+    Pickaxe_Rune :
+    with MSI_Item[Pickaxe_Rune] do
+    begin
+      Name := 'Rune Pickaxe';
+      UpText := ['ne picka'];
+      ItemP := Point(0, 0);
+      Colors := [12889986, 12035193];
+      Tol := 5;
+      Stackable := False;
+      DTM := DTMFromString('78DA63F467616078C8C8800C9AD61F61E007D' +
+             '23051466FA09A27A86A181898207230350E98E660A8F103AAB947' +
+             '404D1450CD53026A0208AB0100004C0959');
+
+      BMP := BitmapFromString(4, 5, 'beNpz9XYKCIut7Qm' +
+             'wUYpwUjNzdLP2j6hcsr1p/RFjV1/70HinyGT/7HI9CxtrD197nyCg' +
+             'YiVNHQMre6BKSwBlwhLp')
+    end;
+
+    //Hatchet's (Axes)
+    Hatchet_Bronze :
+    with MSI_Item[Hatchet_Bronze] do
+    begin
+      Name := 'Bronze Hatchet';
+      UpText := ['onze hat'];
+      ItemP := Point(0, 0);
+      Colors := [1649466, 1583415, 1715516];
+      Tol := 3;
+      Stackable := False;
+      DTM := DTMFromString('78DA63AC67616078C8C8800CACB42519F8813' +
+             '44C94B116A8E609AA1A060626881C4C4D0D50CD7D026A9A816A1E' +
+             '1050D30854F31CBF1A0036D307A0');
+
+      BMP := BitmapFromString(5, 5, 'beNoT5LbXl7bRlbL' +
+             'SlgSiMEEeCAOIzDUlgFwgicw1UhWFsIEoRJBbX1kEzg4BAL4aC8A=' + '');
+    end;
+
+    Hatchet_Iron :
+    with MSI_Item[Hatchet_Iron] do
+    begin
+      Name := 'Iron Hatchet';
+      UpText := ['on hatch'];
+      ItemP := Point(0, 0);
+      Colors := [3618618, 3815996];
+      Tol := 4;
+      Stackable := False;
+      DTM := DTMFromString('78DA633CC6C4C0F09F0105D85859317001694' +
+             '6289FF11013120F06982072C86AFE30E057730AC8FF4740CD4920' +
+             '9F19BF5D0070D607B2');
+
+      BMP := BitmapFromString(5, 5, 'beNoT5Ha0t7O3sbG' +
+             'xsgKiMEEeCAOIrMzNgVwgicw1MTKCsIEoRJDbyMAAzg4BAEz1D2E=' + '');
+    end;
+
+    Hatchet_Steel :
+    with MSI_Item[Hatchet_Steel] do
+    begin
+      Name := 'Steel Hatchet';
+      UpText := ['eel hatc'];
+      ItemP := Point(0, 0);
+      Colors := [5855581, 6118753, 6513511];
+      Tol := 5;
+      Stackable := False;
+      DTM := DTMFromString('78DA63D4666160606362400689B1B10CFC409' +
+             'A11CA67D404AA614755C3C000E1C3D56801D5301350A30F54C34A' +
+             '408D0E500D377E350031130254');
+
+      BMP := BitmapFromString(5, 5, 'beNoT5E5PTk6Oj0+' +
+             'MjY2Pjg4T5AEyINzYyEggNzo8HCIF4YYFB0HYQPEQQe4AHx8gG4iA' +
+             '7BAAfpcXBA==');
+    end;
+
+    Hatchet_Mithril :
+    with MSI_Item[Hatchet_Mithril] do
+    begin
+      Name := 'Mithril Hatchet';
+      UpText := ['thril ha'];
+      ItemP := Point(0, 0);
+      Colors := [4599598, 4468013];
+      Tol := 3;
+      Stackable := False;
+      DTM := DTMFromString('78DA630C616160606562400606069E0CFC409' +
+             'A11CA670C00AA614755C3C000E1C3D50402D5301350130954C342' +
+             '404D38500D377E35003D7E02AC');
+
+      BMP := BitmapFromString(5, 5, 'beNoT5DY28TUy8jY' +
+             'w8NTTdwsT5AEyIGxdXRcgF0gic7W07CFsIAoR5FZTt4KzQwAvWg6p' + '');
+    end;
+
+    Hatchet_Adamant :
+    with MSI_Item[Hatchet_Adamant] do
+    begin
+      Name := 'Adamant Hatchet';
+      UpText := ['amant ha'];
+      ItemP := Point(0, 0);
+      Colors := [3291698, 3423284];
+      Tol := 4;
+      Stackable := False;
+      DTM := DTMFromString('78DA636C60616060656240062636260CFC409' +
+             'A11CA67AC04AA614755C3C000E1C3D55403D5301350D38C691786' +
+             '1A907BB8F1AB01009339037A');
+
+      BMP := BitmapFromString(5, 5, 'beNoT5LZwtDCzNzO' +
+             'xMQGiMEEeCAOIjKyMgFwgiczVNdGFsIEoRJBb20gbzg4BACsqDo4=' + '');
+    end;
+
+    Hatchet_Rune :
+    with MSI_Item[Hatchet_Rune] do
+    begin
+      Name := 'Rune Hatchet';
+      UpText := ['ne hatch'];
+      ItemP := Point(0, 0);
+      Colors := [4932921, 5261885];
+      Tol := 5;
+      Stackable := False;
+      DTM := DTMFromString('78DA635CC9C2C0C0CAC4800CAC3D7C19F8813' +
+             '42394CFB804A8861D550D0303840F57B30CA88699809AB540352C' +
+             '04D4AC06AAE1C6AF060006770479');
+
+      BMP := BitmapFromString(5, 5, 'beNoT5Lb3CbL1CrD' +
+             '28LV09Q4T5AEyIGxzZ08gF0gic03sXSBsIAoR5DawsoezQwCfzRF3' + '');
+    end;
+
+    Logs_Regular:
+    with MSI_Item[Logs_Regular] do
+    begin
+      Name := 'Logs';
+      UpText := ['Logs'];
+      ItemP := Point(0, 0);
+      Colors := [2704989];
+      Tol := 5;
+      Stackable := False;
+      DTM := DTMFromString('78DA637464626098C1C8800C82EC5418B8803' +
+             '448F43F10303A00D54C4055C3C0C0042661A28CE640FE54026A8C' +
+             '81FCB904D4D801F94B08A8F101F2E713501308E4CF21C29C2904D' +
+             '47800F9BD449843207C00AFFC0D8F');
+
+      BMP := BitmapFromString(4, 4, 'beNqzlmrOtASiBA+tWDdNCDvU' +
+             'WgrIhbOTPLUhbBAXAHeGD5I=');
+    end;
+  End;
+
+  Result := (Length(MSI_Item[ID].Name) > 0);
+End;
+
+{********************************************************************************}
+{ Procedure MSI_LoadItems(IDs : TIntegerArray);                                  }
+{ By: Naum                                                                       }
+{ Rev: 29                                                                        }
+{ Date: 15 Nov 09                                                                }
+{ Description: Gets the TItem records for all items in the array                 }
+{********************************************************************************}
+
+Procedure MSI_LoadItems(IDs : TIntegerArray);
+Var I : Integer;
+Begin
+  For I := 0 To High(IDs) Do
+    MSI_GetItem(IDs[I]);
+End;
+
+{********************************************************************************}
+{ Procedure MSI_LoadItemRange(StartID, EndID : Integer);                         }
+{ By: Naum edited by RM                                                          }
+{ Rev: 29                                                                        }
+{ Date: 15 Nov 09                                                                }
+{ Description: Gets the TItem records for all items in the range                 }
+{********************************************************************************}
+
+Procedure MSI_LoadItemRange(StartID, EndID : Integer);
+Var I : Integer;
+Begin
+  If (StartID > EndID) Then
+  Begin
+    MSI_Debug('MSI_LoadTItemRange', 'StartID is greater than EndID!', Debug_FORCE);
+    I := EndID;
+    EndID := StartID;
+    StartID := I;
+    I := 0;
+  End;
+
+  For I := StartID To EndID Do
+    MSI_GetItem(I);
+End;
+
+{********************************************************************************}
+{ Procedure MSI_FreeItemEx(Which : Integer);                                     }
+{ By: Naum                                                                       }
+{ Rev: 29                                                                        }
+{ Date: 15 Nov 09                                                                }
+{ Description: Frees the TItem record for the item 'which'                       }
+{********************************************************************************}
+
+Procedure MSI_FreeItemEx(Which : Integer);
+Begin
+  Try
+    With MSI_Item[Which] Do
+    Begin
+      Name := '';
+      UpText := [''];
+      ItemP := Point(0, 0);
+      Colors := [0];
+      DTM := -1;
+      BMP := -1;
+    End;
+  Except End;
+End;
+
+{********************************************************************************}
+{ Procedure MSI_FreeItemArray(TIArray : TIntegerArray);                          }
+{ By: Naum                                                                       }
+{ Rev: 29                                                                        }
+{ Date: 15 Nov 09                                                                }
+{ Description: Frees the TItem records for all items in the array                }
+{********************************************************************************}
+
+Procedure MSI_FreeItemArray(TIArray : TIntegerArray);
+var
+  I, Lo, Hi: Integer;
+begin
+  Lo := Low(TIArray);
+  Hi := High(TIArray);
+  for I := Lo to Hi do
+    MSI_FreeItemEx(I);
+end;
+
+{********************************************************************************}
+{ Procedure MSI_FreeItems;                                                       }
+{ By: Naum                                                                       }
+{ Rev: 29                                                                        }
+{ Date: 15 Nov 09                                                                }
+{ Description: Frees all loaded Items                                            }
+{********************************************************************************}
+
+Procedure MSI_FreeItems;
+var i : Integer;
+begin
+  for i := 0 to (MSI_TItemCount - 1) do
+    MSI_FreeItemEx(i);
+end;
+
+{********************************************************************************}
+{ Procedure MSI_FreeItemRange(StartID, EndID: Integer);                          }
+{ By: Naum edited by RM                                                          }
+{ Rev: 29                                                                        }
+{ Date: 15 Nov 09                                                                }
+{ Description: Frees the TItem records for all items in the range                }
+{********************************************************************************}
+
+Procedure MSI_FreeItemRange(StartID, EndID: Integer);
+Var
+  I : Integer;
+Begin
+  If (StartID > EndID) Then
+  Begin
+    MSI_Debug('MSI_FreeTItemRange', 'StartID is greater than EndID!', Debug_FORCE);
+    I := EndID;
+    EndID := StartID;
+    StartID := I;
+    I := 0;
+  End;
+
+  For I := StartID To EndID Do
+    MSI_FreeItemEx(I);
+End;
