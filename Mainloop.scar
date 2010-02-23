@@ -6,7 +6,6 @@
 |                                                                              |
 | * function MSI_BestTool: Integer;                * by Coh3n                  |
 | * function function MSI_SetupPlayer: Boolean;    * by Coh3n                  |
-| * procedure MSI_AntiBan(HowLong : Integer);      * by Naum, edited by Coh3n  |
  \_____________________________________________________________________________}
 
 { const Hatchet/Pickaze requirements.
@@ -120,4 +119,79 @@ begin
     else
       MSI_Debug('MSI_SetupPlayer', 'Unable to Open Bank.', debug_Functions);
   end;
+end;
+
+function MSI_WalkToLoc: Boolean;
+var
+  i: Integer;
+begin
+  case Players[CurrentPlayer].Integers[P_LOC] of
+    LOC_VEBANK:
+      begin
+        RoadColor := FindNewVarrockRoadColor;
+        for i := WALK_TREE_ROCK to WALK_TREE_PATH do
+          CreateWalkIndex(i);
+          
+        Result := CreateWalkIndex(WALK_TREE_FINAL);
+      end;
+
+    else
+      MSI_Debug('MSI_DoWoodcutting', 'Invalid player location!', debug_Functions);
+  end;
+end;
+
+function MSI_WalkToBank: Boolean;
+var
+  i: Integer;
+begin
+  if (not InvFull) then
+    Exit;
+
+  case Players[CurrentPlayer].Integers[P_LOC] of
+    LOC_VEBANK:
+      begin
+        RoadColor := FindNewVarrockRoadColor;
+        for i := WALK_BANK_ROCK to WALK_BANK_PATH do
+          CreateWalkIndex(i);
+
+        Result := CreateWalkIndex(WALK_BANK_FINAL);
+      end;
+
+    else
+      MSI_Debug('MSI_DoWoodcutting', 'Invalid player location!', debug_Functions);
+  end;
+end;
+
+function MSI_DoSkill: Boolean;
+begin
+  Result := False;
+end;
+
+procedure MSI_MainLoop;
+begin
+  repeat
+    if (not MSI_SetupPlayer) then
+    begin
+      NextPlayer(False);
+      Continue;
+    end;
+    
+    if (not MSI_WalkToLoc) then
+    begin
+      NextPlayer(False);
+      Continue;
+    end;
+    
+    if (not MSI_DoSkill) then
+    begin
+      NextPlayer(False);
+      Continue;
+    end;
+    
+    if (not MSI_WalkToBank) then
+    begin
+      NextPlayer(False);
+      Continue;
+    end;
+  until(AllPlayersInactive);
 end;

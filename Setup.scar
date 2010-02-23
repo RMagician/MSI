@@ -21,7 +21,8 @@
 {.include srl/srl/MSI/Objects.scar}
 {.include srl/srl/MSI/Banking.scar}
 {.include srl/srl/MSI/AutoColors.scar}
-{.include srl/srl/MSI/Walking.scar}
+{.include srl/srl/MSI/Walking_Color.scar}
+{.include srl/srl/MSI/Walking_Reflection.scar}
 
 //MSI Skill Files
 {.include srl/srl/MSI/Skills/Woodcutting.scar}

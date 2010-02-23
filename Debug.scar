@@ -178,13 +178,13 @@ end;
 
 Function LocToText(City: boolean; Which: TWalk): string;
 begin
-
+  Result := '';
 end;
 
 Procedure ProgressReport;
 var
   i, WhichSkill: integer;
-  SkillArray, ObjArray : TStringArray;
+  SkillArray: TStringArray;
   MyName: string;
 begin
   for i:= 0 to (HowManyPlayers - 1) do

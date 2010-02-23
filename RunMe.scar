@@ -9,9 +9,33 @@
 program MSIScript;
 {.include srl/srl/MSI/Setup.scar}
 
+procedure DeclarePlayers;
+begin
+  HowManyPlayers := 1;
+  NumberOfPlayers(HowManyPlayers);
+  CurrentPlayer := 0;
+
+  with Players[0] do
+  begin
+    Name   := '';
+    Pass   := '';
+    Nick   := '';
+    Active := True;
+    Pin    := '';
+    Integers[P_SKILL]    := SKILL_WOODCUTTING;
+    Integers[P_MATERIAL] := [OBJ_TREE, OBJ_OAK];
+    Integers[P_LOC]      := LOC_VEBANK;
+  end;
+  
+  for i := High(Players) downto 0 do
+    with Players[i] do
+      BoxRewards := ['amp', 'mote', 'ostume', 'oins', 'unes', 're', 'ems'];
+end;
 
 begin
   SetupSRL;
-  //SRLPlayerForm
   SetupMSI;
+  
+  DeclarePlayers;
+  MSI_MainLoop;
 end.

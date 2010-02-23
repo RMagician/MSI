@@ -1,8 +1,8 @@
 {==============================================================================\
 |                         MSI Group Scripting Include                          |
-|                                Walking.scar                                  |
+|                           Walking_Reflection.scar                            |
 |==============================================================================|
-| For All walking and repositioning routines                                   |
+| For all the walking functions that are reflection based                      |
 |                                                                              |
  \_____________________________________________________________________________}
 
@@ -151,9 +151,10 @@ Const
   Loc_LBGoblins    =   92;
   Loc_FredFarmer   =   93;
 
+{
 var
   CurrentLocation: TWalk; // This should probably go to Globals.scar?
-
+}
 {******************************************************************************}
 { function MSI_IsMoving: boolean;                                              }
 { By: marpis                                                                   }

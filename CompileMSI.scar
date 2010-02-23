@@ -2,12 +2,13 @@
 |                         MSI Group Scripting Include                          |
 |                              CompileMSI.scar                                 |
 |==============================================================================|
-| To be sure everything is in order before we committ                          |
+| To be sure everything is in order before we commit                           |
 |                                                                              |
  \_____________________________________________________________________________}
 
 {.include SRL/SRL/MSI/Setup.scar}
 
 begin
+  ClearDebug;
   MSI_Debug('CompileMSI', 'MSI has compiled :)', Debug_Force);
 end.

@@ -18,8 +18,8 @@
 Type
 
 { Type TMSObject
-    Description: To be used for finding on the MS. Stores all necessary
-    information. }
+  Description: To be used for finding on the MS. Stores all necessary
+               information. }
   TMSObject = Record
     X, Y             : Integer;
     UpText           : String;
@@ -42,7 +42,7 @@ Type
   TMSObjectArray = Array of TMSObject;
   
 { Type TItem
-    Description: To be used for handling Items in all situations. }
+  Description: To be used for handling Items in all situations. }
   TItem = Record
     Name      : String;
     UpText    : TStringArray;
@@ -57,7 +57,7 @@ Type
   Type MSI_TItemArray = Array Of TItem;
 
 { Type TWalk
-    Description: Stores all needed tilewalking information. }
+  Description: Stores all needed tilewalking information. }
   TWalk = Record
     City  : integer;
     Loc   : integer;
@@ -65,7 +65,7 @@ Type
   End;
 
 { Type TMMLocation
-    Description: Stores all needed colorwalking information. }
+  Description: Stores all needed colorwalking information. }
   TMMLocation = Record
     Symbol     : String;
     DTM        : Integer;
@@ -76,7 +76,7 @@ Type
   End;
 
 { Type TPlayerSkillInfo
-    Description: Stores information for one player for one skill. }
+  Description: Stores information for one player for one skill. }
   TPlayerSkillInfo = record
     SkillTime : integer;
     TotalObj  : integer;
@@ -86,8 +86,8 @@ Type
   end;
 
 { Type TProggy
-    Description: Stores information all progress related information for one
-    player.  }
+  Description: Stores information all progress related information for one
+               player.  }
   TProggy = record
     PlayerName  : string;
     PlayerStatus: boolean;
@@ -95,14 +95,14 @@ Type
     PlayerWhere : TWalk;
     SkillInfo   : Array of TPlayerSkillInfo;
   end;
-  
+
 var
   ProgressReportArray: Array of TProggy;
   { Description: To be used to store information for Players individually }
 
 { Debug constants
-    Description: The several debugging levels, so the user receives as much
-      detail as he wishes to receive. }
+  Description: The several debugging levels, so the user receives as much
+               detail as he wishes to receive. }
 const
   Debug_Force         = 10;  // For MSI SLs to force it to be debuged, not for Script Users!
   Debug_Proggie       = 7;   // Only debug proggie and more important things
@@ -114,8 +114,9 @@ const
 { const Players.
   Constants representing the different Players array integers. }
 const
-  P_SKILL  = 0;
-  P_LOC    = 1;
+  P_SKILL    = 0;
+  P_MATERIAL = 1;
+  P_LOC      = 2;
 
 var
   Debug_LevelToDebug: integer;

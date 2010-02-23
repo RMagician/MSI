@@ -16,8 +16,7 @@
 {******************************************************************************}
 Procedure MSI_WaitWhileChopping(TreeX, TreeY: Integer; TreeInfo: TMSObject);
 Var
-  Speed2Mods: TExtendedArray;
-  tmp_Tol, CTS, HalfWidth, HalfHeight, L, I, T, OldInvCount, NewInvCount: Integer;
+  CTS, HalfWidth, HalfHeight, L, I, T, OldInvCount, NewInvCount: Integer;
   TotalChopTime, R, CT: Integer;
   ATPA: T2DPointArray;
   TPA: TPointArray;
