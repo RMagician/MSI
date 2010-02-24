@@ -5,7 +5,12 @@
 | For all the script Artificial Inteligence                                    |
 |                                                                              |
 | * function MSI_BestTool: Integer;                * by Coh3n                  |
-| * function function MSI_SetupPlayer: Boolean;    * by Coh3n                  |
+| * function MSI_SetupPlayer: Boolean;             * by Coh3n                  |
+| * function MSI_WalkToLoc: Boolean;               * by The MSI Team           |
+| * function MSI_WalkToBank: Boolean;              * by The MSI Team           |
+| * function MSI_DoSkill: Boolean;                 * by The MSI Team           |
+| * function MSI_BankMaterials: Boolean;           * by The MSI Team           |
+| * function MSI_MainLoop: Boolean;                * by The MSI Team           |
  \_____________________________________________________________________________}
 
 { const Hatchet/Pickaze requirements.
@@ -121,25 +126,44 @@ begin
   end;
 end;
 
+{******************************************************************************}
+{ function MSI_WalkToLoc: Boolean;                                             }
+{ By: The MSI Team                                                             }
+{ Rev: 5                                                                       }
+{ Date: 23 Feb 2010                                                            }
+{ Description: Walks to the proper location depending on skill/location        }
+{******************************************************************************}
 function MSI_WalkToLoc: Boolean;
 var
   i: Integer;
 begin
-  case Players[CurrentPlayer].Integers[P_LOC] of
-    LOC_VEBANK:
-      begin
-        RoadColor := FindNewVarrockRoadColor;
-        for i := WALK_TREE_ROCK to WALK_TREE_PATH do
-          CreateWalkIndex(i);
-          
-        Result := CreateWalkIndex(WALK_TREE_FINAL);
-      end;
+  case Players[CurrentPlayer].Integers[P_SKILL] of
+    SKILL_WOODCUTTING:
+      case Players[CurrentPlayer].Integers[P_LOC] of
+        LOC_VE_BANK:
+          begin
+            RoadColor := FindNewVarrockRoadColor;
+            for i := WALK_WC_VE_TREE_1 to WALK_WC_VE_TREE_3 do
+              CreateWalkIndex(i);
 
+            Result := CreateWalkIndex(WALK_WC_VE_TREE_4);
+          end;
+
+        else
+          MSI_Debug('MSI_WalkToLoc', 'Invalid location for woodcutting skill.', debug_Functions);
+      end;
     else
-      MSI_Debug('MSI_DoWoodcutting', 'Invalid player location!', debug_Functions);
+      MSI_Debug('MSI_WalkToLoc', 'Invalid player skill!', debug_Functions);
   end;
 end;
 
+{******************************************************************************}
+{ function MSI_WalkToLoc: Boolean;                                             }
+{ By: The MSI Team                                                             }
+{ Rev: 5                                                                       }
+{ Date: 23 Feb 2010                                                            }
+{ Description: Walks to the bank depending on skill/location                   }
+{******************************************************************************}
 function MSI_WalkToBank: Boolean;
 var
   i: Integer;
@@ -147,26 +171,74 @@ begin
   if (not InvFull) then
     Exit;
 
-  case Players[CurrentPlayer].Integers[P_LOC] of
-    LOC_VEBANK:
-      begin
-        RoadColor := FindNewVarrockRoadColor;
-        for i := WALK_BANK_ROCK to WALK_BANK_PATH do
-          CreateWalkIndex(i);
+  case Players[CurrentPlayer].Integers[P_SKILL] of
+    SKILL_WOODCUTTING:
+      case Players[CurrentPlayer].Integers[P_LOC] of
+        LOC_VE_TREES:
+          begin
+            RoadColor := FindNewVarrockRoadColor;
+            for i := WALK_WC_VE_BANK_1 to WALK_WC_VE_BANK_3 do
+              CreateWalkIndex(i);
 
-        Result := CreateWalkIndex(WALK_BANK_FINAL);
+            Result := CreateWalkIndex(WALK_WC_VE_BANK_4);
+          end;
+
+        else
+          MSI_Debug('MSI_WalkToBank', 'Invalid location for woodcutting skill.', debug_Functions);
       end;
-
     else
-      MSI_Debug('MSI_DoWoodcutting', 'Invalid player location!', debug_Functions);
+      MSI_Debug('MSI_WalkToBank', 'Invalid player skill!', debug_Functions);
   end;
 end;
 
+{******************************************************************************}
+{ function MSI_WalkToLoc: Boolean;                                             }
+{ By: The MSI Team                                                             }
+{ Rev: 5                                                                       }
+{ Date: 23 Feb 2010                                                            }
+{ Description: Performs the specified skill                                    }
+{******************************************************************************}
 function MSI_DoSkill: Boolean;
 begin
-  Result := False;
+  case Players[CurrentPlayer].Integers[P_SKILL] of
+    SKILL_WOODCUTTING:
+      Result := MSI_ChopInvFull(Players[CurrentPlayer].Arrays[P_MATERIAL]);
+      
+    else
+      MSI_Debug('MSI_WalkToBank', 'Invalid player skill!', debug_Functions);
+  end;
 end;
 
+{******************************************************************************}
+{ function MSI_WalkToLoc: Boolean;                                             }
+{ By: The MSI Team                                                             }
+{ Rev: 5                                                                       }
+{ Date: 23 Feb 2010                                                            }
+{ Description: Banks the specified materials                                   }
+{******************************************************************************}
+function MSI_BankMaterials: Boolean;
+begin
+  case Players[CurrentPlayer].Integers[P_SKILL] of
+    SKILL_WOODCUTTING:
+      case Players[CurrentPlayer].Integers[P_LOC] of
+        LOC_VE_BANK:
+          Result := MSI_Deposit([LOGS_NORMAL, LOGS_OAK], [28, 28]);
+
+        else
+          MSI_Debug('MSI_WalkToBank', 'Invalid location for woodcutting skill.', debug_Functions);
+      end;
+    else
+      MSI_Debug('MSI_WalkToBank', 'Invalid player skill!', debug_Functions);
+  end;
+end;
+
+{******************************************************************************}
+{ function MSI_WalkToLoc: Boolean;                                             }
+{ By: The MSI Team                                                             }
+{ Rev: 5                                                                       }
+{ Date: 23 Feb 2010                                                            }
+{ Description: The MainLoop - performs all actions of the script               }
+{******************************************************************************}
 procedure MSI_MainLoop;
 begin
   repeat
@@ -193,5 +265,19 @@ begin
       NextPlayer(False);
       Continue;
     end;
-  until(AllPlayersInactive);
+    
+    if (not MSI_BankMaterials) then
+    begin
+      NextPlayer(False);
+      Continue;
+    end;
+    
+    ProgressReport;
+    
+    if (AllPlayersInactive) then
+    begin
+      MSI_Debug('MSI_MainLoop', 'All players are now inactive, terminating script...', Debug_PlayerActions);
+      TerminateScript;
+    end;
+  until(False);
 end;

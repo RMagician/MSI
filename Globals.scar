@@ -112,11 +112,20 @@ const
   Debug_Everything    = 0;   // For Script Users to have everything in debug box.
   
 { const Players.
-  Constants representing the different Players array integers. }
+  Constants representing the different Players array records. }
 const
+  // Integers
   P_SKILL    = 0;
-  P_MATERIAL = 1;
-  P_LOC      = 2;
+  P_LOC      = 1;
+  
+  // Arrays
+  P_MATERIAL = 0;
+  
+{ const Location Constants
+  Description: Constants used to represent player locations }
+const
+  LOC_VE_TREES = 0;
+  LOC_VE_BANK  = 1;
 
 var
   Debug_LevelToDebug: integer;

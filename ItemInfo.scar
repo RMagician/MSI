@@ -22,22 +22,22 @@ Var
 Const
   Cavada_Berries = 0; //test item
 
-  Pickaxe_Bronze = 1;    //Pickaxe for mining
-  Pickaxe_Iron = 2;
-  Pickaxe_Steel = 3;
+  Pickaxe_Bronze  = 1;    //Pickaxe for mining
+  Pickaxe_Iron    = 2;
+  Pickaxe_Steel   = 3;
   Pickaxe_Mithril = 4;
   Pickaxe_Adamant = 5;
-  Pickaxe_Rune = 6;
+  Pickaxe_Rune    = 6;
 
-  Hatchet_Bronze = 7;   //Hatchets for wood cutting :D
-  Hatchet_Iron = 8;
-  Hatchet_Steel = 9;
+  Hatchet_Bronze  = 7;   //Hatchets for wood cutting :D
+  Hatchet_Iron    = 8;
+  Hatchet_Steel   = 9;
   Hatchet_Mithril = 10;
   Hatchet_Adamant = 11;
-  Hatchet_Rune = 12;
+  Hatchet_Rune    = 12;
   
-  Logs_Regular = 13;
-  Logs_Oak = 14;
+  LOGS_NORMAL = 13; //Logs supported
+  LOGS_OAK    = 14;
 
 {********************************************************************************}
 { Function MSI_GetItem(ID : Integer) : Boolean;                                  }
@@ -279,8 +279,8 @@ Begin
              '28LV09Q4T5AEyIGxzZ08gF0gic03sXSBsIAoR5DawsoezQwCfzRF3' + '');
     end;
 
-    Logs_Regular:
-    with MSI_Item[Logs_Regular] do
+    LOGS_NORMAL:
+    with MSI_Item[LOGS_NORMAL] do
     begin
       Name := 'Logs';
       UpText := ['Logs'];
@@ -296,6 +296,21 @@ Begin
       BMP := BitmapFromString(4, 4, 'beNqzlmrOtASiBA+tWDdNCDvU' +
              'WgrIhbOTPLUhbBAXAHeGD5I=');
     end;
+    
+    LOGS_OAK:
+    with MSI_Item[LOGS_OAK] do
+      begin
+        Name   := 'Oak logs';
+        UpText := ['logs'];
+        ItemP := Point(0, 0);
+        Colors := [4425336];
+        Tol := 5;
+        Stackable := False;
+        DTM    := DTMFromString('78DA63AC676160B06662400629DE3A0CFC409' +
+                    'A11CA67AC05AA714355C3C000E1C3D59402D53813505302546349' +
+                    '404D1D508D1101359D40358604D4F401D5D81150D30154E3885F0' +
+                    'D00C2F8071A');
+      end;
   End;
 
   Result := (Length(MSI_Item[ID].Name) > 0);

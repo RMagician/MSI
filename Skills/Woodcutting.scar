@@ -124,7 +124,7 @@ End;
 { Description: Chops trees until inventory is full, then drops and repeat.     }
 {              Time is in milliseconds.                                        }
 {******************************************************************************}
-Procedure MSI_PowerChop(Which: TIntegerArray; Time: Integer);
+Procedure MSI_PowerChop(WhichTrees, WhichLogs: TIntegerArray; Time: Integer);
 Var
   T, TT: Integer;
 Begin
@@ -132,9 +132,9 @@ Begin
   TT := GetSystemTime + 30*60000;
   Repeat
     Repeat
-      If MSI_ChopInvFull(Which) Then
+      If MSI_ChopInvFull(WhichTrees) Then
         TT := GetSystemTime + 30*60000;
     Until(InvFull) Or (Not LoggedIn) Or (GetSystemTime > TT);
-    MSI_ClickItems([Logs_Regular, Logs_Oak], 'rop');
+    MSI_ClickItems(WhichLogs, 'rop');
   Until(GetSystemTime > T) Or (Not LoggedIn);
 End;

@@ -6,17 +6,23 @@
 |                                                                              |
  \_____________________________________________________________________________}
 
+{ const Varrock East Woodcutting
+  Description: Constants used for the walking to and from the trees at the
+               Varrock east bank. }
 const
-  WALK_TREE_Rock  = 0;
-  WALK_TREE_Road  = 1;
-  WALK_TREE_Path  = 2;
-  WALK_TREE_Final = 3;
+  WALK_WC_VE_TREE_1 = 0; // rock
+  WALK_WC_VE_TREE_2 = 1; // road
+  WALK_WC_VE_TREE_3 = 2; // path
+  WALK_WC_VE_TREE_4 = 3; // final
 
-  WALK_BANK_Rock  = 4;
-  WALK_BANK_Path  = 5;
-  WALK_BANK_Road  = 6;
-  WALK_BANK_Final = 7;
+  WALK_WC_VE_BANK_1 = 4; // rock
+  WALK_WC_VE_BANK_2 = 5; // path
+  WALK_WC_VE_BANK_3 = 6; // road
+  WALK_WC_VE_BANK_4 = 7; // final
 
+{ const AutoColor
+  Description: Constants used for the walking autocoloring. }
+const
   SRLAC_RoadColour = 6579821;
   SRLAC_VarrockRoadColour = 8291719;
   SRLAC_FallyRoadColour = 7831173;
@@ -169,45 +175,165 @@ var
   t: LongInt;
 begin
   case index of
-    WALK_TREE_Rock:
-    begin
-      if countColor(RoadColor, MMx1, MMy1, MMx2, MMy2) <= 5 then RoadColor := FindNewVarrockRoadColor;
-      if FindColorInBox(RoadColor, CreateColorBox(FindRockColor)) then
+    WALK_WC_VE_TREE_1:
       begin
+        if countColor(RoadColor, MMx1, MMy1, MMx2, MMy2) <= 5 then RoadColor := FindNewVarrockRoadColor;
+        if FindColorInBox(RoadColor, CreateColorBox(FindRockColor)) then
+        begin
+          Result := True;
+          Exit;
+        end;
+        TPA := CreateWalkTPA(MMx2, MMy1, RoadColor, 2, 2, 8);
+        if Length(TPA) <= 0 then Exit;
+        Result := walkTPApoint(TPA, Point(MMx2-randomRange(5, 15), MMy1), random(10));
+        Exit;
+      end;
+    
+    WALK_WC_VE_TREE_2:
+      begin
+        TPA := CreateWalkTPA(MMx2, MMcy, RoadColor, 2, 2, 8);
+        if Length(TPA) <= 0 then Exit;
+        Result := walkTPAPoint(TPA, Point(MMx2, MMcy), random(15));
+        if Result then Exit;
+        if not LinearWalkTolerance(RoadColor, randomRange(80, 90), randomRange(59, 68), random(8), random(8), 8) then
+          if not RadialWalkTolerance(RoadColor, 80, 90, randomRange(55, 69), random(8), random(8), 10) then
+        begin
+          WriteLn('Walking Failed Here. Submit a Fix.');
+          logOut;
+          NextPlayer(False);
+          Exit;
+        end;
         Result := True;
         Exit;
       end;
-      TPA := CreateWalkTPA(MMx2, MMy1, RoadColor, 2, 2, 8);
-      if Length(TPA) <= 0 then Exit;
-      Result := walkTPApoint(TPA, Point(MMx2-randomRange(5, 15), MMy1), random(10));
-      Exit;
-    end;
-    WALK_TREE_Road:
-    begin
-      TPA := CreateWalkTPA(MMx2, MMcy, RoadColor, 2, 2, 8);
-      if Length(TPA) <= 0 then Exit;
-      Result := walkTPAPoint(TPA, Point(MMx2, MMcy), random(15));
-      if Result then Exit;
-      if not LinearWalkTolerance(RoadColor, randomRange(80, 90), randomRange(59, 68), random(8), random(8), 8) then
-        if not RadialWalkTolerance(RoadColor, 80, 90, randomRange(55, 69), random(8), random(8), 10) then
+      
+    WALK_WC_VE_TREE_3:
       begin
-        WriteLn('Walking Failed Here. Submit a Fix.');
-        logOut;
-        NextPlayer(False);
+        RockColor := AutoColorMM(SRLAC_RockColour);
+        TPA := CreateWalkTPA(MMcx, MMy1, RockColor, 2, 2, 8);
+        if length(TPA) <= 0 then Exit;
+        for i := 0 to High(TPA) do
+        begin
+          if TPA[i].y > MMcy then continue;
+          Mouse(TPA[i].x, TPA[i].y, 5, 5, true);
+          t := getSystemTime;
+          while not flagPresent() do
+          begin
+            if getSystemTime-t > randomRange(2000, 2500) then
+              Exit;
+            wait(250+random(500));
+          end;
+          FFlag(random(8));
+          Result := True;
+          Exit;
+        end;
+      end;
+      
+    WALK_WC_VE_TREE_4:
+      begin
+        TreeColor := AutoColorMM(1532978);
+        writeLn('Tree AutoColor = '+IntToStr(TreeColor));
+        FindColorsTolerance(TPA, TreeColor, MMx1, MMy1, MMx2, MMy2, 8);
+        if Length(TPA) <= 0 then Exit;
+        aTPA := SplitTPAEx(TPA, 10, 10);
+        if Length(aTPA) <= 0 then Exit;
+        SortATPASize(aTPA, true);
+        p := MiddleTPA(aTPA[0]);
+        if (p.x < MMcx+20) and (p.y < MMcy) then
+        begin
+          Mouse(p.x, p.y, 5, 5, true);
+          Flag();
+          Result := True;
+          Exit;
+        end;
+      end;
+      
+    WALK_WC_VE_BANK_1:
+      begin
+        RockColor := AutoColorMM(SRLAC_RockColour);
+        TPA := CreateWalkTPA(MMcx, MMy2, RockColor, 2, 2, randomRange(5, 10));
+        if Length(TPA) <= 0 then Exit;
+        SortTPAFrom(TPA, point(700, 150));
+        for i := 0 to High(TPA) do
+        begin
+          if (TPA[i].y < MMcy-10) then continue;
+          Mouse(TPA[i].x-5, TPA[i].y, Random(8), Random(8), true);
+          t := getSystemTime;
+          while not flagPresent() do
+          begin
+            if getSystemTime-t > randomRange(2000, 2500) then
+              Exit;
+            wait(250+random(500));
+          end;
+          FFlag(RandomRange(5, 10));
+          Result := True;
+          Exit;
+        end;
+      end;
+      
+    WALK_WC_VE_BANK_2:
+      begin
+        RoadColor := FindNewVarrockRoadColor();
+        if not RadialWalkTolerance(RoadColor, 180, 200, 60, 5, 5, 8) then
+          if not RadialWalkTolerance(RoadColor, 170, 220, 70, 5, 5, 12) then
+        begin
+          writeLn('Should''ve made custom TPA walking here XD');
+          Exit;
+        end;
+        Result := True;
         Exit;
       end;
-      Result := True;
-      Exit;
-    end;
-    WALK_TREE_Path:
-    begin
-      RockColor := AutoColorMM(SRLAC_RockColour);
-      TPA := CreateWalkTPA(MMcx, MMy1, RockColor, 2, 2, 8);
-      if length(TPA) <= 0 then Exit;
-      for i := 0 to High(TPA) do
+      
+    WALK_WC_VE_BANK_3:
       begin
-        if TPA[i].y > MMcy then continue;
-        Mouse(TPA[i].x, TPA[i].y, 5, 5, true);
+        TPA := CreateWalkTPA(MMx1, MMcy, RoadColor, 3, 3, 8);
+        if Length(TPA) <= 0 then
+          Exit;
+        SortTPAFrom(TPA, point(MMx1-10, MMcy));
+        for i := 0 to High(TPA) do
+        begin
+          if not RS_onMinimap(TPA[i].x, TPA[i].y) then Continue;
+          Mouse(TPA[i].x, TPA[i].y, 5, 5, true);
+           t := getSystemTime;
+          while not flagPresent() do
+          begin
+            if getSystemTime-t > randomRange(2000, 2500) then
+              Exit;
+            wait(250+random(500));
+          end;
+          FFlag(RandomRange(1, 5));
+          Result := True;
+          Exit;
+        end;
+      end;
+      
+    WALK_WC_VE_BANK_4:
+      begin
+        for i := 0 to 2 do
+        begin
+          BC := AutoColorMM(SRLAC_BankerColour);
+          FindColorsTolerance(TPA, BC, MMx1, MMCy + 18, MMCx, MMy2, 1);
+          if Length(TPA) > 5 then
+            Break;
+          if i = 2 then
+          begin
+            MSI_Debug('CreateWalkIndex(WALK_BANK_Final);', 'Failed to find bankers on MiniMap.', Debug_Functions);
+            Exit;
+          end;
+        end;
+        SortTPAFrom(TPA, Point(MMCx, MMCy));
+        for i := 0 to High(TPA) do
+        begin
+          t := Random(High(TPA));
+          if rs_OnMiniMap(TPA[t].x, TPA[t].y) then
+            Break;
+          if i = High(TPA) then
+          begin
+            MSI_Debug('CreateWalkIndex(WALK_BANK_Final);', 'Points not on MiniMap!', Debug_Functions);
+            Exit;
+          end;
+        end;
+        Mouse(TPA[t].x, TPA[t].y - RandomRange(3, 7), 3, 3, True);
         t := getSystemTime;
         while not flagPresent() do
         begin
@@ -215,121 +341,8 @@ begin
             Exit;
           wait(250+random(500));
         end;
-        FFlag(random(8));
+        FFlag(3);
         Result := True;
-        Exit;
       end;
-    end;
-    WALK_TREE_Final:
-    begin
-      TreeColor := AutoColorMM(1532978);
-      writeLn('Tree AutoColor = '+IntToStr(TreeColor));
-      FindColorsTolerance(TPA, TreeColor, MMx1, MMy1, MMx2, MMy2, 8);
-      if Length(TPA) <= 0 then Exit;
-      aTPA := SplitTPAEx(TPA, 10, 10);
-      if Length(aTPA) <= 0 then Exit;
-      SortATPASize(aTPA, true);
-      p := MiddleTPA(aTPA[0]);
-      if (p.x < MMcx+20) and (p.y < MMcy) then
-      begin
-        Mouse(p.x, p.y, 5, 5, true);
-        Flag();
-        Result := True;
-        Exit;
-      end;
-    end;
-    WALK_BANK_Rock:
-    begin
-      RockColor := AutoColorMM(SRLAC_RockColour);
-      TPA := CreateWalkTPA(MMcx, MMy2, RockColor, 2, 2, randomRange(5, 10));
-      if Length(TPA) <= 0 then Exit;
-      SortTPAFrom(TPA, point(700, 150));
-      for i := 0 to High(TPA) do
-      begin
-        if (TPA[i].y < MMcy-10) then continue;
-        Mouse(TPA[i].x-5, TPA[i].y, Random(8), Random(8), true);
-        t := getSystemTime;
-        while not flagPresent() do
-        begin
-          if getSystemTime-t > randomRange(2000, 2500) then
-            Exit;
-          wait(250+random(500));
-        end;
-        FFlag(RandomRange(5, 10));
-        Result := True;
-        Exit;
-      end;
-    end;
-    WALK_BANK_Path:
-    begin
-      RoadColor := FindNewVarrockRoadColor();
-      if not RadialWalkTolerance(RoadColor, 180, 200, 60, 5, 5, 8) then
-        if not RadialWalkTolerance(RoadColor, 170, 220, 70, 5, 5, 12) then
-      begin
-        writeLn('Should''ve made custom TPA walking here XD');
-        Exit;
-      end;
-      Result := True;
-      Exit;
-    end;
-    WALK_BANK_Road:
-    begin
-      TPA := CreateWalkTPA(MMx1, MMcy, RoadColor, 3, 3, 8);
-      if Length(TPA) <= 0 then
-        Exit;
-      SortTPAFrom(TPA, point(MMx1-10, MMcy));
-      for i := 0 to High(TPA) do
-      begin
-        if not RS_onMinimap(TPA[i].x, TPA[i].y) then Continue;
-        Mouse(TPA[i].x, TPA[i].y, 5, 5, true);
-         t := getSystemTime;
-        while not flagPresent() do
-        begin
-          if getSystemTime-t > randomRange(2000, 2500) then
-            Exit;
-          wait(250+random(500));
-        end;
-        FFlag(RandomRange(1, 5));
-        Result := True;
-        Exit;
-      end;
-    end;
-    WALK_BANK_Final:
-    begin
-      for i := 0 to 2 do
-      begin
-        BC := AutoColorMM(SRLAC_BankerColour);
-        FindColorsTolerance(TPA, BC, MMx1, MMCy + 18, MMCx, MMy2, 1);
-        if Length(TPA) > 5 then
-          Break;
-        if i = 2 then
-        begin
-          MSI_Debug('CreateWalkIndex(WALK_BANK_Final);', 'Failed to find bankers on MiniMap.', Debug_Functions);
-          Exit;
-        end;
-      end;
-      SortTPAFrom(TPA, Point(MMCx, MMCy));
-      for i := 0 to High(TPA) do
-      begin
-        t := Random(High(TPA));
-        if rs_OnMiniMap(TPA[t].x, TPA[t].y) then
-          Break;
-        if i = High(TPA) then
-        begin
-          MSI_Debug('CreateWalkIndex(WALK_BANK_Final);', 'Points not on MiniMap!', Debug_Functions);
-          Exit;
-        end;
-      end;
-      Mouse(TPA[t].x, TPA[t].y - RandomRange(3, 7), 3, 3, True);
-      t := getSystemTime;
-      while not flagPresent() do
-      begin
-        if getSystemTime-t > randomRange(2000, 2500) then
-          Exit;
-        wait(250+random(500));
-      end;
-      FFlag(3);
-      Result := True;
-    end;
   end;
 end;
