@@ -18,27 +18,6 @@ Const MSI_TItemCount = 15;  //Change this to the number of items
 Var
   MSI_Item : Array[0..(MSI_TItemCount - 1)] Of TItem;
 
-           {Add consts for TItemInfo here :)}
-Const
-  Cavada_Berries = 0; //test item
-
-  Pickaxe_Bronze  = 1;    //Pickaxe for mining
-  Pickaxe_Iron    = 2;
-  Pickaxe_Steel   = 3;
-  Pickaxe_Mithril = 4;
-  Pickaxe_Adamant = 5;
-  Pickaxe_Rune    = 6;
-
-  Hatchet_Bronze  = 7;   //Hatchets for wood cutting :D
-  Hatchet_Iron    = 8;
-  Hatchet_Steel   = 9;
-  Hatchet_Mithril = 10;
-  Hatchet_Adamant = 11;
-  Hatchet_Rune    = 12;
-  
-  LOGS_NORMAL = 13; //Logs supported
-  LOGS_OAK    = 14;
-
 {********************************************************************************}
 { Function MSI_GetItem(ID : Integer) : Boolean;                                  }
 { By: Coh3n and Naum                                                             }

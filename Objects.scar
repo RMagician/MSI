@@ -38,12 +38,12 @@ Begin
       Option             := 'Chop down';
       Colors             := [736046];
       Tol                := 5;
-      Hue                := 0.20;
-      Sat                := 0.20;
+      Hue                := 1.54;
+      Sat                := 5.00;
       FindAllColors      := False;
-      W                  := 30;
-      H                  := 30;
-      Accuracy           := 10;
+      W                  := 25;
+      H                  := 25;
+      Accuracy           := 5;
       ExcludeSelf        := True;
       RightClickOnly     := False;
       Tries              := 5;
@@ -52,7 +52,7 @@ Begin
       BadColors          := [];
       BadColorTolerance  := 10;
     End;
-    
+
     Obj_Oak:
     With Result Do
     Begin
@@ -60,8 +60,8 @@ Begin
       Option             := 'Chop down';
       Colors             := [736046];
       Tol                := 5;
-      Hue                := 0.2;
-      Sat                := 0.2;
+      Hue                := 1.54;
+      Sat                := 5.00;
       FindAllColors      := False;
       W                  := 30;
       H                  := 30;

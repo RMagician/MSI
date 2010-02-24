@@ -9,6 +9,12 @@
 program MSIScript;
 {.include srl/srl/MSI/Setup.scar}
 
+const
+  BREAK_AFTER = 2; // Loads to break after/switching players after
+  
+  SMART_WORLD   = 152;
+  MEMBERS_WORLD = False;
+  
 procedure DeclarePlayers;
 var
   i: Integer;
@@ -16,6 +22,7 @@ begin
   HowManyPlayers := 1;
   NumberOfPlayers(HowManyPlayers);
   CurrentPlayer := 0;
+  SetLength(ProgressReportArray, Length(Players));
 
   with Players[0] do
   begin
@@ -25,16 +32,28 @@ begin
     Active := True;
     Pin    := '';
     Integers[P_SKILL]    := SKILL_WOODCUTTING;
-    Integers[P_LOC]      := LOC_VE_BANK;
+    Integers[P_LOC]      := LOC_VE_TREES;
     Arrays[P_MATERIAL]   := [OBJ_TREE];
   end;
   
   for i := High(Players) downto 0 do
     with Players[i] do
+    begin
       BoxRewards := ['amp', 'mote', 'ostume', 'oins', 'unes', 're', 'ems'];
+      
+      ProgressReportArray[i].PlayerName := Name;
+      ProgressReportArray[i].PlayerStatus := Active;
+      ProgressReportArray[i].PlayerWhere.Loc := Integers[P_LOC];
+      ProgressReportArray[i].PlayerWhere.City := LOC_VARROCK;
+    end;
 end;
 
 begin
+  Smart_Server := SMART_WORLD;
+  Smart_Members := MEMBERS_WORLD;
+  Smart_Signed := True;
+  Smart_SuperDetail := False;
+  
   SetupSRL;
   SetupMSI;
   

@@ -93,7 +93,7 @@ Type
     PlayerStatus: boolean;
     PlayerRandom: string;
     PlayerWhere : TWalk;
-    SkillInfo   : Array of TPlayerSkillInfo;
+    SkillInfo   : TPlayerSkillInfo;
   end;
 
 var
@@ -124,10 +124,36 @@ const
 { const Location Constants
   Description: Constants used to represent player locations }
 const
-  LOC_VE_TREES = 0;
-  LOC_VE_BANK  = 1;
+  LOC_VE_TREES  = 0;
+  LOC_VE_BANK   = 1;
+  LOC_IN_RANDOM = 2;
+  
+  LOC_VARROCK = 3;
 
 var
   Debug_LevelToDebug: integer;
   { Description: For script user to choose how much to debug. }
 
+{ const Item Info
+  Description: Constants representing all the items used in MSI. }
+Const
+  Cavada_Berries = 0; //test item
+
+  Pickaxe_Bronze  = 1;    //Pickaxe for mining
+  Pickaxe_Iron    = 2;
+  Pickaxe_Steel   = 3;
+  Pickaxe_Mithril = 4;
+  Pickaxe_Adamant = 5;
+  Pickaxe_Rune    = 6;
+
+  Hatchet_Bronze  = 7;   //Hatchets for wood cutting :D
+  Hatchet_Iron    = 8;
+  Hatchet_Steel   = 9;
+  Hatchet_Mithril = 10;
+  Hatchet_Adamant = 11;
+  Hatchet_Rune    = 12;
+
+  LOGS_NORMAL = 13; //Logs supported
+  LOGS_OAK    = 14;
+  
+  

@@ -9,7 +9,7 @@
  
 
 {******************************************************************************}
-{ Procedure MSI_Debug(ProcName, TheMessage: string; DebugLevel:integer);        }
+{ Procedure MSI_Debug(ProcName, TheMessage: string; DebugLevel:integer);       }
 { By: Rasta Magician                                                           }
 { Rev: 10                                                                      }
 { Date: 13 Sep 09                                                              }
@@ -39,9 +39,9 @@ begin
   writeln(DebugMSG);
 end;
 
-Procedure AddToProggy(Skill, WhichItem, Quantity: integer);
+Procedure AddToProggy(WhichItem, Quantity: integer);
 begin
-  IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[Skill].ObjQuants[WhichItem], Quantity);
+  IncEx(ProgressReportArray[CurrentPlayer].SkillInfo.ObjQuants[WhichItem], Quantity);
 end;
 
 Function SkillTextArray(what: integer): TStringArray;
@@ -76,7 +76,7 @@ end;
 
 Function ObjTextArray(Skill, WhatItem:integer): TStringArray;
 begin
-  case WhatItem of
+  case Skill of
     Skill_Attack        :
       case WhatItem of
         0: Result := [];
@@ -155,7 +155,8 @@ begin
       end;
     Skill_WoodCutting   :
       case WhatItem of
-        0: Result := [];
+        LOGS_NORMAL: Result := ['normal logs'];
+        LOGS_OAK: Result := ['oak logs'];
       end;
     Skill_Farming       :
       case WhatItem of
@@ -176,18 +177,35 @@ begin
   end;
 end;
 
-Function LocToText(City: boolean; Which: TWalk): string;
+Function LocToText(Which: Integer): string;
 begin
-  Result := '';
+  case Which of
+    LOC_VE_BANK:
+      Result := 'VE_Bank';
+      
+    LOC_VE_TREES:
+      Result := 'VE_Trees';
+      
+    LOC_IN_RANDOM:
+      Result := 'in random';
+      
+    LOC_VARROCK:
+      Result := 'Varrock';
+      
+    else
+      MSI_Debug('LocToText', 'Invalid location!', debug_Functions);
+  end;
 end;
 
+function MSI_GetMaterialList: TIntegerArray; forward;
 Procedure ProgressReport;
 var
-  i, WhichSkill: integer;
-  SkillArray: TStringArray;
+  i, WhichSkill, WhichItem: integer;
+  SkillArray, ObjectArray: TStringArray;
+  materials: TIntegerArray;
   MyName: string;
 begin
-  for i:= 0 to (HowManyPlayers - 1) do
+  for i := 0 to (HowManyPlayers - 1) do
   begin
     MyName := ProgressReportArray[i].PlayerName;
     // __________________________________________________________________
@@ -198,23 +216,31 @@ begin
     writeln(' '+ Replicate('-', 78) + ' ');
     with ProgressReportArray[i] do
     //| PlayerName in PlayerCity at PlayerLoc                            |
-      writeln('| '+Padr(MyName+' in '+LocToText(true, PlayerWhere)+
-              ' at '+LocToText(false, PlayerWhere), 78)+'|');
+      writeln('| '+Padr(MyName+' in '+LocToText(PlayerWhere.City)+
+              ' at '+LocToText(PlayerWhere.Loc), 77)+'|');
     //|                                                                  |
     writeln('|'+Replicate(' ', 78)+'|');
-    for WhichSkill := 0 to High(ProgressReportArray[i].SkillInfo) do
+    with ProgressReportArray[i].SkillInfo do
     begin
-      with ProgressReportArray[i].SkillInfo[WhichSkill] do
-      begin
-        if SkillTime <= 0 then Continue;
-        SkillArray := SkillTextArray(WhichSkill);
+      WhichSkill := Players[CurrentPlayer].Integers[P_SKILL];
+      SkillArray := SkillTextArray(WhichSkill);
     //| PlayerName is at Fishing(skill1) level FishingLevel              |
-        writeln('| '+Padr(MyName+' is at '+ SkillArray[0] +' level '+
-                IntToStr(Players[i].Level[WhichSkill])+'.', 78)+'|');
+      writeln('| '+Padr(MyName+' is at '+ SkillArray[0] +' level '+
+              IntToStr(Players[i].Level[WhichSkill])+'.', 77)+'|');
     //| PlayerName was Fishing for Time                                  |
-        writeln('| '+Padr(MyName +' was '+SkillArray[0]+' for '
-                + MsToTime(SkillTime, Time_Short), 78)+'|');
+      writeln('| '+Padr(MyName +' was '+SkillArray[0]+' for '
+              + MsToTime(SkillTime, Time_Short), 77)+'|');
+
+      materials := MSI_GetMaterialList;
+      for WhichItem := 0 to High(ObjQuants) do
+      begin
+        ObjectArray := ObjTextArray(WhichSkill, materials[i]);
+    //| PlayerName autoed ObjQuant ObjName                               |
+        writeln('| '+Padr(MyName +' autoed '+IntToStr(ObjQuants[WhichItem])+' '
+                + ObjectArray[0], 77)+'|');
       end;
     end;
+    //|------------------------------------------------------------------|
+    writeln(' '+ Replicate('-', 78) + ' ');
   end;
 end;
