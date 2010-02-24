@@ -10,6 +10,8 @@ program MSIScript;
 {.include srl/srl/MSI/Setup.scar}
 
 procedure DeclarePlayers;
+var
+  i: Integer;
 begin
   HowManyPlayers := 1;
   NumberOfPlayers(HowManyPlayers);
@@ -23,8 +25,8 @@ begin
     Active := True;
     Pin    := '';
     Integers[P_SKILL]    := SKILL_WOODCUTTING;
-    Integers[P_LOC]      := LOC_VEBANK;
-    Arrays[P_MATERIAL]   := [OBJ_TREE, OBJ_OAK];
+    Integers[P_LOC]      := LOC_VE_BANK;
+    Arrays[P_MATERIAL]   := [OBJ_TREE];
   end;
   
   for i := High(Players) downto 0 do

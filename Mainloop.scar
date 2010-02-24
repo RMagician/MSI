@@ -5,6 +5,7 @@
 | For all the script Artificial Inteligence                                    |
 |                                                                              |
 | * function MSI_BestTool: Integer;                * by Coh3n                  |
+| * function MSI_WorstTool: Integer;               * by Coh3n                  |
 | * function MSI_SetupPlayer: Boolean;             * by Coh3n                  |
 | * function MSI_WalkToLoc: Boolean;               * by The MSI Team           |
 | * function MSI_WalkToBank: Boolean;              * by The MSI Team           |
@@ -61,8 +62,23 @@ begin
         REQ_STEEL..REQ_MITHRIL: Result := HATCHET_STEEL;
 
         else
-          Result := REQ_IRON;
+          Result := HATCHET_IRON;
       end;
+  end;
+end;
+
+{******************************************************************************}
+{ function MSI_WorstTool: Integer;                                             }
+{ By: Coh3n                                                                    }
+{ Rev: 55                                                                      }
+{ Date: 23 Feb 2010                                                            }
+{ Description: Determines the worst tool for the job at hand.                  }
+{******************************************************************************}
+function MSI_WorstTool: Integer;
+begin
+  case (Players[CurrentPlayer].Integers[P_SKILL]) of
+    SKILL_WOODCUTTING:
+      Result := HATCHET_BRONZE;
   end;
 end;
 
@@ -75,7 +91,7 @@ end;
 {******************************************************************************}
 function MSI_SetupPlayer: Boolean;
 var
-  bestTool, x, y, i, k: Integer;
+  bestTool, worstTool, x, y, i, k: Integer;
   bankCheck: Boolean;
 begin
   if (not LoggedIn) then
@@ -87,7 +103,8 @@ begin
   { Starts by looking for the best tool for that player's skill level, and
     moves down from there. }
   bestTool := MSI_BestTool;
-  for i := bestTool downto 0 do
+  worstTool := MSI_WorstTool;
+  for i := bestTool downto worstTool do
   begin
     Result := MSI_FindTool(i, x, y);
     if (Result) then
@@ -203,11 +220,31 @@ end;
 { Description: Performs the specified skill                                    }
 {******************************************************************************}
 function MSI_DoSkill: Boolean;
+var
+  i: Integer;
+  materials: TVariantArray;
+  treeTypes: TIntegerArray;
+  tempStr: String;
 begin
   case Players[CurrentPlayer].Integers[P_SKILL] of
     SKILL_WOODCUTTING:
-      Result := MSI_ChopInvFull(Players[CurrentPlayer].Arrays[P_MATERIAL]);
-      
+      begin
+        materials := Players[CurrentPlayer].Arrays[P_MATERIAL];
+        SetLength(treeTypes, Length(materials));
+        
+        try
+          for i := 0 to High(materials) do
+          begin
+            tempStr := IntToStr(materials[i]);
+            treeTypes[i] := StrToInt(tempStr);
+          end;
+        except
+          MSI_Debug('MSI_DoSkill', 'Invalid tree type in DeclarePlayers!', debug_Functions);
+          Exit;
+        end;
+          
+        Result := MSI_ChopInvFull(treeTypes);
+      end;
     else
       MSI_Debug('MSI_WalkToBank', 'Invalid player skill!', debug_Functions);
   end;
@@ -226,7 +263,10 @@ begin
     SKILL_WOODCUTTING:
       case Players[CurrentPlayer].Integers[P_LOC] of
         LOC_VE_BANK:
-          Result := MSI_Deposit([LOGS_NORMAL, LOGS_OAK], [28, 28]);
+          begin
+            MSI_OpenBank('veb', Players[CurrentPlayer].Pin);
+            Result := MSI_Deposit([LOGS_NORMAL, LOGS_OAK], [28, 28]);
+          end;
 
         else
           MSI_Debug('MSI_WalkToBank', 'Invalid location for woodcutting skill.', debug_Functions);
@@ -248,30 +288,35 @@ begin
   repeat
     if (not MSI_SetupPlayer) then
     begin
+      MSI_Debug('MSI_MainLoop', 'Failed to setup player!', Debug_PlayerActions);
       NextPlayer(False);
       Continue;
     end;
     
     if (not MSI_WalkToLoc) then
     begin
+      MSI_Debug('MSI_MainLoop', 'Failed to walk to location!', Debug_PlayerActions);
       NextPlayer(False);
       Continue;
     end;
     
     if (not MSI_DoSkill) then
     begin
+      MSI_Debug('MSI_MainLoop', 'Failed to perform skill!', Debug_PlayerActions);
       NextPlayer(False);
       Continue;
     end;
     
     if (not MSI_WalkToBank) then
     begin
+      MSI_Debug('MSI_MainLoop', 'Failed to walk to bank!', Debug_PlayerActions);
       NextPlayer(False);
       Continue;
     end;
     
     if (not MSI_BankMaterials) then
     begin
+      MSI_Debug('MSI_MainLoop', 'Failed to bank materials!', Debug_PlayerActions);
       NextPlayer(False);
       Continue;
     end;
