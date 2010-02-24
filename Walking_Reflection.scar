@@ -179,21 +179,15 @@ end;
 { Date: 1 Nov 09                                                               }
 { Description: Flag wait                                                       }
 {******************************************************************************}
-procedure MSI_Flag(Distance: Integer);
+procedure MSI_Flag(FlagDist: integer);
 begin
-  if (Distance = 0) then
-  begin
-    MSI_Debug('MSI_Flag', 'Wait until complete stop', Debug_SmallDetails);
-    while MSI_IsMoving do // Distance = 0 -> We want to stop
-      if Random(3) = 0 then
-        SleepAndMoveMouse(450 + Random(200))
-      else
-        Wait(450 + Random(200));
-  end else
-  begin
-    MSI_Debug('MSI_Flag', 'Using FFlag', Debug_SmallDetails);
-    FFlag(Distance);
-  end;
+  if WaitFunc(@IsMoving, 1, 2500 + random(200)) then
+    while (IsMoving or FlagPresent) do
+    begin
+      FFlag(FlagDist);
+      if (FlagDistance <= FlagDist) then
+        Break;
+    end;
 end;
 
 {******************************************************************************}
@@ -458,102 +452,6 @@ Begin
     End;
 
   SetLength(Result, N);
-End;
-
-{******************************************************************************}
-{ Function FindMMLocation(Var X, Y: Integer; Location: TMMLocation): Boolean;  }
-{ By: marpis                                                                   }
-{ Rev: 35                                                                      }
-{ Date: 30 Nov 09                                                              }
-{ Description: Finds a location in minimap. First tries to find DTM, then      }
-{              colors, and if still not found it will find it by symbol        }
-{******************************************************************************}
-Function MSI_FindMMLocation(Var X, Y: Integer; Location: TMMLocation): Boolean;
-Var
-  SA, EA, tmp_Ang: Extended;
-  N, I, II, III, H, HH, Score, Step: Integer;
-  ATPA: T2DPointArray;
-  tmp_TPA: TPointArray;
-  X1, Y1, X2, Y2: Integer;
-Begin
-  If (Not LoggedIn) Then Exit;
-
-  X := -1;
-  Y := -1;
-  Step := (Location.W * Location.H) / 10;
-
-  { DTM Search }
-  If (Location.DTM > -1) Then
-    While (N < 10) Do
-    Begin
-      If FindDTMRotated(Location.DTM, X, Y, MMX1, MMY1, MMX2, MMY2, SA, EA, 0.02, tmp_Ang) Then
-      Begin
-        Result := True;
-        Exit;
-      End;
-      Inc(N);
-      SA := SA - (N * 0.02);
-      EA := EA + (N * 0.02);
-    End;
-
-  { Color search }
-  If (Length(Location.Colors) = 0) Then
-    Exit;
-
-  H := High(Location.Colors);
-  SetLength(ATPA, H + 1);
-
-  For I := 0 To H Do
-  Begin
-    FindColorsSpiralTolerance(MMCX, MMCY, ATPA[I], Location.Colors[I], MMX1, MMY1, MMX2, MMY2, Location.Tolerances[I]);
-    FilterPointsPie(ATPA[I], 0.0, 360.0, 0.0, 76.0, MMCX, MMCY);
-  End;
-
-  { Go through every TPA that contains one color. }
-  For I := 0 To H Do
-  Begin
-    HH := High(ATPA[I]);
-
-    { Go through every 10th point in ATPA[I] to avoid lag. }
-    For II := 0 To HH Do
-    Begin
-      If ((II Mod Step) <> 0) Then
-        Continue;
-
-      Score := 0;
-
-      X1 := ATPA[I][II].X - (Location.W / 2);
-      Y1 := ATPA[I][II].Y - (Location.H / 2);
-      X2 := ATPA[I][II].X + (Location.W / 2);
-      Y2 := ATPA[I][II].Y + (Location.H / 2);
-
-      { Go through every TPA again, calculating surrounding color counts. }
-      For III := 0 To H Do
-      Begin
-        tmp_TPA := MSI_ReturnPointsInBox(ATPA[III], IntToBox(X1, Y1, X2, Y2));
-        If (Length(tmp_TPA) >= Location.Counts[III]) Then
-          Inc(Score);
-      End;
-
-      { If there are enough points of all colors, the location has been found. }
-      If (Score = H) Then
-      Begin
-        Result := True;
-        X := (X1 + X2) shr 1;
-        Y := (Y1 + Y2) shr 1;
-        Exit;
-      End;
-
-    End;
-  End;
-  
-  { Symbol Search }
-  If (Location.Symbol <> '') Then
-    If FindSymbol(X, Y, Location.Symbol) Then
-    Begin
-      Result := True;
-      Exit;
-    End;
 End;
 
 {******************************************************************************}
