@@ -222,7 +222,11 @@ begin
     SKILL_WOODCUTTING:
       case Players[CurrentPlayer].Integers[P_LOC] of
         LOC_VE_BANK:
-          Result := MSI_Deposit([LOGS_NORMAL, LOGS_OAK], [28, 28]);
+          begin
+            Result := MSI_Deposit([LOGS_NORMAL, LOGS_OAK], [28, 28]);
+            if Result then
+              Players[CurrentPlayer].Integers[P_LOC] := LOC_VE_TREES;
+          end;
 
         else
           MSI_Debug('MSI_WalkToBank', 'Invalid location for woodcutting skill.', debug_Functions);
