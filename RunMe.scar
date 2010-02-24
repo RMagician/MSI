@@ -19,20 +19,104 @@ procedure DeclarePlayers;
 var
   i: Integer;
 begin
-  HowManyPlayers := 1;
+  HowManyPlayers := 8;
   NumberOfPlayers(HowManyPlayers);
-  CurrentPlayer := 0;
+  CurrentPlayer := 2;
   SetLength(ProgressReportArray, Length(Players));
 
   with Players[0] do
   begin
-    Name   := '';
-    Pass   := '';
-    Nick   := '';
+    Name   := 'empty cohen';
+    Pass   := 'jackaster';
+    Nick   := 'mpt';
     Active := True;
     Pin    := '';
     Integers[P_SKILL]    := SKILL_WOODCUTTING;
-    Integers[P_LOC]      := LOC_VE_TREES;
+    Integers[P_LOC]      := LOC_VE_BANK;
+    Arrays[P_MATERIAL]   := [OBJ_TREE];
+  end;
+
+  with Players[1] do
+  begin
+    Name   := 'troll cohen';
+    Pass   := 'jackaster';
+    Nick   := 'rol';
+    Active := True;
+    Pin    := '';
+    Integers[P_SKILL]    := SKILL_WOODCUTTING;
+    Integers[P_LOC]      := LOC_VE_BANK;
+    Arrays[P_MATERIAL]   := [OBJ_TREE];
+  end;
+
+  with Players[2] do
+  begin
+    Name   := 'cohen gorak';
+    Pass   := 'jackaster';
+    Nick   := 'ora';
+    Active := True;
+    Pin    := '';
+    Integers[P_SKILL]    := SKILL_WOODCUTTING;
+    Integers[P_LOC]      := LOC_VE_BANK;
+    Arrays[P_MATERIAL]   := [OBJ_TREE];
+  end;
+
+  with Players[3] do
+  begin
+    Name   := 'honour cohen';
+    Pass   := 'jackaster';
+    Nick   := 'ono';
+    Active := True;
+    Pin    := '';
+    Integers[P_SKILL]    := SKILL_WOODCUTTING;
+    Integers[P_LOC]      := LOC_VE_BANK;
+    Arrays[P_MATERIAL]   := [OBJ_TREE];
+  end;
+
+  with Players[4] do
+  begin
+    Name   := 'broddi cohen';
+    Pass   := 'jackaster';
+    Nick   := 'rod';
+    Active := True;
+    Pin    := '';
+    Integers[P_SKILL]    := SKILL_WOODCUTTING;
+    Integers[P_LOC]      := LOC_VE_BANK;
+    Arrays[P_MATERIAL]   := [OBJ_TREE];
+  end;
+
+  with Players[5] do
+  begin
+    Name   := 'cohen abyss';
+    Pass   := 'jackaster';
+    Nick   := 'bys';
+    Active := True;
+    Pin    := '';
+    Integers[P_SKILL]    := SKILL_WOODCUTTING;
+    Integers[P_LOC]      := LOC_VE_BANK;
+    Arrays[P_MATERIAL]   := [OBJ_TREE];
+  end;
+
+  with Players[6] do
+  begin
+    Name   := 'pirate cohen';
+    Pass   := 'jackaster';
+    Nick   := 'ira';
+    Active := True;
+    Pin    := '';
+    Integers[P_SKILL]    := SKILL_WOODCUTTING;
+    Integers[P_LOC]      := LOC_VE_BANK;
+    Arrays[P_MATERIAL]   := [OBJ_TREE];
+  end;
+
+  with Players[7] do
+  begin
+    Name   := 'run cohen';
+    Pass   := 'jackaster';
+    Nick   := 'ohe';
+    Active := True;
+    Pin    := '';
+    Integers[P_SKILL]    := SKILL_WOODCUTTING;
+    Integers[P_LOC]      := LOC_VE_BANK;
     Arrays[P_MATERIAL]   := [OBJ_TREE];
   end;
   
@@ -58,5 +142,7 @@ begin
   SetupMSI;
   
   DeclarePlayers;
-  MSI_MainLoop;
+  //MSI_MainLoop;
+  MSI_CountMaterials;
+  ProgressReport;
 end.

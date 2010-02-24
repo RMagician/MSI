@@ -234,7 +234,7 @@ begin
       materials := MSI_GetMaterialList;
       for WhichItem := 0 to High(ObjQuants) do
       begin
-        ObjectArray := ObjTextArray(WhichSkill, materials[i]);
+        ObjectArray := ObjTextArray(WhichSkill, materials[WhichItem]);
     //| PlayerName autoed ObjQuant ObjName                               |
         writeln('| '+Padr(MyName +' autoed '+IntToStr(ObjQuants[WhichItem])+' '
                 + ObjectArray[0], 77)+'|');

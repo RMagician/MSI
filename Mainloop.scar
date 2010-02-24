@@ -161,7 +161,7 @@ var
 begin
   materials := Players[CurrentPlayer].Arrays[P_MATERIAL];
   SetLength(Result, Length(materials));
-  SetLength(ProgressReportArray[i].SkillInfo.ObjQuants, Length(materials));
+  SetLength(ProgressReportArray[CurrentPlayer].SkillInfo.ObjQuants, Length(materials));
   try
     for i := 0 to High(materials) do
     begin
