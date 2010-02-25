@@ -21,14 +21,14 @@ var
 begin
   HowManyPlayers := 8;
   NumberOfPlayers(HowManyPlayers);
-  CurrentPlayer := 2;
+  CurrentPlayer := 1;
   SetLength(ProgressReportArray, Length(Players));
 
   with Players[0] do
   begin
-    Name   := 'empty cohen';
-    Pass   := 'jackaster';
-    Nick   := 'mpt';
+    Name   := '';
+    Pass   := '';
+    Nick   := '';
     Active := True;
     Pin    := '';
     Integers[P_SKILL]    := SKILL_WOODCUTTING;
@@ -142,7 +142,6 @@ begin
   SetupMSI;
   
   DeclarePlayers;
-  //MSI_MainLoop;
-  MSI_CountMaterials;
+  MSI_MainLoop;
   ProgressReport;
 end.

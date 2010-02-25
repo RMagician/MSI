@@ -29,7 +29,7 @@ const
   SRLAC_LumbyRoadColour = 8225677;
   SRLAC_DirtRoadColour = 1853272;
   SRLAC_WaterColour = 10850700;
-  SRLAC_RockColour = 5658967;
+  SRLAC_RockColour = 5789528;
   SRLAC_SandColour = 0;
   SRLAC_BankerColour = 1179390;
 
@@ -163,9 +163,9 @@ var
   List: tIntegerArray;
   I: Integer;
 begin
-  for i := 0 to 15 do
+  for i := 0 to 20 do
   begin
-    FindColorsTolerance(TPA, color, MMx1, MMy1, MMx2, MMy2, 10+i);
+    FindColorsTolerance(TPA, color, MMx1, MMy1, MMx2, MMy2, 5+i);
     if Length(TPA) > 0 then Break;
   end;
   if Length(TPA) <= 0 then Exit;
@@ -370,12 +370,29 @@ begin
     WALK_WC_VE_BANK_2:
       begin
         RoadColor := FindNewVarrockRoadColor();
-        if not RadialWalkTolerance(RoadColor, 180, 200, 60, 5, 5, 8) then
-          if not RadialWalkTolerance(RoadColor, 170, 220, 70, 5, 5, 12) then
-        begin
-          writeLn('Should''ve made custom TPA walking here XD');
+        FindCOlorsTolerance(TPA, RoadColor, MMx1, MMCy, MMCx, MMy2, 4);
+        if Length(TPA) <= 0 then
           Exit;
+        SortTPAFrom(TPA, Point(MMCx, MMCy));
+        for t := 0 to 4 do
+        begin
+          i := Length(TPA) - RandomRange(1, 4);
+          try
+            if rs_OnMiniMap(TPA[i].x, TPA[i].y) then
+              BC := 1;
+          except
+            Continue;
+          end;
+          if BC = 1 then
+            Break;
+          if i = 4 then
+          begin
+            MSI_Debug('CreatWalkIndex(WALK_WC_VE_BANK_2)', 'Failed to find road on minimap', Debug_Functions);
+            Exit;
+          end;
         end;
+        Mouse(TPA[i].x, TPA[i].y, 0, 0, True);
+        FFlag(5);
         Result := True;
         Exit;
       end;
@@ -397,7 +414,7 @@ begin
               Exit;
             wait(250+random(500));
           end;
-          FFlag(RandomRange(1, 5));
+          FFlag(RandomRange(3, 7));
           Result := True;
           Exit;
         end;

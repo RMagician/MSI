@@ -114,6 +114,7 @@ Begin
   Begin
     If MSI_ChopTree(Which) Then
       T := GetSystemTime + 5*60000;
+    Wait(RandomRange(300, 800));
   End;
   Result := InvFull;
 End;
