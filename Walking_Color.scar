@@ -370,7 +370,7 @@ begin
     WALK_WC_VE_BANK_2:
       begin
         RoadColor := FindNewVarrockRoadColor();
-        FindCOlorsTolerance(TPA, RoadColor, MMx1, MMCy, MMCx, MMy2, 4);
+        FindColorsTolerance(TPA, RoadColor, MMx1, MMCy, MMCx, MMy2, 4);
         if Length(TPA) <= 0 then
           Exit;
         SortTPAFrom(TPA, Point(MMCx, MMCy));
@@ -386,11 +386,12 @@ begin
           end;
           if BC = 1 then
             Break;
-          if i = 4 then
-          begin
-            MSI_Debug('CreatWalkIndex(WALK_WC_VE_BANK_2)', 'Failed to find road on minimap', Debug_Functions);
-            Exit;
-          end;
+        end;
+        
+        if t = 4 then
+        begin
+          MSI_Debug('CreatWalkIndex(WALK_WC_VE_BANK_2)', 'Failed to find road on minimap', Debug_Functions);
+          Exit;
         end;
         
         Mouse(TPA[i].x, TPA[i].y, 0, 0, True);
