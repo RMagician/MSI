@@ -32,6 +32,7 @@ const
   SRLAC_RockColour = 5789528;
   SRLAC_SandColour = 0;
   SRLAC_BankerColour = 1179390;
+  SRLAC_TreeColour = 1532978;
 
 Procedure SortColors(var Colors: tIntegerArray; col: Integer);
 var
@@ -327,7 +328,7 @@ begin
       
     WALK_WC_VE_TREE_4:
       begin
-        TreeColor := AutoColorMM(1532978);
+        TreeColor := AutoColorMM(SRLAC_TreeColour);
         writeLn('Tree AutoColor = '+IntToStr(TreeColor));
         FindColorsTolerance(TPA, TreeColor, MMx1, MMy1, MMx2, MMy2, 8);
         if Length(TPA) <= 0 then Exit;
