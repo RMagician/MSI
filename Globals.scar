@@ -14,17 +14,21 @@
 | const Players               : by MSI SL Team                                 |
 | var   LevelToDebug          : by MSI SL Team                                 |
  \_____________________________________________________________________________}
- 
-Type
 
+var
+  CurrentSkill: Integer;
+  { Used like CurrentPlayer, but for the skills in the player array }
+  
 { Type TMSObject
   Description: To be used for finding on the MS. Stores all necessary
                information. }
+type
   TMSObject = Record
     X, Y             : Integer;
     Name             : String;
     UpText           : String;
     Option           : String;
+    Exp              : Extended;
     Colors           : TIntegerArray;
     FindAllColors    : Boolean; // Result False if not ALL colors are found
     Tol              : Integer;
@@ -81,6 +85,7 @@ Type
   TPlayerSkillInfo = record
     SkillTime : integer;
     TotalObj  : integer;
+    Level     : integer;
     TotalEXP  : extended;
     ObjQuants : array of integer;
     //TProggy.SkillInfo[Skill_Mining].ObjQuants[Ore_Iron]
@@ -92,9 +97,11 @@ Type
   TProggy = record
     PlayerName  : string;
     PlayerStatus: boolean;
+    FalseReason : string;
     PlayerRandom: string;
-    PlayerWhere : TWalk;
-    SkillInfo   : TPlayerSkillInfo;
+    PlayerCity  : integer;
+    PlayerLoc   : integer;
+    SkillInfo   : array of TPlayerSkillInfo;
   end;
 
 var
@@ -116,20 +123,24 @@ const
   Constants representing the different Players array records. }
 const
   // Integers
-  P_SKILL    = 0;
-  P_LOC      = 1;
+  P_LOC  = 0;
+  P_CITY = 1;
   
   // Arrays
-  P_MATERIAL = 0;
+  P_SKILLS   = 0;
+  
+  // MSI_Arrays
+  P_OBJECTS  = 0;
   
 { const Location Constants
   Description: Constants used to represent player locations }
 const
-  LOC_VE_TREES  = 0;
-  LOC_VE_BANK   = 1;
-  LOC_IN_RANDOM = 2;
+  LOC_LOST      = 0;
+  LOC_VE_TREES  = 1;
+  LOC_VE_BANK   = 2;
+  LOC_IN_RANDOM = 3;
   
-  LOC_VARROCK = 3;
+  CITY_VARROCK = 0;
 
 var
   Debug_LevelToDebug: integer;

@@ -27,7 +27,7 @@ Const
 
 
   {Cities' Index}
-  City_Varrock     =   0;
+  //City_Varrock     =   0;
   City_Falador     =   1;
   City_Karamja     =   2;
   City_Rimmington  =   3;

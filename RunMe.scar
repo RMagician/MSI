@@ -10,30 +10,32 @@ program MSIScript;
 {.include srl/srl/MSI/Setup.scar}
 
 const
-  BREAK_AFTER = 2; // Loads to break after/switching players after
+  BREAK_AFTER = 2; // Loads to break after/switching players after ** Doesn't do anything yet
   
   SMART_WORLD   = 152;
   MEMBERS_WORLD = False;
   
 procedure DeclarePlayers;
 var
-  i: Integer;
+  len, i, j: Integer;
 begin
   HowManyPlayers := 8;
   NumberOfPlayers(HowManyPlayers);
-  CurrentPlayer := 1;
+  CurrentPlayer := 0;
+  CurrentSkill := 0;
   SetLength(ProgressReportArray, Length(Players));
 
   with Players[0] do
   begin
-    Name   := '';
-    Pass   := '';
-    Nick   := '';
+    Name   := 'empty cohen';
+    Pass   := 'jackaster';
+    Nick   := 'mpt';
     Active := True;
     Pin    := '';
-    Integers[P_SKILL]    := SKILL_WOODCUTTING;
-    Integers[P_LOC]      := LOC_VE_BANK;
-    Arrays[P_MATERIAL]   := [OBJ_TREE];
+    Arrays[P_SKILLS]  := [SKILL_WOODCUTTING];
+    MSI_Arrays[P_OBJECTS] := [[OBJ_TREE]];
+    Integers[P_CITY] := CITY_VARROCK; //City to auto in
+    Integers[P_LOC]  := LOC_VE_BANK;  //Starting location
   end;
 
   with Players[1] do
@@ -43,9 +45,10 @@ begin
     Nick   := 'rol';
     Active := True;
     Pin    := '';
-    Integers[P_SKILL]    := SKILL_WOODCUTTING;
-    Integers[P_LOC]      := LOC_VE_BANK;
-    Arrays[P_MATERIAL]   := [OBJ_TREE];
+    Arrays[P_SKILLS]  := [SKILL_WOODCUTTING];
+    MSI_Arrays[P_OBJECTS] := [[OBJ_TREE]];
+    Integers[P_CITY] := CITY_VARROCK; //City to auto in
+    Integers[P_LOC]  := LOC_VE_BANK;  //Starting location
   end;
 
   with Players[2] do
@@ -55,9 +58,10 @@ begin
     Nick   := 'ora';
     Active := True;
     Pin    := '';
-    Integers[P_SKILL]    := SKILL_WOODCUTTING;
-    Integers[P_LOC]      := LOC_VE_BANK;
-    Arrays[P_MATERIAL]   := [OBJ_TREE];
+    Arrays[P_SKILLS]  := [SKILL_WOODCUTTING];
+    MSI_Arrays[P_OBJECTS] := [[OBJ_TREE]];
+    Integers[P_CITY] := CITY_VARROCK; //City to auto in
+    Integers[P_LOC]  := LOC_VE_BANK;  //Starting location
   end;
 
   with Players[3] do
@@ -67,9 +71,10 @@ begin
     Nick   := 'ono';
     Active := True;
     Pin    := '';
-    Integers[P_SKILL]    := SKILL_WOODCUTTING;
-    Integers[P_LOC]      := LOC_VE_BANK;
-    Arrays[P_MATERIAL]   := [OBJ_TREE];
+    Arrays[P_SKILLS]  := [SKILL_WOODCUTTING];
+    MSI_Arrays[P_OBJECTS] := [[OBJ_TREE]];
+    Integers[P_CITY] := CITY_VARROCK; //City to auto in
+    Integers[P_LOC]  := LOC_VE_BANK;  //Starting location
   end;
 
   with Players[4] do
@@ -79,9 +84,10 @@ begin
     Nick   := 'rod';
     Active := True;
     Pin    := '';
-    Integers[P_SKILL]    := SKILL_WOODCUTTING;
-    Integers[P_LOC]      := LOC_VE_BANK;
-    Arrays[P_MATERIAL]   := [OBJ_TREE];
+    Arrays[P_SKILLS]  := [SKILL_WOODCUTTING];
+    MSI_Arrays[P_OBJECTS] := [[OBJ_TREE]];
+    Integers[P_CITY] := CITY_VARROCK; //City to auto in
+    Integers[P_LOC]  := LOC_VE_BANK;  //Starting location
   end;
 
   with Players[5] do
@@ -91,9 +97,10 @@ begin
     Nick   := 'bys';
     Active := True;
     Pin    := '';
-    Integers[P_SKILL]    := SKILL_WOODCUTTING;
-    Integers[P_LOC]      := LOC_VE_BANK;
-    Arrays[P_MATERIAL]   := [OBJ_TREE];
+    Arrays[P_SKILLS]  := [SKILL_WOODCUTTING];
+    MSI_Arrays[P_OBJECTS] := [[OBJ_TREE]];
+    Integers[P_CITY] := CITY_VARROCK; //City to auto in
+    Integers[P_LOC]  := LOC_VE_BANK;  //Starting location
   end;
 
   with Players[6] do
@@ -103,9 +110,10 @@ begin
     Nick   := 'ira';
     Active := True;
     Pin    := '';
-    Integers[P_SKILL]    := SKILL_WOODCUTTING;
-    Integers[P_LOC]      := LOC_VE_BANK;
-    Arrays[P_MATERIAL]   := [OBJ_TREE];
+    Arrays[P_SKILLS]  := [SKILL_WOODCUTTING];
+    MSI_Arrays[P_OBJECTS] := [[OBJ_TREE]];
+    Integers[P_CITY] := CITY_VARROCK; //City to auto in
+    Integers[P_LOC]  := LOC_VE_BANK;  //Starting location
   end;
 
   with Players[7] do
@@ -115,9 +123,10 @@ begin
     Nick   := 'ohe';
     Active := True;
     Pin    := '';
-    Integers[P_SKILL]    := SKILL_WOODCUTTING;
-    Integers[P_LOC]      := LOC_VE_BANK;
-    Arrays[P_MATERIAL]   := [OBJ_TREE];
+    Arrays[P_SKILLS]  := [SKILL_WOODCUTTING];
+    MSI_Arrays[P_OBJECTS] := [[OBJ_TREE]];
+    Integers[P_CITY] := CITY_VARROCK; //City to auto in
+    Integers[P_LOC]  := LOC_VE_BANK;  //Starting location
   end;
   
   for i := High(Players) downto 0 do
@@ -127,8 +136,15 @@ begin
       
       ProgressReportArray[i].PlayerName := Name;
       ProgressReportArray[i].PlayerStatus := Active;
-      ProgressReportArray[i].PlayerWhere.Loc := Integers[P_LOC];
-      ProgressReportArray[i].PlayerWhere.City := LOC_VARROCK;
+      ProgressReportArray[i].PlayerCity := Integers[P_CITY];
+      ProgressReportArray[i].PlayerLoc := Integers[P_LOC];
+
+      SetLength(ProgressReportArray[i].SkillInfo, Length(Arrays[P_SKILLS]));
+      for j := 0 to High(Arrays[P_SKILLS]) do
+      begin
+        SetLength(ProgressReportArray[i].SkillInfo[j].ObjQuants, Length(MSI_Arrays[P_OBJECTS][j]));
+        ProgressReportArray[i].SkillInfo[j].TotalObj := Length(MSI_Arrays[P_OBJECTS][j]);
+      end;
     end;
 end;
 
@@ -142,5 +158,6 @@ begin
   SetupMSI;
   
   DeclarePlayers;
-  MSI_MainLoop;
+  //MSI_MainLoop;
+  ProgressReport;
 end.

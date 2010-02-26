@@ -11,7 +11,7 @@
 | * function MSI_WalkToLoc: Boolean;               * by The MSI Team           |
 | * function MSI_WalkToBank: Boolean;              * by The MSI Team           |
 | * function MSI_DoSkill: Boolean;                 * by The MSI Team           |
-| * procedure MSI_CountMaterials: Boolean;         * by Coh3n                  |
+| * procedure MSI_CountItems: Boolean;             * by Coh3n                  |
 | * function MSI_BankMaterials: Boolean;           * by The MSI Team           |
 | * function MSI_MainLoop: Boolean;                * by The MSI Team           |
  \_____________________________________________________________________________}
@@ -49,14 +49,13 @@ begin
 
   { Get the current level of the chosen skill, and then look for the required
     tool, starting with the best one for that player's skill level. }
-  currSkill := Players[CurrentPlayer].Integers[P_SKILL] - 1;
+  currSkill := Players[CurrentPlayer].Arrays[P_SKILLS][CurrentSkill] - 1;
   currLevel := GetSkillLevel(skillsArr[currSkill]);
-  Players[CurrentPlayer].Level[currSkill] := currLevel;
 
   MSI_Debug('MSI_PlayerSetup', 'Current ' + Capitalize(skillsArr[currSkill])
             + ' level is ' + IntToStr(currLevel) + '.', debug_Functions);
 
-  case (Players[CurrentPlayer].Integers[P_SKILL]) of
+  case (Players[CurrentPlayer].Arrays[P_SKILLS][CurrentSkill]) of
     SKILL_WOODCUTTING, SKILL_MINING:
       case (currLevel) of
         REQ_RUNE..REQ_MAX_LEVEL: Result := HATCHET_RUNE;
@@ -79,7 +78,7 @@ end;
 {******************************************************************************}
 function MSI_WorstTool: Integer;
 begin
-  case (Players[CurrentPlayer].Integers[P_SKILL]) of
+  case (Players[CurrentPlayer].Arrays[P_SKILLS][CurrentSkill]) of
     SKILL_WOODCUTTING:
       Result := HATCHET_BRONZE;
   end;
@@ -157,31 +156,31 @@ function MSI_GetObjectList: TIntegerArray;
 var
   i: Integer;
   tempStr: String;
-  materials: TVariantArray;
+  objects: TVariantArray;
 begin
-  materials := Players[CurrentPlayer].Arrays[P_MATERIAL];
-  SetLength(Result, Length(materials));
-  SetLength(ProgressReportArray[CurrentPlayer].SkillInfo.ObjQuants, Length(materials));
+  objects := Players[CurrentPlayer].MSI_Arrays[P_OBJECTS][CurrentSkill];
+  SetLength(Result, Length(objects));
+
   try
-    for i := 0 to High(materials) do
+    for i := 0 to High(objects) do
     begin
-      tempStr := IntToStr(materials[i]);
+      tempStr := IntToStr(objects[i]);
       Result[i] := StrToInt(tempStr);
     end;
   except
-    MSI_Debug('MSI_GetObjectList', 'Invalid tree type in DeclarePlayers!', debug_Functions);
+    MSI_Debug('MSI_GetObjectList', 'Invalid object type in DeclarePlayers!', debug_Functions);
     Exit;
   end;
 end;
 
 {******************************************************************************}
-{ function MSI_GetMaterialList: TIntegerArray;                                 }
+{ function MSI_GetItemList: TIntegerArray;                                     }
 { By: Coh3n                                                                    }
 { Rev: 5                                                                       }
 { Date: 24 Feb 2010                                                            }
 { Description: Gets the materials required depending on the object autoed      }
 {******************************************************************************}
-function MSI_GetMaterialList: TIntegerArray;
+function MSI_GetItemList: TIntegerArray;
 var
   i: Integer;
   objects: TIntegerArray;
@@ -197,6 +196,27 @@ begin
 end;
 
 {******************************************************************************}
+{ function MSI_GetExpList: TIntegerArray;                                      }
+{ By: Coh3n                                                                    }
+{ Rev: 5                                                                       }
+{ Date: 24 Feb 2010                                                            }
+{ Description: Gets the experience gained by obtaining items in the item list  }
+{******************************************************************************}
+function MSI_GetExpList: TExtendedArray;
+var
+  i: Integer;
+  objects: TIntegerArray;
+  msObjs: TMSObjectArray;
+begin
+  objects := MSI_GetObjectList;
+  SetLength(Result, Length(objects));
+  
+  msObjs := MSI_GetObjects(objects);
+  for i := 0 to High(objects) do
+    Result[i] := msObjs[i].Exp;
+end;
+
+{******************************************************************************}
 { function MSI_WalkToLoc: Boolean;                                             }
 { By: The MSI Team                                                             }
 { Rev: 5                                                                       }
@@ -207,7 +227,7 @@ function MSI_WalkToLoc: Boolean;
 var
   i: Integer;
 begin
-  case Players[CurrentPlayer].Integers[P_SKILL] of
+  case Players[CurrentPlayer].Arrays[P_SKILLS][CurrentSkill] of
     SKILL_WOODCUTTING:
       case Players[CurrentPlayer].Integers[P_LOC] of
         LOC_VE_BANK:
@@ -245,7 +265,7 @@ begin
   if (not InvFull) then
     Exit;
 
-  case Players[CurrentPlayer].Integers[P_SKILL] of
+  case Players[CurrentPlayer].Arrays[P_SKILLS][CurrentSkill] of
     SKILL_WOODCUTTING:
       case Players[CurrentPlayer].Integers[P_LOC] of
         LOC_VE_TREES:
@@ -278,13 +298,13 @@ end;
 {******************************************************************************}
 function MSI_DoSkill: Boolean;
 var
-  materialTypes: TIntegerArray;
+  objectTypes: TIntegerArray;
 begin
-  materialTypes := MSI_GetObjectList;
+  objectTypes := MSI_GetObjectList;
   
-  case Players[CurrentPlayer].Integers[P_SKILL] of
+  case Players[CurrentPlayer].Arrays[P_SKILLS][CurrentSkill] of
     SKILL_WOODCUTTING:
-      Result := MSI_ChopInvFull(materialTypes);
+      Result := MSI_ChopInvFull(objectTypes);
       
     else
       MSI_Debug('MSI_WalkToBank', 'Invalid player skill!', debug_Functions);
@@ -292,26 +312,33 @@ begin
 end;
 
 {******************************************************************************}
-{ procedure MSI_CountMaterials;                                                }
+{ procedure MSI_CountItems;                                                    }
 { By: Coh3n                                                                    }
 { Rev: 5                                                                       }
 { Date: 24 Feb 2010                                                            }
-{ Description: Counts the materials in the inventory before banking            }
+{ Description: Counts the materials and calculates the experience gained       }
+{              from items in the inventory                                     }
 {******************************************************************************}
-procedure MSI_CountMaterials;
+procedure MSI_CountItems;
 var
-  itemCount, i: Integer;
-  materials: TIntegerArray;
+  itemCount, expCount, i: Integer;
+  items: TIntegerArray;
+  exps: TExtendedArray;
 begin
-  materials := MSI_GetMaterialList;
+  items := MSI_GetItemList;
+  exps := MSI_GetExpList;
   
-  for i := 0 to High(materials) do
+  for i := 0 to High(items) do
   begin
-    MSI_GetItem(materials[i]);
-    itemCount := CountItems('dtm', MSI_Item[materials[i]].DTM, []);
-    AddToProggy(i, itemCount);
-    MSI_Debug('MSI_CountMaterials', 'Found ' + IntToStr(itemCount) + ' of item '
-              + MSI_Item[materials[i]].Name, DEBUG_FUNCTIONS);
+    MSI_GetItem(items[i]);
+    itemCount := CountItems('dtm', MSI_Item[items[i]].DTM, []);
+    expCount := Round(exps[i] * itemCount);
+    
+    AddToProggy(CurrentSkill, i, itemCount, False); //Adds amount of item
+    AddToProggy(CurrentSkill, i, expCount, True);   //Adds exp to skill
+    
+    MSI_Debug('MSI_CountItems', 'Found ' + IntToStr(itemCount) + ' of item '
+              + MSI_Item[items[i]].Name, DEBUG_FUNCTIONS);
   end;
 end;
 
@@ -324,12 +351,12 @@ end;
 {******************************************************************************}
 function MSI_BankMaterials: Boolean;
 begin
-  case Players[CurrentPlayer].Integers[P_SKILL] of
+  case Players[CurrentPlayer].Arrays[P_SKILLS][CurrentSkill] of
     SKILL_WOODCUTTING:
       case Players[CurrentPlayer].Integers[P_LOC] of
         LOC_VE_BANK:
           begin
-            MSI_CountMaterials;
+            MSI_CountItems;
             MSI_OpenBank(OBJ_BANK_VE, Players[CurrentPlayer].Pin);
             Result := MSI_Deposit([LOGS_NORMAL, LOGS_OAK], [28, 28]);
           end;
@@ -357,13 +384,16 @@ begin
     if (AllPlayersInactive) then
     begin
       MSI_Debug('MSI_MainLoop', 'All players are now inactive, terminating script...', Debug_PlayerActions);
+      ProgressReport;
       TerminateScript;
     end;
     
     if (not MSI_SetupPlayer) then
     begin
       MSI_Debug('MSI_MainLoop', 'Failed to setup player!', Debug_PlayerActions);
-      ProgressReportArray[CurrentPlayer].PlayerStatus := False;
+      Players[CurrentPlayer].Active := False;
+      ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to setup player';
+      ProgressReport;
       NextPlayer(False);
       Continue;
     end;
@@ -373,7 +403,10 @@ begin
       if (not MSI_WalkToLoc) then
       begin
         MSI_Debug('MSI_MainLoop', 'Failed to walk to location!', Debug_PlayerActions);
-        ProgressReportArray[CurrentPlayer].PlayerStatus := False;
+        Players[CurrentPlayer].Active := False;
+        ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to walk to location';
+        Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
+        ProgressReport;
         NextPlayer(False);
         Break;
       end;
@@ -381,7 +414,9 @@ begin
       if (not MSI_DoSkill) then
       begin
         MSI_Debug('MSI_MainLoop', 'Failed to perform skill!', Debug_PlayerActions);
-        ProgressReportArray[CurrentPlayer].PlayerStatus := False;
+        Players[CurrentPlayer].Active := False;
+        ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to perform';
+        ProgressReport;
         NextPlayer(False);
         Break;
       end;
@@ -389,7 +424,10 @@ begin
       if (not MSI_WalkToBank) then
       begin
         MSI_Debug('MSI_MainLoop', 'Failed to walk to bank!', Debug_PlayerActions);
-        ProgressReportArray[CurrentPlayer].PlayerStatus := False;
+        Players[CurrentPlayer].Active := False;
+        ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to walk to bank';
+        Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
+        ProgressReport;
         NextPlayer(False);
         Break;
       end;
@@ -397,12 +435,14 @@ begin
       if (not MSI_BankMaterials) then
       begin
         MSI_Debug('MSI_MainLoop', 'Failed to bank materials!', Debug_PlayerActions);
-        ProgressReportArray[CurrentPlayer].PlayerStatus := False;
+        Players[CurrentPlayer].Active := False;
+        ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to bank items';
+        ProgressReport;
         NextPlayer(False);
         Break;
       end;
 
-      ProgressReportArray[CurrentPlayer].SkillInfo.SkillTime := TimeFromMark(sinceLogin);
+      ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].SkillTime := TimeFromMark(sinceLogin);
       ProgressReport;
     until(not Players[CurrentPlayer].Active);
   until(False);

@@ -39,6 +39,7 @@ Begin
       Name               := 'Normal tree';
       UpText             := 'Tree';
       Option             := 'Chop down';
+      Exp                := 25;
       Colors             := [736046];
       Tol                := 5;
       Hue                := 1.54;
@@ -63,6 +64,7 @@ Begin
       UpText             := 'Oak';
       Option             := 'Chop down';
       Colors             := [736046];
+      Exp                := 37.5;
       Tol                := 5;
       Hue                := 1.54;
       Sat                := 5.00;

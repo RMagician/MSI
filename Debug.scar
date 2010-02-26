@@ -39,42 +39,71 @@ begin
   writeln(DebugMSG);
 end;
 
-Procedure AddToProggy(WhichItem, Quantity: integer);
+Procedure AddToProggy(skill, item, quantity: integer; findEXP: Boolean);
 begin
-  IncEx(ProgressReportArray[CurrentPlayer].SkillInfo.ObjQuants[WhichItem], Quantity);
+  if findEXP then
+    IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[skill].TotalEXP, quantity)
+  else
+    IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[skill].ObjQuants[item], quantity);
 end;
 
-Function SkillTextArray(what: integer): TStringArray;
+Function SkillTextArray(what: variant): TStringArray;
 begin
   case what of
-    Skill_Attack        : Result := ['Attacking', 'Attacked'];
-    Skill_Strength      : Result := ['Stengthing', 'Strengthed'];
-    Skill_Defense       : Result := ['Defending', 'Defended'];
-    Skill_Range         : Result := ['Ranging', 'Ranged'];
-    Skill_Prayer        : Result := ['Praying', 'Prayed'];
-    Skill_Mage          : Result := ['Maging', 'Maged'];
-    Skill_RuneCrafting  : Result := ['RuneCrafting', 'RuneCrafted'];
-    Skill_HP            : Result := ['HPing', 'HPed'];
-    Skill_Agility       : Result := ['Agilising', 'Agilised'];
-    Skill_Herblore      : Result := ['Herbloring', 'Herblored'];
+    Skill_Attack        : Result := ['Attack', 'Attacked'];
+    Skill_Strength      : Result := ['Stength', 'Strengthed'];
+    Skill_Defense       : Result := ['Defence', 'Defended'];
+    Skill_Range         : Result := ['Range', 'Ranged'];
+    Skill_Prayer        : Result := ['Prayer', 'Prayed'];
+    Skill_Mage          : Result := ['Magic', 'Maged'];
+    Skill_RuneCrafting  : Result := ['Runecrafting', 'RuneCrafted'];
+    Skill_HP            : Result := ['Hitpoints', 'HPed'];
+    Skill_Agility       : Result := ['Agility', 'Agilised'];
+    Skill_Herblore      : Result := ['Herblore', 'Herblored'];
     Skill_Thieving      : Result := ['Thieving', 'Thieved'];
     Skill_Crafting      : Result := ['Crafting', 'Crafted'];
     Skill_Fletching     : Result := ['Flecthing', 'Flecthed'];
-    Skill_Slayer        : Result := ['Slaying', 'Slayed'];
+    Skill_Slayer        : Result := ['Slayer', 'Slayed'];
     Skill_Mining        : Result := ['Mining', 'Mined'];
     Skill_Smithing      : Result := ['Smithing', 'Smithed'];
     Skill_Fishing       : Result := ['Fishing', 'Fished'];
     Skill_Cooking       : Result := ['Cooking', 'Cooked'];
-    Skill_FireMaking    : Result := ['FireMaking', 'Burned'];
+    Skill_FireMaking    : Result := ['Firemaking', 'Burned'];
     Skill_WoodCutting   : Result := ['Woodcutting', 'Chopped'];
     Skill_Farming       : Result := ['Farming', 'Farmed'];
-    Skill_Construction  : Result := ['Constructing', 'Constructed'];
-    Skill_Hunter        : Result := ['Hunting', 'Hunted'];
+    Skill_Construction  : Result := ['Construction', 'Constructed'];
+    Skill_Hunter        : Result := ['Hunter', 'Hunted'];
     Skill_Summoning     : Result := ['Summoning', 'Summoned'];
   end;
 end;
 
-Function ObjTextArray(Skill, WhatItem:integer): TStringArray;
+{******************************************************************************}
+{ procedure GetReportInfo;                                                     }
+{ By: Coh3n                                                                    }
+{ Description: Gets the necessary proggy info that ISN'T reset during runtime  }
+{******************************************************************************}
+procedure GetReportInfo;
+var
+  i, level: Integer;
+  skills: TVariantArray;
+  theSkill: TStringArray;
+begin
+  { Gets the levels of each skill in the Players array }
+  skills := Players[CurrentPlayer].Arrays[P_SKILLS];
+  for i := 0 to High(skills) do
+  begin
+    theSkill := SkillTextArray(skills[i]);
+    level := GetSkillLevel(theSkill[0]);
+    ProgressReportArray[CurrentPlayer].SkillInfo[i].Level := level;
+  end;
+  
+  { Gets the player's location }
+  ProgressReportArray[CurrentPlayer].PlayerLoc := Players[CurrentPlayer].Integers[P_LOC];
+  { Gets teh player's activity }
+  ProgressReportArray[CurrentPlayer].PlayerStatus := Players[CurrentPlayer].Active;
+end;
+
+Function ObjTextArray(Skill, WhatItem: variant): TStringArray;
 begin
   case Skill of
     Skill_Attack        :
@@ -155,8 +184,8 @@ begin
       end;
     Skill_WoodCutting   :
       case WhatItem of
-        LOGS_NORMAL: Result := ['normal logs'];
-        LOGS_OAK: Result := ['oak logs'];
+        LOGS_NORMAL: Result := ['Normal logs'];
+        LOGS_OAK: Result := ['Oak logs'];
       end;
     Skill_Farming       :
       case WhatItem of
@@ -180,16 +209,19 @@ end;
 Function LocToText(Which: Integer): string;
 begin
   case Which of
+    LOC_LOST:
+      Result := 'Lost';
+      
     LOC_VE_BANK:
-      Result := 'VE_Bank';
+      Result := 'Varrock east bank';
       
     LOC_VE_TREES:
-      Result := 'VE_Trees';
+      Result := 'Varrock east trees';
       
     LOC_IN_RANDOM:
-      Result := 'in random';
+      Result := 'In random';
       
-    LOC_VARROCK:
+    CITY_VARROCK:
       Result := 'Varrock';
       
     else
@@ -197,50 +229,88 @@ begin
   end;
 end;
 
-function MSI_GetMaterialList: TIntegerArray; forward;
-Procedure ProgressReport;
-var
-  i, WhichSkill, WhichItem: integer;
-  SkillArray, ObjectArray: TStringArray;
-  materials: TIntegerArray;
-  MyName: string;
-begin
-  for i := 0 to (HowManyPlayers - 1) do
-  begin
-    MyName := ProgressReportArray[i].PlayerName;
-    // __________________________________________________________________
-    writeln(' '+ Replicate('_', 78) + ' ');
-    //|                 MSI Player Extreme Report                        |
-    writeln('|' + Padl(Padr('MSI Player Extreme Report', 78/2), 78)+'|');
-    //|------------------------------------------------------------------|
-    writeln(' '+ Replicate('-', 78) + ' ');
-    with ProgressReportArray[i] do
-    //| PlayerName in PlayerCity at PlayerLoc                            |
-      writeln('| '+Padr(MyName+' in '+LocToText(PlayerWhere.City)+
-              ' at '+LocToText(PlayerWhere.Loc), 77)+'|');
-    //|                                                                  |
-    writeln('|'+Replicate(' ', 78)+'|');
-    with ProgressReportArray[i].SkillInfo do
-    begin
-      WhichSkill := Players[CurrentPlayer].Integers[P_SKILL];
-      SkillArray := SkillTextArray(WhichSkill);
-    //| PlayerName is at Fishing(skill1) level FishingLevel              |
-      writeln('| '+Padr(MyName+' is at '+ SkillArray[0] +' level '+
-              IntToStr(Players[i].Level[WhichSkill])+'.', 77)+'|');
-    //| PlayerName was Fishing for Time                                  |
-      writeln('| '+Padr(MyName +' was '+SkillArray[0]+' for '
-              + MsToTime(SkillTime, Time_Short), 77)+'|');
 
-      materials := MSI_GetMaterialList;
-      for WhichItem := 0 to High(ObjQuants) do
-      begin
-        ObjectArray := ObjTextArray(WhichSkill, materials[WhichItem]);
-    //| PlayerName autoed ObjQuant ObjName                               |
-        writeln('| '+Padr(MyName +' autoed '+IntToStr(ObjQuants[WhichItem])+' '
-                + ObjectArray[0], 77)+'|');
-      end;
+{******************************************************************************}
+{ function GroupDigits(n: integer; token: String): String;                     }
+{ By: PriSoner and Nava2                                                       }
+{ Description: Formats an integer into groups of 3 seperated by `token' and    }
+{              returns a formatted string (i.e 1234567 would become 1,234,567) }
+{******************************************************************************}
+function GroupDigits(n: integer; token: String): String;
+var
+  b: integer;
+begin
+  Result := IntToStr(n);
+  b := length(Result) + 1;
+  if b > 3 then
+  repeat
+    b := b - 3;
+    if b > 1 then
+      insert(token, Result, b);
+  until (b < 3);
+end;
+
+{******************************************************************************}
+{ procedure ProgressReport;                                                    }
+{ By: Coh3n                                                                    }
+{ Description: Prints the progress report of each player                       }
+{******************************************************************************}
+function MSI_GetItemList: TIntegerArray; forward;
+procedure ProgressReport;
+var
+  i, j, k: integer;
+  skill, item: TStringArray;
+  intItems: TIntegerArray;
+begin
+  GetReportInfo;
+  Writeln('{----------------------------------------------------------------}');
+  Writeln('{                   MSI Extreme Player Report                    }');
+  Writeln('{----------------------------------------------------------------}'); //64 from '{' to '}'
+  Writeln('{                                                                }');
+  
+  for i := 0 to (HowManyPlayers - 1) do
+    with ProgressReportArray[i] do
+    begin
+      Writeln('{                                                                }');
+      //       {     Player 0: Player Name                                      }
+      Writeln('{     ' + PadR('Player ' + IntToStr(i) + ': ' + Capitalize(PlayerName), 59) + '}'); //PlayerName
+      //       {     City: Varrock                                              }
+      Writeln('{     ' + PadR('City: ' + LocToText(PlayerCity), 59) + '}');                        //PlayerCity
+      //       {     Location: VE_Trees                                         }
+      Writeln('{     ' + PadR('Location: ' + LocToText(PlayerLoc), 59) + '}');                     //PlayerLoc
+      //       {     Active: True                                               }
+      Writeln('{     ' + PadR('Active: ' + Capitalize(BoolToStr(PlayerStatus)), 59) + '}');        //PlayerStatus
+      if (not PlayerStatus) then
+        //       {       Reason: Failed to bank items                             }
+        Writeln('{       ' + PadR('Reason: ' + FalseReason, 59) + '}');
+      Writeln('{                                                                }');
+
+      for j := 0 to High(SkillInfo) do                                                        //SkillInfo
+        with SkillInfo[j] do
+        begin
+          skill := SkillTextArray(Players[CurrentPlayer].Arrays[P_SKILLS][j]);
+          //       {     Skill: Woodcutting                                         }
+          Writeln('{     ' + PadR('Skill: ' + skill[0], 59) + '}');
+          //       {       Time: Skill Time                                         }
+          Writeln('{       ' + PadR('Time: ' + MsToTime(SkillTime, Time_Short), 57) + '}');          //SkillTime
+          //       {       Experience: 38,650                                       }
+          Writeln('{       ' + PadR('Experience: ' + GroupDigits(Round(TotalEXP), ','), 57) + '}');  //TotalEXP
+          //       {       Level: 91                                                }
+          Writeln('{       ' + PadR('Level: ' + IntToStr(Level), 57) + '}');                         //Level
+
+          intItems := MSI_GetItemList;
+          for k := 0 to High(intItems) do                                                       //TotalObj
+          begin
+            item := ObjTextArray(Players[CurrentPlayer].Arrays[P_SKILLS][j], intItems[k]);
+            //       {       Item: Normal logs                                        }
+            Writeln('{       ' + PadR('Item: ' + item[0], 57) + '}');
+            //       {       Amount: 1,546                                            }
+            Writeln('{       ' + PadR('Amount: ' + GroupDigits(ObjQuants[k], ','), 57) + '}');       //ObjQuants
+            Writeln('{                                                                }');
+            Writeln('{----------------------------------------------------------------}');
+          end;
+        end;
     end;
-    //|------------------------------------------------------------------|
-    writeln(' '+ Replicate('-', 78) + ' ');
-  end;
+  
+  Writeln('{----------------------------------------------------------------}');
 end;
