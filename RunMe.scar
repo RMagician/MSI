@@ -158,6 +158,6 @@ begin
   SetupMSI;
   
   DeclarePlayers;
-  //MSI_MainLoop;
-  ProgressReport;
+  MSI_MainLoop;
+  //ProgressReport;
 end.

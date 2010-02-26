@@ -266,7 +266,6 @@ begin
   Writeln('{----------------------------------------------------------------}');
   Writeln('{                   MSI Extreme Player Report                    }');
   Writeln('{----------------------------------------------------------------}'); //64 from '{' to '}'
-  Writeln('{                                                                }');
   
   for i := 0 to (HowManyPlayers - 1) do
     with ProgressReportArray[i] do

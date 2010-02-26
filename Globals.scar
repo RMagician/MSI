@@ -140,7 +140,7 @@ const
   LOC_VE_BANK   = 2;
   LOC_IN_RANDOM = 3;
   
-  CITY_VARROCK = 0;
+  CITY_VARROCK = 4;
 
 var
   Debug_LevelToDebug: integer;
