@@ -12,63 +12,34 @@
 
 {
 const
-  Bank_VE = 'veb';
-  Bank_VW = 'vwb';
-  Bank_GE = 'ge';   }
+  OBJ_BANK_VE
+}
 
 {******************************************************************************}
 { Function MSI_OpenBank(Bank, tPin : String) : Boolean;                        }
-{ By: NaumanAkhlaQ & NCDS                                                      }
-{ Rev: 22                                                                      }
-{ Date: 25 Oct 09                                                              }
-{ Description: Opens a bank using the best openers first. Currently for        }
-{              Varrock.                                                        }
-{              tPin = RS Bank Pin leave as '' if no pin.                       }
+{ By: Coh3n                                                                    }
+{ Description: Opens the bank 'which' - refer to bank constants                }
 {******************************************************************************}
+function MSI_OpenBank(which: Integer; tPin: String): Boolean;
+var
+  theBank: TMSObject;
+begin
+  theBank := MSI_GetObject(which);
+  if (MSI_FindObject(theBank, ClickRight)) then
+  begin
+    if (PinScreen) then
+      if (Length(tPin) = 4) then
+        InPin(tPin);
 
-Function MSI_OpenBank(Bank, tPin : String) : Boolean;
-Var ProcedureArray, Order : TStringArray;
-    BankArray : TStringArray;
-    { 1 = OpenBankFast; 2 = OpenBankQuiet; 3 = OpenBankGlass;
-      4 = OpenBankNPC and 5 = OpenBank.}
-    Mark, I : Integer;
-Begin
-  BankArray := [Bank_VE, Bank_VW];
-  Order := ['4-1-2-3-5', '1-4-5-3-2'];
-
-  If InStrArrEx(Bank, BankArray, I) Then
-    ProcedureArray := SRL_Explode(Order[I], '-');
-
-  For I := 0 To High(ProcedureArray) Do
-  Begin
-    Mark := GetSystemTime + 10000 + Random(3000);
-    Case ProcedureArray[I] Of
-      '1' : While (Not OpenBankFast(Bank)) And (GetSystemTime < Mark) Do
-              Wait(1);
-      '2' : While (Not OpenBankQuiet(Bank)) And (GetSystemTime < Mark) Do
-              Wait(1);
-      '3' : While (Not OpenBankGlass(Bank, False, True)) And (GetSystemTime < Mark) Do
-              Wait(1);
-      '4' : While (Not OpenBankNPC) And (GetSystemTime < Mark) Do
-              Wait(1);
-    Else
-      While (Not OpenBank(Bank, False, True)) And (GetSystemTime < Mark) Do
-        Wait(1);
-    End;
-  End;
-
-  If Not BankScreen And Not PinScreen Then Exit;
-  If PinScreen And (Length(tPin) > 1) Then
-    InPin(tPin);
-
-  Result := WaitFunc(@BankScreen, 200, 15000);
-  If Result Then
-    MSI_Debug('MSI_OpenBank', 'Successfuly Opened The Bank - '+Bank,
-              Debug_SmallDetails)
-  Else
-    MSI_Debug('MSI_OpenBank', 'Could NOT Open The Bank - '+Bank,
-              Debug_SmallDetails);
-End;
+    Result := WaitFunc(@BankScreen, 200, 10000);
+  end else
+    MSI_Debug('MSI_OpenBank', 'Could NOT open bank: ' + theBank.Name, DEBUG_FUNCTIONS);
+  
+  if (Result) then
+    MSI_Debug('MSI_OpenBank', 'Successfuly opened bank: ' + theBank.Name, DEBUG_FUNCTIONS)
+  else
+    MSI_Debug('MSI_OpenBank', 'Could NOT open bank - ' + theBank.Name, DEBUG_FUNCTIONS);
+end;
 
 {******************************************************************************}
 { Function MSI_Deposit(Items, Amount : TIntegerArray) : Boolean                }

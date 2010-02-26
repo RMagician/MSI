@@ -143,5 +143,4 @@ begin
   
   DeclarePlayers;
   MSI_MainLoop;
-  ProgressReport;
 end.

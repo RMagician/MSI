@@ -119,8 +119,8 @@ begin
   if (not Result) then
   begin
     case (Players[CurrentPlayer].Integers[P_LOC]) of
-      LOC_VEBANK:
-        bankCheck := MSI_OpenBank('veb', Players[CurrentPlayer].Pin);
+      LOC_VE_BANK:
+        bankCheck := MSI_OpenBank(OBJ_BANK_VE, Players[CurrentPlayer].Pin);
 
       else
         MSI_Debug('MSI_SetupPlayer', 'Invalid Player.Integers[P_LOC].',
@@ -330,7 +330,7 @@ begin
         LOC_VE_BANK:
           begin
             MSI_CountMaterials;
-            MSI_OpenBank('veb', Players[CurrentPlayer].Pin);
+            MSI_OpenBank(OBJ_BANK_VE, Players[CurrentPlayer].Pin);
             Result := MSI_Deposit([LOGS_NORMAL, LOGS_OAK], [28, 28]);
           end;
 

@@ -21,6 +21,8 @@ const
   Obj_Rock_Copper       = 6;
   Obj_Rock_Iron         = 7;
   Obj_Rock_Silver       = 8;
+  { Banks }
+  OBJ_BANK_VE           = 9;
   
 
 {*******************************************************************************
@@ -34,6 +36,7 @@ Begin
     Obj_Tree:
     With Result Do
     Begin
+      Name               := 'Normal tree';
       UpText             := 'Tree';
       Option             := 'Chop down';
       Colors             := [736046];
@@ -56,6 +59,7 @@ Begin
     Obj_Oak:
     With Result Do
     Begin
+      Name               := 'Oak tree';
       UpText             := 'Oak';
       Option             := 'Chop down';
       Colors             := [736046];
@@ -68,6 +72,29 @@ Begin
       Accuracy           := 10;
       ExcludeSelf        := True;
       RightClickOnly     := False;
+      Tries              := 5;
+      Anim               := False;
+      WaitToMove         := True;
+      BadColors          := [];
+      BadColorTolerance  := 10;
+    End;
+    
+    OBJ_BANK_VE:
+    With Result Do
+    Begin
+      Name               := 'Varrock east bank';
+      UpText             := 'ooth';
+      Option             := 'uick';
+      Colors             := [2379871];
+      Tol                := 5;
+      Hue                := 0.06;
+      Sat                := 1.61;
+      FindAllColors      := False;
+      W                  := 40;
+      H                  := 40;
+      Accuracy           := 50;
+      ExcludeSelf        := True;
+      RightClickOnly     := True;
       Tries              := 5;
       Anim               := False;
       WaitToMove         := True;
@@ -496,7 +523,7 @@ Begin
           If (Objs[II].RightClickOnly) Or InRange(Random(100), 0, 80) Or (Action = ClickRight) Then
           Begin
             Mouse(X, Y, 0, 0, False);
-            If (Action = ClickLeft) Then
+            If (Action = ClickRight) Then
               Result := WaitOptionMulti(Options, 500 + Random(100))
             Else
               Result := True;
