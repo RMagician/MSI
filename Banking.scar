@@ -23,17 +23,23 @@ const
 function MSI_OpenBank(which: Integer; tPin: String): Boolean;
 var
   theBank: TMSObject;
+  t: Integer;
 begin
   theBank := MSI_GetObject(which);
-  if (MSI_FindObject(theBank, ClickRight)) then
-  begin
-    if (PinScreen) then
-      if (Length(tPin) = 4) then
-        InPin(tPin);
+  t := 0;
+  
+  repeat
+    Inc(t);
+    if (MSI_FindObject(theBank, ClickRight)) then
+    begin
+      if (PinScreen) then
+        if (Length(tPin) = 4) then
+          InPin(tPin);
 
-    Result := WaitFunc(@BankScreen, 200, 10000);
-  end else
-    MSI_Debug('MSI_OpenBank', 'Could NOT open bank: ' + theBank.Name, DEBUG_FUNCTIONS);
+      Result := WaitFunc(@BankScreen, 200, 10000);
+    end else
+      MSI_Debug('MSI_OpenBank', 'Could NOT open bank: ' + theBank.Name, DEBUG_FUNCTIONS);
+  until(Result or (t >= 30))
   
   if (Result) then
     MSI_Debug('MSI_OpenBank', 'Successfuly opened bank: ' + theBank.Name, DEBUG_FUNCTIONS)

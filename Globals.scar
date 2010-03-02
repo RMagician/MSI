@@ -14,10 +14,6 @@
 | const Players               : by MSI SL Team                                 |
 | var   LevelToDebug          : by MSI SL Team                                 |
  \_____________________________________________________________________________}
-
-var
-  CurrentSkill: Integer;
-  { Used like CurrentPlayer, but for the skills in the player array }
   
 { Type TMSObject
   Description: To be used for finding on the MS. Stores all necessary
@@ -86,7 +82,7 @@ type
     SkillTime : integer;
     TotalObj  : integer;
     Level     : integer;
-    TotalEXP  : extended;
+    TotalEXP  : integer;
     ObjQuants : array of integer;
     //TProggy.SkillInfo[Skill_Mining].ObjQuants[Ore_Iron]
   end;
@@ -107,6 +103,16 @@ type
 var
   ProgressReportArray: Array of TProggy;
   { Description: To be used to store information for Players individually }
+  
+  CurrentSkill: Integer;
+  { Used like CurrentPlayer, but for the skills in the player array }
+  
+  Debug_LevelToDebug: integer;
+  { Description: For script user to choose how much to debug. }
+  
+  PlayerSkills: Array of TVariantArray;
+  PlayerObjects: Array of Array of TVariantArray;
+  { Used in the DeclarePlayers arrays for skills and objects }
 
 { Debug constants
   Description: The several debugging levels, so the user receives as much
@@ -141,10 +147,6 @@ const
   LOC_IN_RANDOM = 3;
   
   CITY_VARROCK = 4;
-
-var
-  Debug_LevelToDebug: integer;
-  { Description: For script user to choose how much to debug. }
 
 { const Item Info
   Description: Constants representing all the items used in MSI. }

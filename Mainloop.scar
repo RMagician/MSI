@@ -49,13 +49,13 @@ begin
 
   { Get the current level of the chosen skill, and then look for the required
     tool, starting with the best one for that player's skill level. }
-  currSkill := Players[CurrentPlayer].Arrays[P_SKILLS][CurrentSkill] - 1;
+  currSkill := PlayerSkills[CurrentPlayer][CurrentSkill] - 1;
   currLevel := GetSkillLevel(skillsArr[currSkill]);
 
   MSI_Debug('MSI_PlayerSetup', 'Current ' + Capitalize(skillsArr[currSkill])
             + ' level is ' + IntToStr(currLevel) + '.', debug_Functions);
 
-  case (Players[CurrentPlayer].Arrays[P_SKILLS][CurrentSkill]) of
+  case PlayerSkills[CurrentPlayer][CurrentSkill] of
     SKILL_WOODCUTTING, SKILL_MINING:
       case (currLevel) of
         REQ_RUNE..REQ_MAX_LEVEL: Result := HATCHET_RUNE;
@@ -78,7 +78,7 @@ end;
 {******************************************************************************}
 function MSI_WorstTool: Integer;
 begin
-  case (Players[CurrentPlayer].Arrays[P_SKILLS][CurrentSkill]) of
+  case (PlayerSkills[CurrentPlayer][CurrentSkill]) of
     SKILL_WOODCUTTING:
       Result := HATCHET_BRONZE;
   end;
@@ -152,13 +152,13 @@ end;
 { Date: 24 Feb 2010                                                            }
 { Description: Converts the variant array to an integer array                  }
 {******************************************************************************}
-function MSI_GetObjectList: TIntegerArray;
+function MSI_GetObjectList(whichPlayer, whichSkill: Integer): TIntegerArray;
 var
   i: Integer;
   tempStr: String;
   objects: TVariantArray;
 begin
-  objects := Players[CurrentPlayer].MSI_Arrays[P_OBJECTS][CurrentSkill];
+  objects := PlayerObjects[whichPlayer][whichSkill];
   SetLength(Result, Length(objects));
 
   try
@@ -180,12 +180,12 @@ end;
 { Date: 24 Feb 2010                                                            }
 { Description: Gets the materials required depending on the object autoed      }
 {******************************************************************************}
-function MSI_GetItemList: TIntegerArray;
+function MSI_GetItemList(whichPlayer, whichSkill: Integer): TIntegerArray;
 var
   i: Integer;
   objects: TIntegerArray;
 begin
-  objects := MSI_GetObjectList;
+  objects := MSI_GetObjectList(whichPlayer, whichSkill);
   SetLength(Result, Length(objects));
 
   for i := 0 to High(objects) do
@@ -208,7 +208,7 @@ var
   objects: TIntegerArray;
   msObjs: TMSObjectArray;
 begin
-  objects := MSI_GetObjectList;
+  objects := MSI_GetObjectList(CurrentPlayer, CurrentSkill);
   SetLength(Result, Length(objects));
   
   msObjs := MSI_GetObjects(objects);
@@ -227,7 +227,7 @@ function MSI_WalkToLoc: Boolean;
 var
   i: Integer;
 begin
-  case Players[CurrentPlayer].Arrays[P_SKILLS][CurrentSkill] of
+  case PlayerSkills[CurrentPlayer][CurrentSkill] of
     SKILL_WOODCUTTING:
       case Players[CurrentPlayer].Integers[P_LOC] of
         LOC_VE_BANK:
@@ -265,7 +265,7 @@ begin
   if (not InvFull) then
     Exit;
 
-  case Players[CurrentPlayer].Arrays[P_SKILLS][CurrentSkill] of
+  case PlayerSkills[CurrentPlayer][CurrentSkill] of
     SKILL_WOODCUTTING:
       case Players[CurrentPlayer].Integers[P_LOC] of
         LOC_VE_TREES:
@@ -300,9 +300,9 @@ function MSI_DoSkill: Boolean;
 var
   objectTypes: TIntegerArray;
 begin
-  objectTypes := MSI_GetObjectList;
+  objectTypes := MSI_GetObjectList(CurrentPlayer, CurrentSkill);
   
-  case Players[CurrentPlayer].Arrays[P_SKILLS][CurrentSkill] of
+  case PlayerSkills[CurrentPlayer][CurrentSkill] of
     SKILL_WOODCUTTING:
       Result := MSI_ChopInvFull(objectTypes);
       
@@ -325,7 +325,7 @@ var
   items: TIntegerArray;
   exps: TExtendedArray;
 begin
-  items := MSI_GetItemList;
+  items := MSI_GetItemList(CurrentPlayer, CurrentSkill);
   exps := MSI_GetExpList;
   
   for i := 0 to High(items) do
@@ -334,8 +334,8 @@ begin
     itemCount := CountItems('dtm', MSI_Item[items[i]].DTM, []);
     expCount := Round(exps[i] * itemCount);
     
-    AddToProggy(CurrentSkill, i, itemCount, False); //Adds amount of item
-    AddToProggy(CurrentSkill, i, expCount, True);   //Adds exp to skill
+    AddToProggy(i, itemCount, False); //Adds amount of item
+    AddToProggy(i, expCount, True);   //Adds exp to skill
     
     MSI_Debug('MSI_CountItems', 'Found ' + IntToStr(itemCount) + ' of item '
               + MSI_Item[items[i]].Name, DEBUG_FUNCTIONS);
@@ -351,7 +351,7 @@ end;
 {******************************************************************************}
 function MSI_BankMaterials: Boolean;
 begin
-  case Players[CurrentPlayer].Arrays[P_SKILLS][CurrentSkill] of
+  case PlayerSkills[CurrentPlayer][CurrentSkill] of
     SKILL_WOODCUTTING:
       case Players[CurrentPlayer].Integers[P_LOC] of
         LOC_VE_BANK:

@@ -39,12 +39,15 @@ begin
   writeln(DebugMSG);
 end;
 
-Procedure AddToProggy(skill, item, quantity: integer; findEXP: Boolean);
+Procedure AddToProggy(item, quantity: Integer; findEXP: Boolean);
 begin
-  if findEXP then
-    IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[skill].TotalEXP, quantity)
+  if (quantity = 0) then
+    Exit;
+
+  if (findEXP) then
+    IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalEXP, quantity)
   else
-    IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[skill].ObjQuants[item], quantity);
+    IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].ObjQuants[item], quantity);
 end;
 
 Function SkillTextArray(what: variant): TStringArray;
@@ -89,7 +92,7 @@ var
   theSkill: TStringArray;
 begin
   { Gets the levels of each skill in the Players array }
-  skills := Players[CurrentPlayer].Arrays[P_SKILLS];
+  skills := PlayerSkills[CurrentPlayer];
   for i := 0 to High(skills) do
   begin
     theSkill := SkillTextArray(skills[i]);
@@ -255,7 +258,7 @@ end;
 { By: Coh3n                                                                    }
 { Description: Prints the progress report of each player                       }
 {******************************************************************************}
-function MSI_GetItemList: TIntegerArray; forward;
+function MSI_GetItemList(whichPlayer, whichSkill: Integer): TIntegerArray; forward;
 procedure ProgressReport;
 var
   i, j, k: integer;
@@ -281,13 +284,13 @@ begin
       Writeln('{     ' + PadR('Active: ' + Capitalize(BoolToStr(PlayerStatus)), 59) + '}');        //PlayerStatus
       if (not PlayerStatus) then
         //       {       Reason: Failed to bank items                             }
-        Writeln('{       ' + PadR('Reason: ' + FalseReason, 59) + '}');
+        Writeln('{       ' + PadR('Reason: ' + FalseReason, 57) + '}');
       Writeln('{                                                                }');
 
-      for j := 0 to High(SkillInfo) do                                                        //SkillInfo
+      for j := 0 to High(SkillInfo) do                                                               //SkillInfo
         with SkillInfo[j] do
         begin
-          skill := SkillTextArray(Players[CurrentPlayer].Arrays[P_SKILLS][j]);
+          skill := SkillTextArray(PlayerSkills[CurrentPlayer][j]);
           //       {     Skill: Woodcutting                                         }
           Writeln('{     ' + PadR('Skill: ' + skill[0], 59) + '}');
           //       {       Time: Skill Time                                         }
@@ -297,17 +300,18 @@ begin
           //       {       Level: 91                                                }
           Writeln('{       ' + PadR('Level: ' + IntToStr(Level), 57) + '}');                         //Level
 
-          intItems := MSI_GetItemList;
-          for k := 0 to High(intItems) do                                                       //TotalObj
+          intItems := MSI_GetItemList(i, j);
+          for k := 0 to High(intItems) do                                                            //TotalObj
           begin
-            item := ObjTextArray(Players[CurrentPlayer].Arrays[P_SKILLS][j], intItems[k]);
-            //       {       Item: Normal logs                                        }
-            Writeln('{       ' + PadR('Item: ' + item[0], 57) + '}');
-            //       {       Amount: 1,546                                            }
-            Writeln('{       ' + PadR('Amount: ' + GroupDigits(ObjQuants[k], ','), 57) + '}');       //ObjQuants
-            Writeln('{                                                                }');
-            Writeln('{----------------------------------------------------------------}');
+            item := ObjTextArray(PlayerSkills[CurrentPlayer][j], intItems[k]);
+            //       {         Item: Normal logs                                      }
+            Writeln('{         ' + PadR('Item: ' + item[0], 55) + '}');
+            //       {         Amount: 1,546                                          }
+            Writeln('{         ' + PadR('Amount: ' + GroupDigits(ObjQuants[k], ','), 55) + '}');     //ObjQuants
           end;
+          
+          Writeln('{                                                                }');
+          Writeln('{----------------------------------------------------------------}');
         end;
     end;
   
