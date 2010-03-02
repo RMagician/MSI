@@ -357,8 +357,12 @@ begin
         LOC_VE_BANK:
           begin
             MSI_CountItems;
-            MSI_OpenBank(OBJ_BANK_VE, Players[CurrentPlayer].Pin);
+            if (not MSI_OpenBank(OBJ_BANK_VE, Players[CurrentPlayer].Pin)) then
+              ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to open bank: OBJ_BANK_VE';
+              
             Result := MSI_Deposit([LOGS_NORMAL, LOGS_OAK], [28, 28]);
+            if (not Result) then
+              ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to deposit items';
           end;
 
         else
@@ -415,7 +419,7 @@ begin
       begin
         MSI_Debug('MSI_MainLoop', 'Failed to perform skill!', Debug_PlayerActions);
         Players[CurrentPlayer].Active := False;
-        ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to perform';
+        ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to perform skill: ' + IntToStr(CurrentSkill);
         ProgressReport;
         NextPlayer(False);
         Break;
@@ -436,7 +440,6 @@ begin
       begin
         MSI_Debug('MSI_MainLoop', 'Failed to bank materials!', Debug_PlayerActions);
         Players[CurrentPlayer].Active := False;
-        ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to bank items';
         ProgressReport;
         NextPlayer(False);
         Break;

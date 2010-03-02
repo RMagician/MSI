@@ -525,7 +525,7 @@ Begin
           If (Objs[II].RightClickOnly) Or InRange(Random(100), 0, 80) Or (Action = ClickRight) Then
           Begin
             Mouse(X, Y, 0, 0, False);
-            If (Action = ClickRight) Then
+            If (Action = ClickRight) or (Action = ClickLeft) Then
               Result := WaitOptionMulti(Options, 500 + Random(100))
             Else
               Result := True;
