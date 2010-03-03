@@ -21,7 +21,7 @@ var
 begin
   HowManyPlayers := 8;
   NumberOfPlayers(HowManyPlayers);
-  CurrentPlayer := 0;
+  CurrentPlayer := 5;
   CurrentSkill := 0;
   SetLength(ProgressReportArray, HowManyPlayers);
   SetLength(PlayerSkills, HowManyPlayers);
@@ -32,7 +32,7 @@ begin
     Name   := 'empty cohen';
     Pass   := 'jackaster';
     Nick   := 'mpt';
-    Active := True;
+    Active := False;
     Pin    := '';
     PlayerSkills[0]  := [SKILL_WOODCUTTING];
     PlayerObjects[0] := [[OBJ_TREE]];
@@ -50,7 +50,7 @@ begin
     PlayerSkills[1]  := [SKILL_WOODCUTTING];
     PlayerObjects[1] := [[OBJ_TREE]];
     Integers[P_CITY] := CITY_VARROCK; //City to auto in
-    Integers[P_LOC]  := LOC_VE_TREES;  //Starting location
+    Integers[P_LOC]  := LOC_VE_BANK;  //Starting location
   end;
 
   with Players[2] do
@@ -63,7 +63,7 @@ begin
     PlayerSkills[2]  := [SKILL_WOODCUTTING];
     PlayerObjects[2] := [[OBJ_TREE]];
     Integers[P_CITY] := CITY_VARROCK; //City to auto in
-    Integers[P_LOC]  := LOC_VE_BANK;  //Starting location
+    Integers[P_LOC]  := LOC_VE_TREES;  //Starting location
   end;
 
   with Players[3] do
@@ -136,6 +136,9 @@ begin
     begin
       BoxRewards := ['amp', 'mote', 'ostume', 'oins', 'unes', 're', 'ems'];
 
+      if (not Active) then
+        ProgressReportArray[CurrentPlayer].FalseReason := 'User set to False';
+        
       ProgressReportArray[i].PlayerName := Name;
       ProgressReportArray[i].PlayerStatus := Active;
       ProgressReportArray[i].PlayerCity := Integers[P_CITY];

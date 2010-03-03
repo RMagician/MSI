@@ -25,6 +25,9 @@ var
   theBank: TMSObject;
   t: Integer;
 begin
+  if (not LoggedIn) then
+    Exit;
+    
   theBank := MSI_GetObject(which);
   t := 0;
   
@@ -63,6 +66,9 @@ Var ATPA2 : Array Of TPointArray;  //The length is the same as items.colors
     TB : TBox;
 
 Begin
+  if (not LoggedIn) then
+    Exit;
+    
   SetArrayLength(Items, Length(Amount));
   MSI_LoadItems(Items);
   If Not WaitFunc(@BankScreen, 70, 1300) Then  //Just in case
@@ -152,6 +158,9 @@ Var ATPA2 : Array Of TPointArray;  //The length is the same as items.colors
     TB : TBox;
 
 Begin
+  if (not LoggedIn) then
+    Exit;
+    
   MSI_LoadItems(Items);
   If Not WaitFunc(@BankScreen, 70, 1300) Then  //Just in case
     Exit

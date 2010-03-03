@@ -39,6 +39,9 @@ var
   skillsArr: TStringArray;
   currSkill, currLevel: Integer;
 begin
+  if (not Loggedin) then
+    Exit;
+    
   { In order for this to work properly, the skillsArr indexes must correspond
     to the skills constants in SRL's Players.scar }
   skillsArr := [ 'attack', 'strength', 'defence', 'range', 'prayer', 'magic',
@@ -78,6 +81,9 @@ end;
 {******************************************************************************}
 function MSI_WorstTool: Integer;
 begin
+  if (not LoggedIn) then
+    Exit;
+    
   case (PlayerSkills[CurrentPlayer][CurrentSkill]) of
     SKILL_WOODCUTTING:
       Result := HATCHET_BRONZE;
@@ -227,6 +233,9 @@ function MSI_WalkToLoc: Boolean;
 var
   i: Integer;
 begin
+  if (not LoggedIn) then
+    Exit;
+    
   case PlayerSkills[CurrentPlayer][CurrentSkill] of
     SKILL_WOODCUTTING:
       case Players[CurrentPlayer].Integers[P_LOC] of
@@ -262,7 +271,7 @@ function MSI_WalkToBank: Boolean;
 var
   i: Integer;
 begin
-  if (not InvFull) then
+  if (not InvFull) or (not LoggedIn) then
     Exit;
 
   case PlayerSkills[CurrentPlayer][CurrentSkill] of
@@ -300,6 +309,9 @@ function MSI_DoSkill: Boolean;
 var
   objectTypes: TIntegerArray;
 begin
+  if (not LoggedIn) then
+    Exit;
+    
   objectTypes := MSI_GetObjectList(CurrentPlayer, CurrentSkill);
   
   case PlayerSkills[CurrentPlayer][CurrentSkill] of
@@ -325,6 +337,9 @@ var
   items: TIntegerArray;
   exps: TExtendedArray;
 begin
+  if (not LoggedIn) then
+    Exit;
+    
   items := MSI_GetItemList(CurrentPlayer, CurrentSkill);
   exps := MSI_GetExpList;
   
@@ -351,6 +366,9 @@ end;
 {******************************************************************************}
 function MSI_BankMaterials: Boolean;
 begin
+  if (not LoggedIn) then
+    Exit;
+    
   case PlayerSkills[CurrentPlayer][CurrentSkill] of
     SKILL_WOODCUTTING:
       case Players[CurrentPlayer].Integers[P_LOC] of
