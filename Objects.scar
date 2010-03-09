@@ -124,96 +124,89 @@ Begin
 End;
   
 
-{*******************************************************************************}
-{ function MSI_FindTool(Tool: TItem; var X, Y: Integer): Boolean;               }
-{ By: Coh3n                                                                     }
-{ Rev: 25                                                                       }
-{ Date: 12 Nov 09                                                               }
-{ Description: Finds the specified tool when equipped or when in the inventory. }
-{*******************************************************************************}
-function MSI_FindTool(Tool: Integer; var X, Y: Integer): Boolean;
+{******************************************************************************}
+{ function MSI_FindTool(Tool, WhichTab: Integer; var X, Y: Integer): Boolean;  }
+{ By: Coh3n                                                                    }
+{ Rev: 25                                                                      }
+{ Date: 12 Nov 09                                                              }
+{ Description: Finds the specified tool                                        }
+{******************************************************************************}
+function MSI_FindTool(Tool, WhichTab: Integer; var X, Y: Integer): Boolean;
 var
-  SearchLocation: TIntegerArray;
   ColorsArr: TPointArray;
   BoxArr: T2DPointArray;
-  I, II, III, H, HH, X1, X2, Y1, Y2, MIDX, MIDY, Tol: Integer;
+  I, III, H, HH, X1, X2, Y1, Y2, MIDX, MIDY, Tol: Integer;
   FoundBitmap, FoundDTM: Boolean;
 begin
   if not LoggedIn then Exit;
   
   MSI_GetItem(Tool);
-  SearchLocation := [tab_Inv, tab_Equip];
-
- { Checks both the inventory and equipment tab. }
-  for II := 0 to 1 do
-  begin
-    GameTab(SearchLocation[II]);
-    MSI_Debug('MSI_FindTool', 'Searching GameTab: ' + IntToStr(I) + '.', Debug_Functions);
-
-    if II = 0 then
-    begin
-     { Edited MI Coords }
-      X1 := 550;  X2 := 735;
-      Y1 := 209;  Y2 := 459;
-    end else begin
-     { Weapon Equipment Slot }
-      X1 := 570;  X2 := 602;
-      Y1 := 289;  Y2 := 322;
-    end;
-
-   { Loops through the item's color record array. }
-    H := High(MSI_Item[Tool].Colors);
-    for I := 0 to H do
-      if FindColorsTolerance(ColorsArr, MSI_Item[Tool].Colors[I], X1, Y1, X2, Y2, MSI_Item[Tool].Tol) then
+  GameTab(WhichTab);
+  
+  case WhichTab of
+    tab_Inv:
       begin
-        MSI_Debug('MSI_FindTool', 'Found Color: ' + IntToStr(MSI_Item[Tool].Colors[I]) +
-                                  '. For Tool: ' + MSI_Item[Tool].Name + '.', Debug_Functions);
-        BoxArr := TPAToATPA(ColorsArr, 5);
-        // DebugATPA(BoxArr, '');
-
-        HH := High(BoxArr);
-        for III := 0 to HH do
-        begin
-          MiddleTPAEx(BoxArr[III], MIDX, MIDY);
-
-         { Look for the DTM in a 50 x 50 box around the middle color of the BoxArr. }
-          FoundDTM := FindDTM(MSI_Item[Tool].DTM, X, Y, MIDX - 25, MIDY - 25, MIDX + 25, MIDY + 25);
-          if FoundDTM then
-          begin
-            MSI_Debug('MSI_FindTool', 'Found DTM: ' + MSI_Item[Tool].Name + '.', Debug_Functions);
-            Break;
-          end;
-        end;
-
-        if FoundDTM then
-          Break;
+       { Edited MI Coords }
+        X1 := 550;  X2 := 735;
+        Y1 := 209;  Y2 := 459;
       end;
 
-   { Looks for the Bitmap, only if the DTM isn't found. }
-    if not FoundDTM then
-    begin
-      MSI_Debug('MSI_FindTool', 'Error Finding DTM: ' + MSI_Item[Tool].Name + '.', Debug_Functions);
-      Tol := 0;
-      repeat
-        FoundBitmap := FindBitmapToleranceIn(MSI_Item[Tool].BMP, X, Y, X1, Y1, X2, Y2, Tol);
-        
-       { Increases the tolerance by 2 if the bitmap isn't found until it is greater than or equal to 20. }
-        IncEx(Tol, 2);
-      until((Tol >= 20) or FoundBitmap);
+    tab_Equip:
+      begin
+       { Weapon Equipment Slot }
+        X1 := 570;  X2 := 602;
+        Y1 := 289;  Y2 := 322;
+      end;
+  end;
 
-      if FoundBitmap then
-        MSI_Debug('MSI_FindTool', 'Found Bitmap For Item: ' + MSI_Item[Tool].Name + '.', Debug_Functions);
+ { Loops through the item's color record array. }
+  H := High(MSI_Item[Tool].Colors);
+  for I := 0 to H do
+    if FindColorsTolerance(ColorsArr, MSI_Item[Tool].Colors[I], X1, Y1, X2, Y2, MSI_Item[Tool].Tol) then
+    begin
+      // MSI_Debug('MSI_FindTool', 'Found Color: ' + IntToStr(MSI_Item[Tool].Colors[I]) +
+                                // '. For Tool: ' + MSI_Item[Tool].Name + '.', Debug_Functions);
+      BoxArr := TPAToATPA(ColorsArr, 5);
+      // DebugATPA(BoxArr, '');
+
+      HH := High(BoxArr);
+      for III := 0 to HH do
+      begin
+        MiddleTPAEx(BoxArr[III], MIDX, MIDY);
+
+       { Look for the DTM in a 50 x 50 box around the middle color of the BoxArr. }
+        FoundDTM := FindDTM(MSI_Item[Tool].DTM, X, Y, MIDX - 25, MIDY - 25, MIDX + 25, MIDY + 25);
+        if FoundDTM then
+        begin
+          // MSI_Debug('MSI_FindTool', 'Found DTM: ' + MSI_Item[Tool].Name + '.', Debug_Functions);
+          Break;
+        end;
+      end;
+
+      if FoundDTM then
+        Break;
     end;
 
-   { Returns true if the DTM is found in the box, or if the Bitmap is found. }
-    Result := FoundDTM or FoundBitmap;
-    if Result then
-    begin
-      MSI_Debug('MSI_FindTool', 'Successfully Found Tool: ' + MSI_Item[Tool].Name + '.', Debug_Functions);
-      Break;
-    end;
+ { Looks for the Bitmap, only if the DTM isn't found. }
+  if not FoundDTM then
+  begin
+    //MSI_Debug('MSI_FindTool', 'Error Finding DTM: ' + MSI_Item[Tool].Name + '.', Debug_Functions);
+    Tol := 0;
+    repeat
+      FoundBitmap := FindBitmapToleranceIn(MSI_Item[Tool].BMP, X, Y, X1, Y1, X2, Y2, Tol);
+      
+     { Increases the tolerance by 2 if the bitmap isn't found until it is greater than or equal to 20. }
+      IncEx(Tol, 2);
+    until((Tol >= 20) or FoundBitmap);
 
-  end; { of GameTab for..to..do loop. }
+    if FoundBitmap then
+      MSI_Debug('MSI_FindTool', 'Found Bitmap For Item: ' + MSI_Item[Tool].Name + '.', Debug_Functions);
+  end;
+
+ { Returns true if the DTM is found in the box, or if the Bitmap is found. }
+  Result := FoundDTM or FoundBitmap;
+  if Result then
+    MSI_Debug('MSI_FindTool', 'Successfully Found Tool: ' + MSI_Item[Tool].Name + '.', Debug_Functions);
 
   MSI_FreeItemEx(Tool);
 end;
@@ -465,18 +458,18 @@ function MSI_IsMoving: boolean; Forward;
 Function MSI_FindObjectsIn(Objs: TMSObjectArray; Var IndexFound: Integer; X1, Y1, X2, Y2: Integer; Action: fnct_ActionOptions): Boolean;
 Var
   TPA: TPointArray;
-  Options, UpTexts: TStringArray;
+  TheOptions, UpTexts: TStringArray;
   I, II, III, HH, HHH, Hi: Integer;
   CheckUpText: Boolean;
 Begin
   Hi := High(Objs);
 
-  SetLength(Options, Hi + 1);
+  SetLength(TheOptions, Hi + 1);
   SetLength(UpTexts, Hi + 1);
   For I := 0 To Hi Do
   Begin
     UpTexts[I] := Objs[I].UpText;
-    Options[I] := Objs[I].Option;
+    TheOptions[I] := Objs[I].Option;
   End;
 
   For II := 0 To Hi Do
@@ -526,7 +519,7 @@ Begin
           Begin
             Mouse(X, Y, 0, 0, False);
             If (Action = ClickRight) or (Action = ClickLeft) Then
-              Result := WaitOptionMulti(Options, 500 + Random(100))
+              Result := WaitOptionMulti(TheOptions, 500 + Random(100))
             Else
               Result := True;
           End Else

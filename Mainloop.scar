@@ -99,8 +99,9 @@ end;
 {******************************************************************************}
 function MSI_SetupPlayer: Boolean;
 var
-  bestTool, worstTool, x, y, i, k: Integer;
+  bestTool, worstTool, x, y, i, j , k: Integer;
   bankCheck: Boolean;
+  gameTabs: TIntegerArray;
 begin
   if (not LoggedIn) then
     LoginPlayer;
@@ -112,12 +113,15 @@ begin
     moves down from there. }
   bestTool := MSI_BestTool;
   worstTool := MSI_WorstTool;
-  for i := bestTool downto worstTool do
-  begin
-    Result := MSI_FindTool(i, x, y);
-    if (Result) then
-      Break;
-  end;
+  gameTabs := [tab_Equip, tab_Inv];
+  
+  for j := 0 to High(gameTabs) do
+    for i := bestTool downto worstTool do
+    begin
+      Result := MSI_FindTool(i, gameTabs[j], x, y);
+      if (Result) then
+        Exit;
+    end;
 
   { If the required tool isn't found, then will open the bank and attempt to
     withdraw the proper tool. }

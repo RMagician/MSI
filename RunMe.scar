@@ -163,5 +163,6 @@ begin
   SetupMSI;
 
   DeclarePlayers;
-  MSI_MainLoop;
+  //MSI_MainLoop;
+  MSI_SetupPlayer;
 end.
