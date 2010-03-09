@@ -79,12 +79,13 @@ type
 { Type TPlayerSkillInfo
   Description: Stores information for one player for one skill. }
   TPlayerSkillInfo = record
-    SkillTime : integer;
-    TotalObj  : integer;
-    Level     : integer;
-    TotalEXP  : integer;
-    ObjQuants : array of integer;
-    //TProggy.SkillInfo[Skill_Mining].ObjQuants[Ore_Iron]
+    SkillTime  : integer;
+    TotalObj   : integer;
+    TotalLoads : integer;
+    Level      : integer;
+    TotalEXP   : integer;
+    ObjQuants  : array of integer;
+    //TProggy.SkillInfo[CurrentSkill].ObjQuants[Ore_Iron]
   end;
 
 { Type TProggy
@@ -113,6 +114,9 @@ var
   PlayerSkills: Array of TVariantArray;
   PlayerObjects: Array of Array of TVariantArray;
   { Used in the DeclarePlayers arrays for skills and objects }
+  
+  BreakAfter, BreakTime: Integer;
+  { Used for script setup (assinged to constatns in RunMe.scar) }
 
 { Debug constants
   Description: The several debugging levels, so the user receives as much

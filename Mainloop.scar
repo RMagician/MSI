@@ -353,8 +353,8 @@ begin
     itemCount := CountItems('dtm', MSI_Item[items[i]].DTM, []);
     expCount := Round(exps[i] * itemCount);
     
-    AddToProggy(i, itemCount, False); //Adds amount of item
-    AddToProggy(i, expCount, True);   //Adds exp to skill
+    AddToProggy(i, itemCount, ADD_ITEMS); //Adds amount of item
+    AddToProggy(-1, expCount, ADD_EXP);   //Adds exp to skill
     
     MSI_Debug('MSI_CountItems', 'Found ' + IntToStr(itemCount) + ' of item '
               + MSI_Item[items[i]].Name, DEBUG_FUNCTIONS);
@@ -384,27 +384,56 @@ begin
               
             Result := MSI_Deposit([LOGS_NORMAL, LOGS_OAK], [28, 28]);
             if (not Result) then
-              ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to deposit items';
+              ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to deposit items'
+            else
+              AddToProggy(-1, -1, ADD_LOADS);
           end;
 
         else
-          MSI_Debug('MSI_WalkToBank', 'Invalid location for woodcutting skill.', debug_Functions);
+          MSI_Debug('MSI_BankMaterials', 'Invalid location for woodcutting skill.', debug_Functions);
       end;
     else
-      MSI_Debug('MSI_WalkToBank', 'Invalid player skill!', debug_Functions);
+      MSI_Debug('MSI_BankMaterials', 'Invalid player skill!', debug_Functions);
+  end;
+end;
+
+{******************************************************************************}
+{ procedure MSI_HandleBreaking;                                                }
+{ By: MSI_HandleBreaking                                                       }
+{ Description: Simple procedure for breaking                                   }
+{******************************************************************************}
+procedure MSI_HandleBreaking;
+begin
+  if (not LoggedIn) then
+    Exit;
+    
+  if (BankScreen) then
+    CloseBank;
+    
+  if (HowManyPlayers > 1) then
+  begin
+    MSI_Debug('MSI_HandleBreaking', 'Taking a short break', Debug_PlayerActions);
+    ExitToLobby;
+    Wait((BreakTime * 60000) + RandomRange(-300000, 300000));
+    MSI_Debug('MSI_MainLoop', 'Break over, continuing to play', Debug_PlayerActions);
+    if (AtLobbyScreen) then
+      MouseBox(80, 450, 560, 470, 1);
+  end else
+  begin
+    MSI_Debug('MSI_MainLoop', 'Switching players', Debug_PlayerActions);
+    NextPlayer(True);
   end;
 end;
 
 {******************************************************************************}
 { procedure MSI_MainLoop;                                                      }
 { By: The MSI Team                                                             }
-{ Rev: 5                                                                       }
 { Date: 23 Feb 2010                                                            }
 { Description: The MainLoop - performs all actions of the script               }
 {******************************************************************************}
 procedure MSI_MainLoop;
 var
-  sinceLogin: Integer;
+  loadTime, totalLoads, i: Integer;
 begin
   repeat
     if (AllPlayersInactive) then
@@ -423,9 +452,10 @@ begin
       NextPlayer(False);
       Continue;
     end;
-    MarkTime(sinceLogin);
     
     repeat
+      MarkTime(loadTime);
+    
       if (not MSI_WalkToLoc) then
       begin
         MSI_Debug('MSI_MainLoop', 'Failed to walk to location!', Debug_PlayerActions);
@@ -467,8 +497,18 @@ begin
         Break;
       end;
 
-      ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].SkillTime := TimeFromMark(sinceLogin);
+      ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].SkillTime :=
+      ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].SkillTime + TimeFromMark(loadTime);
+      
       ProgressReport;
+      
+      for i := 0 to High(PlayerSkills[CurrentPlayer]) do
+        IncEx(totalLoads, ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalLoads);
+        
+      Writeln('Total Loads: ' + IntToStr(totalLoads)); // Just for testing
+      if (totalLoads >= BreakAfter) then
+        MSI_HandleBreaking;
+        
     until(not Players[CurrentPlayer].Active);
-  until(False);
+  until(AllPlayersInactive);
 end;

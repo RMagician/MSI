@@ -10,7 +10,8 @@ program MSIScript;
 {.include srl/srl/MSI/Setup.scar}
 
 const
-  BREAK_AFTER = 2; // Loads to break after/switching players after ** Doesn't do anything yet
+  BREAK_AFTER = 1; // Loads to break after/switching players after
+  BREAK_TIME  = 15; // How long to break for in minutes (for single player only, multiplayer will switch players)
 
   SMART_WORLD   = 152;
   MEMBERS_WORLD = False;
@@ -21,7 +22,7 @@ var
 begin
   HowManyPlayers := 8;
   NumberOfPlayers(HowManyPlayers);
-  CurrentPlayer := 5;
+  CurrentPlayer := 7;
   CurrentSkill := 0;
   SetLength(ProgressReportArray, HowManyPlayers);
   SetLength(PlayerSkills, HowManyPlayers);
@@ -37,7 +38,7 @@ begin
     PlayerSkills[0]  := [SKILL_WOODCUTTING];
     PlayerObjects[0] := [[OBJ_TREE]];
     Integers[P_CITY] := CITY_VARROCK; //City to auto in
-    Integers[P_LOC]  := LOC_VE_TREES;  //Starting location
+    Integers[P_LOC]  := LOC_VE_BANK;  //Starting location
   end;
 
   with Players[1] do
@@ -128,7 +129,7 @@ begin
     PlayerSkills[7]  := [SKILL_WOODCUTTING];
     PlayerObjects[7] := [[OBJ_TREE]];
     Integers[P_CITY] := CITY_VARROCK; //City to auto in
-    Integers[P_LOC]  := LOC_VE_TREES;  //Starting location
+    Integers[P_LOC]  := LOC_VE_BANK;  //Starting location
   end;
 
   for i := 0 to High(Players) do
@@ -161,8 +162,10 @@ begin
 
   SetupSRL;
   SetupMSI;
+  
+  BreakAfter := BREAK_AFTER;
+  BreakTime := BREAK_TIME;
 
   DeclarePlayers;
-  //MSI_MainLoop;
-  MSI_SetupPlayer;
+  MSI_MainLoop;
 end.

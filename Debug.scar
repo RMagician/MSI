@@ -39,15 +39,26 @@ begin
   writeln(DebugMSG);
 end;
 
-Procedure AddToProggy(item, quantity: Integer; findEXP: Boolean);
+{******************************************************************************}
+{ procedure AddToProggy(item, quantity, which: Integer);                       }
+{ By: The MSI Team                                                             }
+{ Description: Adds specified element to the progress report - if parameter    }
+{              is unused, set to -1                                            }
+{******************************************************************************}
+const
+  ADD_EXP   = 0;
+  ADD_ITEMS = 1;
+  ADD_LOADS = 2;
+procedure AddToProggy(item, quantity, which: Integer);
 begin
   if (quantity = 0) then
     Exit;
 
-  if (findEXP) then
-    IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalEXP, quantity)
-  else
-    IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].ObjQuants[item], quantity);
+  case which of
+    ADD_EXP: IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalEXP, quantity);
+    ADD_ITEMS: IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].ObjQuants[item], quantity);
+    ADD_LOADS: Inc(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalLoads);
+  end;
 end;
 
 Function SkillTextArray(what: variant): TStringArray;
@@ -295,6 +306,8 @@ begin
           Writeln('{     ' + PadR('Skill: ' + skill[0], 59) + '}');
           //       {       Time: Skill Time                                         }
           Writeln('{       ' + PadR('Time: ' + MsToTime(SkillTime, Time_Short), 57) + '}');          //SkillTime
+          //       {       Loads: 45                                                }
+          Writeln('{       ' + PadR('Loads: ' + IntToStr(TotalLoads), 57) + '}');
           //       {       Experience: 38,650                                       }
           Writeln('{       ' + PadR('Experience: ' + GroupDigits(Round(TotalEXP), ','), 57) + '}');  //TotalEXP
           //       {       Level: 91                                                }
