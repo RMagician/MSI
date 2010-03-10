@@ -413,7 +413,7 @@ begin
   if (BankScreen) then
     CloseBank;
 
-  if (HowManyPlayers > 1) then
+  if (HowManyPlayers = 1) then
   begin
     MSI_Debug('MSI_HandleBreaking', 'Taking a short break', Debug_PlayerActions);
     ExitToLobby;
@@ -508,7 +508,6 @@ begin
       for i := 0 to High(PlayerSkills[CurrentPlayer]) do
         IncEx(totalLoads, ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalLoads);
 
-      Writeln('Total Loads: ' + IntToStr(totalLoads)); // Just for testing
       if (totalLoads >= BreakAfter) then
         MSI_HandleBreaking;
 
