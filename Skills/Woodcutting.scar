@@ -120,22 +120,25 @@ Begin
 End;
 
 {******************************************************************************}
-{ Procedure MSI_PowerChop(Which: TIntegerArray; Time: Integer);                }
-{ By: marpis                                                                   }
-{ Description: Chops trees until inventory is full, then drops and repeat.     }
+{ function MSI_PowerChop(WhichTrees, WhichLogs: TIntegerArray): Boolean;       }
+{ By: marpis and Coh3n                                                         }
+{ Description: Chops trees until inventory is full, then drops.                }
 {              Time is in milliseconds.                                        }
 {******************************************************************************}
-Procedure MSI_PowerChop(WhichTrees, WhichLogs: TIntegerArray; Time: Integer);
+function MSI_PowerChop(WhichTrees, WhichLogs: TIntegerArray): Boolean;
 Var
-  T, TT: Integer;
+  logsCount, i, TT: Integer;
 Begin
-  T := GetSystemTime + Time;
   TT := GetSystemTime + 30*60000;
   Repeat
-    Repeat
-      If MSI_ChopInvFull(WhichTrees) Then
-        TT := GetSystemTime + 30*60000;
-    Until(InvFull) Or (Not LoggedIn) Or (GetSystemTime > TT);
-    MSI_ClickItems(WhichLogs, 'rop');
-  Until(GetSystemTime > T) Or (Not LoggedIn);
+    If MSI_ChopInvFull(WhichTrees) Then
+      TT := GetSystemTime + 30*60000;
+  Until(InvFull) Or (Not LoggedIn) Or (GetSystemTime > TT);
+  MSI_ClickItems(WhichLogs, 'rop');
+  
+  for i := 0 to High(WhichLogs) do
+    logsCount := logsCount + Length(MSI_FindItemSlots(WhichLogs[i]));
+
+  Writeln('Logs after dropping: ' + IntToStr(logsCount)); // Just for testing
+  Result := (logsCount <= 0);
 End;

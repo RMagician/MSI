@@ -129,11 +129,10 @@ begin
   begin
     case (Players[CurrentPlayer].Integers[P_LOC]) of
       LOC_VE_BANK:
-        bankCheck := MSI_OpenBank(OBJ_BANK_VE, Players[CurrentPlayer].Pin);
+        bankCheck := MSI_OpenBank(OBJ_BANK_VE, WALK_WC_VE_BANK_4, Players[CurrentPlayer].Pin);
 
       else
-        MSI_Debug('MSI_SetupPlayer', 'Invalid Player.Integers[P_LOC].',
-                  debug_Functions);
+        MSI_Debug('MSI_SetupPlayer', 'Invalid Player.Integers[P_LOC]', debug_Functions);
     end;
 
     if bankCheck then
@@ -146,8 +145,7 @@ begin
 
         begin
           CloseBank;
-          MSI_Debug('MSI_PlayerSetup', 'Couldn''t Withdraw Tool.',
-                    debug_Functions);
+          MSI_Debug('MSI_PlayerSetup', 'Couldn''t Withdraw Tool.', debug_Functions);
         end;
       end
     else
@@ -314,16 +312,20 @@ end;
 {******************************************************************************}
 function MSI_DoSkill: Boolean;
 var
-  objectTypes: TIntegerArray;
+  objectTypes, itemTypes: TIntegerArray;
 begin
   if (not LoggedIn) then
     Exit;
 
   objectTypes := MSI_GetObjectList(CurrentPlayer, CurrentSkill);
+  itemTypes := MSI_GetItemList(CurrentPlayer, CurrentSkill);
 
   case PlayerSkills[CurrentPlayer][CurrentSkill] of
     SKILL_WOODCUTTING:
-      Result := MSI_ChopInvFull(objectTypes);
+      if (Players[CurrentPlayer].Booleans[P_BANK]) then
+        Result := MSI_ChopInvFull(objectTypes)
+      else
+        Result := MSI_PowerChop(objectTypes, itemTypes);
 
     else
       MSI_Debug('MSI_WalkToBank', 'Invalid player skill!', debug_Functions);
@@ -382,8 +384,11 @@ begin
         LOC_VE_BANK:
           begin
             MSI_CountItems;
-            if (not MSI_OpenBank(OBJ_BANK_VE, Players[CurrentPlayer].Pin)) then
+            if (not MSI_OpenBank(OBJ_BANK_VE, WALK_WC_VE_BANK_4, Players[CurrentPlayer].Pin)) then
+            begin
               ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to open bank: OBJ_BANK_VE';
+              Exit;
+            end;
 
             Result := MSI_Deposit([LOGS_NORMAL, LOGS_OAK], [28, 28]);
             if (not Result) then
@@ -419,7 +424,7 @@ begin
     ExitToLobby;
     Wait((BreakTime * 60000) + RandomRange(-300000, 300000));
     MSI_Debug('MSI_MainLoop', 'Break over, continuing to play', Debug_PlayerActions);
-    if (AtLobbyScreen) then
+    if (LobbyScreen) then
       MouseBox(80, 450, 560, 470, 1);
   end else
   begin
@@ -499,9 +504,6 @@ begin
         NextPlayer(False);
         Break;
       end;
-
-      ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].SkillTime :=
-      ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].SkillTime + TimeFromMark(loadTime);
 
       ProgressReport;
 

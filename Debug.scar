@@ -280,6 +280,8 @@ begin
   Writeln('{----------------------------------------------------------------}');
   Writeln('{                   MSI Extreme Player Report                    }');
   Writeln('{----------------------------------------------------------------}'); //64 from '{' to '}'
+  Writeln('{     ' + PadR('Time Running: ' + TimeRunning, 59) + '}');
+  Writeln('{----------------------------------------------------------------}');
   
   for i := 0 to (HowManyPlayers - 1) do
     with ProgressReportArray[i] do
@@ -294,7 +296,7 @@ begin
       //       {     Active: True                                               }
       Writeln('{     ' + PadR('Active: ' + Capitalize(BoolToStr(PlayerStatus)), 59) + '}');        //PlayerStatus
       if (not PlayerStatus) then
-        //       {       Reason: Failed to bank items                             }
+        //       {       Reason: Failed to bank items                             }                //FalseReason
         Writeln('{       ' + PadR('Reason: ' + FalseReason, 57) + '}');
       Writeln('{                                                                }');
 
@@ -304,10 +306,8 @@ begin
           skill := SkillTextArray(PlayerSkills[CurrentPlayer][j]);
           //       {     Skill: Woodcutting                                         }
           Writeln('{     ' + PadR('Skill: ' + skill[0], 59) + '}');
-          //       {       Time: Skill Time                                         }
-          Writeln('{       ' + PadR('Time: ' + MsToTime(SkillTime, Time_Short), 57) + '}');          //SkillTime
           //       {       Loads: 45                                                }
-          Writeln('{       ' + PadR('Loads: ' + IntToStr(TotalLoads), 57) + '}');
+          Writeln('{       ' + PadR('Loads: ' + IntToStr(TotalLoads), 57) + '}');                    //TotalLoads
           //       {       Experience: 38,650                                       }
           Writeln('{       ' + PadR('Experience: ' + GroupDigits(Round(TotalEXP), ','), 57) + '}');  //TotalEXP
           //       {       Level: 91                                                }

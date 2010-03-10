@@ -431,7 +431,7 @@ begin
         for i := 0 to 2 do
         begin
           BC := AutoColorMM(SRLAC_BankerColour);
-          FindColorsTolerance(TPA, BC, MMx1, MMCy - 18, MMx2, MMy2, 1);
+          FindColorsTolerance(TPA, BC, MMx1, MMCy, MMx2, MMy2, 1);
           if Length(TPA) > 5 then
             Break;
           if i = 2 then
@@ -470,8 +470,6 @@ begin
 end;
 
 Function WalkPath(index: byte): Boolean;
-var
-  i: Integer;
 begin
   if not CreateWalkIndex(index) then
   begin

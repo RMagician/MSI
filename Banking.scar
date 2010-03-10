@@ -16,14 +16,16 @@ const
 }
 
 {******************************************************************************}
-{ Function MSI_OpenBank(Bank, tPin : String) : Boolean;                        }
+{ function MSI_OpenBank(which, walkIndex: Integer; tPin: String): Boolean;     }
 { By: Coh3n                                                                    }
-{ Description: Opens the bank 'which' - refer to bank constants                }
+{ Description: Opens the bank 'which' (refer to bank constants). Will attempt  }
+{              to relocate if bank isn't found after 15 tries.                 }
 {******************************************************************************}
-function MSI_OpenBank(which: Integer; tPin: String): Boolean;
+function CreateWalkIndex(index: Integer): Boolean; forward;
+function MSI_OpenBank(which, walkIndex: Integer; tPin: String): Boolean;
 var
   theBank: TMSObject;
-  t: Integer;
+  t, x, y: Integer;
 begin
   if (not LoggedIn) then
     Exit;
@@ -40,14 +42,27 @@ begin
           InPin(tPin);
 
       Result := WaitFunc(@BankScreen, 200, 10000);
-    end else
-      MSI_Debug('MSI_OpenBank', 'Could NOT open bank: ' + theBank.Name, DEBUG_FUNCTIONS);
-  until(Result or (t >= 30))
+    end;
+      
+    if (t = 15) then
+      if not (CreateWalkIndex(walkIndex)) then
+      begin
+        SymbolAccuracy := 50;
+        if (FindSymbol(x, y, 'bank')) then
+        begin
+          Mouse(x, y, 5, 5, True);
+          FFlag(5);
+          Wait(RandomRange(250, 750));
+        end;
+          
+        SymbolAccuracy := 80;
+      end;
+  until(Result or (t >= 30));
   
   if (Result) then
     MSI_Debug('MSI_OpenBank', 'Successfuly opened bank: ' + theBank.Name, DEBUG_FUNCTIONS)
   else
-    MSI_Debug('MSI_OpenBank', 'Could NOT open bank - ' + theBank.Name, DEBUG_FUNCTIONS);
+    MSI_Debug('MSI_OpenBank', 'Failed to open bank - ' + theBank.Name, DEBUG_FUNCTIONS);
 end;
 
 {******************************************************************************}

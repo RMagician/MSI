@@ -79,7 +79,6 @@ type
 { Type TPlayerSkillInfo
   Description: Stores information for one player for one skill. }
   TPlayerSkillInfo = record
-    SkillTime  : integer;
     TotalObj   : integer;
     TotalLoads : integer;
     Level      : integer;
@@ -135,12 +134,9 @@ const
   // Integers
   P_LOC  = 0;
   P_CITY = 1;
-  
-  // Arrays
-  P_SKILLS   = 0;
-  
-  // MSI_Arrays
-  P_OBJECTS  = 0;
+
+  // Booleans
+  P_BANK = 0;
   
 { const Location Constants
   Description: Constants used to represent player locations }
