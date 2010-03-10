@@ -9,6 +9,7 @@
 { const Varrock East Woodcutting
   Description: Constants used for the walking to and from the trees at the
                Varrock east bank. }
+
 const
   WALK_WC_VE_TREE_1 = 0; // rock
   WALK_WC_VE_TREE_2 = 1; // road
@@ -218,6 +219,7 @@ begin
     if rs_OnMiniMap(TPA[i].x, TPA[i].y) then
     begin
       Mouse(TPA[i].x, TPA[i].y, random(8), random(8), true);
+      wait(randomRange(1000, 2000));
       while not FlagPresent do
       begin
         wait(250+randomRange(150, 350));
@@ -285,7 +287,7 @@ begin
         Result := walkTPApoint(TPA, Point(MMx2-randomRange(5, 15), MMy1), random(10));
         Exit;
       end;
-    
+
     WALK_WC_VE_TREE_2:
       begin
         TPA := CreateWalkTPA(MMx2, MMcy, RoadColor, 2, 2, 8);
@@ -303,7 +305,7 @@ begin
         Result := True;
         Exit;
       end;
-      
+
     WALK_WC_VE_TREE_3:
       begin
         RockColor := AutoColorMM(SRLAC_RockColour);
@@ -325,7 +327,7 @@ begin
           Exit;
         end;
       end;
-      
+
     WALK_WC_VE_TREE_4:
       begin
         TreeColor := AutoColorMM(SRLAC_TreeColour);
@@ -344,7 +346,7 @@ begin
           Exit;
         end;
       end;
-      
+
     WALK_WC_VE_BANK_1:
       begin
         RockColor := AutoColorMM(SRLAC_RockColour);
@@ -367,7 +369,7 @@ begin
           Exit;
         end;
       end;
-      
+
     WALK_WC_VE_BANK_2:
       begin
         RoadColor := FindNewVarrockRoadColor();
@@ -375,7 +377,7 @@ begin
         if Length(TPA) <= 0 then
           Exit;
         SortTPAFrom(TPA, Point(MMCx, MMCy));
-        
+
         for t := 0 to 4 do
         begin
           i := Length(TPA) - RandomRange(1, 4);
@@ -388,19 +390,19 @@ begin
           if BC = 1 then
             Break;
         end;
-        
+
         if t = 4 then
         begin
           MSI_Debug('CreatWalkIndex(WALK_WC_VE_BANK_2)', 'Failed to find road on minimap', Debug_Functions);
           Exit;
         end;
-        
+
         Mouse(TPA[i].x, TPA[i].y, 0, 0, True);
         FFlag(5);
         Result := True;
         Exit;
       end;
-      
+
     WALK_WC_VE_BANK_3:
       begin
         TPA := CreateWalkTPA(MMx1, MMcy, RoadColor, 3, 3, 8);
@@ -423,13 +425,13 @@ begin
           Exit;
         end;
       end;
-      
+
     WALK_WC_VE_BANK_4:
       begin
         for i := 0 to 2 do
         begin
           BC := AutoColorMM(SRLAC_BankerColour);
-          FindColorsTolerance(TPA, BC, MMx1, MMCy + 18, MMCx, MMy2, 1);
+          FindColorsTolerance(TPA, BC, MMx1, MMCy - 18, MMx2, MMy2, 1);
           if Length(TPA) > 5 then
             Break;
           if i = 2 then
@@ -438,7 +440,7 @@ begin
             Exit;
           end;
         end;
-        
+
         SortTPAFrom(TPA, Point(MMCx, MMCy));
         for i := 0 to High(TPA) do
         begin
@@ -451,7 +453,7 @@ begin
             Exit;
           end;
         end;
-        
+
         Mouse(TPA[t].x, TPA[t].y - RandomRange(3, 7), 3, 3, True);
         t := getSystemTime;
         while not flagPresent() do
@@ -460,10 +462,99 @@ begin
             Exit;
           wait(250+random(500));
         end;
-        
+
         FFlag(3);
         Result := True;
       end;
   end;
 end;
 
+Function WalkPath(index: byte): Boolean;
+var
+  i: Integer;
+begin
+  if not CreateWalkIndex(index) then
+  begin
+    case index of
+      WALK_WC_VE_TREE_1:
+      begin
+        if not RadialWalkTolerance(RoadColor, 45, 90, randomRange(60, 70), random(8), random(8), 10) then
+          if not RadialWalkTolerance(findRockColor, 45, 90, randomRange(60, 70), 3, 3, 10) then
+          begin
+            MSI_Debug('WalkPath('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_1', Debug_Functions);
+            Exit;
+          end;
+      end;
+
+      WALK_WC_VE_TREE_2:
+      begin
+        if not RadialWalkTolerance(RoadColor, 75, 105, randomRange(60, 70), random(5), random(5), 10) then
+          if not RadialWalkTolerance(RoadColor, 65, 115, randomRange(60, 70), random(5), random(5), 10) then
+          begin
+            MSI_Debug('WalkPath('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_2', Debug_Functions);
+            Exit;
+          end;
+      end;
+
+      WALK_WC_VE_TREE_3:
+      begin
+        if not RadialWalkTolerance(RoadColor, 0, 35, randomRange(60, 70), 10, 10, 10) then
+          if not RadialWalkTolerance(findRockColor, 345, 35, 60, 2, 2, 10) then
+            if not RadialWalkTolerance(RoadColor, 0, 45, randomRange(60, 70), 5, 5, 10) then
+            begin
+              MSI_Debug('WalkPath('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_3', Debug_Functions);
+              Exit;
+            end;
+      end;
+
+      WALK_WC_VE_TREE_4:
+      begin
+        Exit; // Not sure of any other failsafe for this. A (D)DTM perhaps?
+      end;
+
+      WALK_WC_VE_BANK_1:
+      begin
+        if not RadialWalkTolerance(findRockColor, 350, 50, 65, 5, 5, 10) then
+        begin
+          mouseBox(631, 114, 667, 130, 1); // random co-ord clicking
+          wait(randomRange(1000, 2000));
+          if FlagPresent then
+          begin
+            result := true;
+            FFlag(randomRange(8, 14));
+          end;
+        end else
+        begin
+          MSI_Debug('WalkPath('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_1', Debug_Functions);
+          Exit;
+        end;
+      end;
+
+      WALK_WC_VE_BANK_2:
+      begin
+        if not RadialWalkTolerance(RoadColor, 180, 200, randomRange(60, 70), random(5), random(5), 10) then
+          if not RadialWalkTolerance(RoadColor, 170, 220, randomRange(60, 70), 3, 3, 10) then
+          begin
+            MSI_Debug('WalkPath('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_2', Debug_Functions);
+            Exit;
+          end;
+      end;
+
+      WALK_WC_VE_BANK_3:
+      begin
+        if not RadialWalkTolerance(RoadColor, 255, 280, randomRange(60, 70), random(8), random(8), 10) then
+          if not RadialWalkTolerance(RoadColor, 245, 290, randomRange(60, 70), 5, 5, 10) then
+          begin
+            MSI_Debug('WalkPath('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_3', Debug_Functions);
+            Exit;
+          end;
+      end;
+
+      WALK_WC_VE_BANK_4:
+      begin
+        Exit; // add a DTM of Bankers here.
+      end;
+    end;
+  end;
+  result := true;
+end;

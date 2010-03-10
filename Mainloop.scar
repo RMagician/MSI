@@ -41,7 +41,7 @@ var
 begin
   if (not Loggedin) then
     Exit;
-    
+
   { In order for this to work properly, the skillsArr indexes must correspond
     to the skills constants in SRL's Players.scar }
   skillsArr := [ 'attack', 'strength', 'defence', 'range', 'prayer', 'magic',
@@ -83,7 +83,7 @@ function MSI_WorstTool: Integer;
 begin
   if (not LoggedIn) then
     Exit;
-    
+
   case (PlayerSkills[CurrentPlayer][CurrentSkill]) of
     SKILL_WOODCUTTING:
       Result := HATCHET_BRONZE;
@@ -114,7 +114,7 @@ begin
   bestTool := MSI_BestTool;
   worstTool := MSI_WorstTool;
   gameTabs := [tab_Equip, tab_Inv];
-  
+
   for j := 0 to High(gameTabs) do
     for i := bestTool downto worstTool do
     begin
@@ -220,7 +220,7 @@ var
 begin
   objects := MSI_GetObjectList(CurrentPlayer, CurrentSkill);
   SetLength(Result, Length(objects));
-  
+
   msObjs := MSI_GetObjects(objects);
   for i := 0 to High(objects) do
     Result[i] := msObjs[i].Exp;
@@ -239,21 +239,21 @@ var
 begin
   if (not LoggedIn) then
     Exit;
-    
+
   case PlayerSkills[CurrentPlayer][CurrentSkill] of
     SKILL_WOODCUTTING:
       case Players[CurrentPlayer].Integers[P_LOC] of
         LOC_VE_BANK:
           begin
-            RoadColor := FindNewVarrockRoadColor;
+            RoadColor := FindNewVarrockRoadColor();
             for i := WALK_WC_VE_TREE_1 to WALK_WC_VE_TREE_3 do
-              CreateWalkIndex(i);
+              WalkPath(i);
 
-            Result := CreateWalkIndex(WALK_WC_VE_TREE_4);
+            Result := WalkPath(WALK_WC_VE_TREE_4);
             if Result then
               Players[CurrentPlayer].Integers[P_LOC] := LOC_VE_TREES;
           end;
-          
+
         LOC_VE_TREES: Result := True;
 
         else
@@ -285,13 +285,13 @@ begin
           begin
             RoadColor := FindNewVarrockRoadColor;
             for i := WALK_WC_VE_BANK_1 to WALK_WC_VE_BANK_3 do
-              CreateWalkIndex(i);
+              WalkPath(i);
 
-            Result := CreateWalkIndex(WALK_WC_VE_BANK_4);
+            Result := WalkPath(WALK_WC_VE_BANK_4);
             if Result then
               Players[CurrentPlayer].Integers[P_LOC] := LOC_VE_BANK;
           end;
-          
+
         LOC_VE_BANK: Result := True;
 
         else
@@ -300,6 +300,9 @@ begin
     else
       MSI_Debug('MSI_WalkToBank', 'Invalid player skill!', debug_Functions);
   end;
+  
+  if (Result) then
+    Wait(RandomRange(750, 1500)); // To be sure to not look for the bank too early
 end;
 
 {******************************************************************************}
@@ -315,13 +318,13 @@ var
 begin
   if (not LoggedIn) then
     Exit;
-    
+
   objectTypes := MSI_GetObjectList(CurrentPlayer, CurrentSkill);
-  
+
   case PlayerSkills[CurrentPlayer][CurrentSkill] of
     SKILL_WOODCUTTING:
       Result := MSI_ChopInvFull(objectTypes);
-      
+
     else
       MSI_Debug('MSI_WalkToBank', 'Invalid player skill!', debug_Functions);
   end;
@@ -343,19 +346,19 @@ var
 begin
   if (not LoggedIn) then
     Exit;
-    
+
   items := MSI_GetItemList(CurrentPlayer, CurrentSkill);
   exps := MSI_GetExpList;
-  
+
   for i := 0 to High(items) do
   begin
     MSI_GetItem(items[i]);
     itemCount := CountItems('dtm', MSI_Item[items[i]].DTM, []);
     expCount := Round(exps[i] * itemCount);
-    
+
     AddToProggy(i, itemCount, ADD_ITEMS); //Adds amount of item
     AddToProggy(-1, expCount, ADD_EXP);   //Adds exp to skill
-    
+
     MSI_Debug('MSI_CountItems', 'Found ' + IntToStr(itemCount) + ' of item '
               + MSI_Item[items[i]].Name, DEBUG_FUNCTIONS);
   end;
@@ -372,7 +375,7 @@ function MSI_BankMaterials: Boolean;
 begin
   if (not LoggedIn) then
     Exit;
-    
+
   case PlayerSkills[CurrentPlayer][CurrentSkill] of
     SKILL_WOODCUTTING:
       case Players[CurrentPlayer].Integers[P_LOC] of
@@ -381,7 +384,7 @@ begin
             MSI_CountItems;
             if (not MSI_OpenBank(OBJ_BANK_VE, Players[CurrentPlayer].Pin)) then
               ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to open bank: OBJ_BANK_VE';
-              
+
             Result := MSI_Deposit([LOGS_NORMAL, LOGS_OAK], [28, 28]);
             if (not Result) then
               ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to deposit items'
@@ -406,10 +409,10 @@ procedure MSI_HandleBreaking;
 begin
   if (not LoggedIn) then
     Exit;
-    
+
   if (BankScreen) then
     CloseBank;
-    
+
   if (HowManyPlayers > 1) then
   begin
     MSI_Debug('MSI_HandleBreaking', 'Taking a short break', Debug_PlayerActions);
@@ -442,7 +445,7 @@ begin
       ProgressReport;
       TerminateScript;
     end;
-    
+
     if (not MSI_SetupPlayer) then
     begin
       MSI_Debug('MSI_MainLoop', 'Failed to setup player!', Debug_PlayerActions);
@@ -452,10 +455,10 @@ begin
       NextPlayer(False);
       Continue;
     end;
-    
+
     repeat
       MarkTime(loadTime);
-    
+
       if (not MSI_WalkToLoc) then
       begin
         MSI_Debug('MSI_MainLoop', 'Failed to walk to location!', Debug_PlayerActions);
@@ -499,16 +502,16 @@ begin
 
       ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].SkillTime :=
       ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].SkillTime + TimeFromMark(loadTime);
-      
+
       ProgressReport;
-      
+
       for i := 0 to High(PlayerSkills[CurrentPlayer]) do
         IncEx(totalLoads, ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalLoads);
-        
+
       Writeln('Total Loads: ' + IntToStr(totalLoads)); // Just for testing
       if (totalLoads >= BreakAfter) then
         MSI_HandleBreaking;
-        
+
     until(not Players[CurrentPlayer].Active);
   until(AllPlayersInactive);
 end;

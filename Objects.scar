@@ -515,7 +515,7 @@ Begin
         If Result Then
         Begin
           GetMousePos(X, Y);
-          If (Objs[II].RightClickOnly) Or InRange(Random(100), 0, 80) Or (Action = ClickRight) Then
+          If (Objs[II].RightClickOnly) Or InRange(Random(100), 0, 20) Or (Action = ClickRight) Then
           Begin
             Mouse(X, Y, 0, 0, False);
             If (Action = ClickRight) or (Action = ClickLeft) Then
