@@ -125,6 +125,7 @@ End;
 { Description: Chops trees until inventory is full, then drops.                }
 {              Time is in milliseconds.                                        }
 {******************************************************************************}
+procedure MSI_CountItems; forward;
 function MSI_PowerChop(WhichTrees, WhichLogs: TIntegerArray): Boolean;
 Var
   logsCount, i, TT: Integer;
@@ -134,6 +135,7 @@ Begin
     If MSI_ChopInvFull(WhichTrees) Then
       TT := GetSystemTime + 30*60000;
   Until(InvFull) Or (Not LoggedIn) Or (GetSystemTime > TT);
+  MSI_CountItems;
   MSI_ClickItems(WhichLogs, 'rop');
   
   for i := 0 to High(WhichLogs) do
@@ -141,4 +143,7 @@ Begin
 
   Writeln('Logs after dropping: ' + IntToStr(logsCount)); // Just for testing
   Result := (logsCount <= 0);
+  
+  if Result then
+    AddToProggy(-1, -1, ADD_LOADS);
 End;

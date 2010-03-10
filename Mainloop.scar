@@ -464,16 +464,17 @@ begin
     repeat
       MarkTime(loadTime);
 
-      if (not MSI_WalkToLoc) then
-      begin
-        MSI_Debug('MSI_MainLoop', 'Failed to walk to location!', Debug_PlayerActions);
-        Players[CurrentPlayer].Active := False;
-        ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to walk to location';
-        Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
-        ProgressReport;
-        NextPlayer(False);
-        Break;
-      end;
+      if (Players[CurrentPlayer].Booleans[P_BANK]) then
+        if (not MSI_WalkToLoc) then
+        begin
+          MSI_Debug('MSI_MainLoop', 'Failed to walk to location!', Debug_PlayerActions);
+          Players[CurrentPlayer].Active := False;
+          ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to walk to location';
+          Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
+          ProgressReport;
+          NextPlayer(False);
+          Break;
+        end;
 
       if (not MSI_DoSkill) then
       begin
@@ -485,24 +486,27 @@ begin
         Break;
       end;
 
-      if (not MSI_WalkToBank) then
+      if (Players[CurrentPlayer].Booleans[P_BANK]) then
       begin
-        MSI_Debug('MSI_MainLoop', 'Failed to walk to bank!', Debug_PlayerActions);
-        Players[CurrentPlayer].Active := False;
-        ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to walk to bank';
-        Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
-        ProgressReport;
-        NextPlayer(False);
-        Break;
-      end;
+        if (not MSI_WalkToBank) then
+        begin
+          MSI_Debug('MSI_MainLoop', 'Failed to walk to bank!', Debug_PlayerActions);
+          Players[CurrentPlayer].Active := False;
+          ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to walk to bank';
+          Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
+          ProgressReport;
+          NextPlayer(False);
+          Break;
+        end;
 
-      if (not MSI_BankMaterials) then
-      begin
-        MSI_Debug('MSI_MainLoop', 'Failed to bank materials!', Debug_PlayerActions);
-        Players[CurrentPlayer].Active := False;
-        ProgressReport;
-        NextPlayer(False);
-        Break;
+        if (not MSI_BankMaterials) then
+        begin
+          MSI_Debug('MSI_MainLoop', 'Failed to bank materials!', Debug_PlayerActions);
+          Players[CurrentPlayer].Active := False;
+          ProgressReport;
+          NextPlayer(False);
+          Break;
+        end;
       end;
 
       ProgressReport;
