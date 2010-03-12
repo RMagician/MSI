@@ -13,7 +13,7 @@
 | * function MSI_DoSkill: Boolean;                 * by The MSI Team           |
 | * procedure MSI_CountItems: Boolean;             * by Coh3n                  |
 | * function MSI_BankMaterials: Boolean;           * by The MSI Team           |
-| * function MSI_MainLoop: Boolean;                * by The MSI Team           |
+| * function MSI_MainLoop: Boolean;                * by Coh3n                  |
  \_____________________________________________________________________________}
 
 { const Hatchet/Pickaze requirements.
@@ -30,8 +30,6 @@ const
 {******************************************************************************}
 { function MSI_BestTool: Integer;                                              }
 { By: Coh3n                                                                    }
-{ Rev: 55                                                                      }
-{ Date: 26 Dec 09                                                              }
 { Description: Determines the best tool for the job at hand.                   }
 {******************************************************************************}
 function MSI_BestTool: Integer;
@@ -39,7 +37,7 @@ var
   skillsArr: TStringArray;
   currSkill, currLevel: Integer;
 begin
-  if (not Loggedin) then
+  if (not LoggedIn) then
     Exit;
 
   { In order for this to work properly, the skillsArr indexes must correspond
@@ -59,7 +57,7 @@ begin
             + ' level is ' + IntToStr(currLevel) + '.', debug_Functions);
 
   case PlayerSkills[CurrentPlayer][CurrentSkill] of
-    SKILL_WOODCUTTING, SKILL_MINING:
+    SKILL_WOODCUTTING:
       case (currLevel) of
         REQ_RUNE..REQ_MAX_LEVEL: Result := HATCHET_RUNE;
         REQ_ADAMANT..REQ_RUNE: Result := HATCHET_ADAMANT;
@@ -75,8 +73,6 @@ end;
 {******************************************************************************}
 { function MSI_WorstTool: Integer;                                             }
 { By: Coh3n                                                                    }
-{ Rev: 55                                                                      }
-{ Date: 23 Feb 2010                                                            }
 { Description: Determines the worst tool for the job at hand.                  }
 {******************************************************************************}
 function MSI_WorstTool: Integer;
@@ -93,8 +89,6 @@ end;
 {******************************************************************************}
 { function MSI_SetupPlayer: Boolean;                                           }
 { By: Coh3n                                                                    }
-{ Rev: 54                                                                      }
-{ Date: 21 Dec 09                                                              }
 { Description: Sets up the player for autoing.                                 }
 {******************************************************************************}
 function MSI_SetupPlayer: Boolean;
@@ -156,8 +150,6 @@ end;
 {******************************************************************************}
 { function MSI_GetObjectList: TIntegerArray;                                   }
 { By: Coh3n                                                                    }
-{ Rev: 5                                                                       }
-{ Date: 24 Feb 2010                                                            }
 { Description: Converts the variant array to an integer array                  }
 {******************************************************************************}
 function MSI_GetObjectList(whichPlayer, whichSkill: Integer): TIntegerArray;
@@ -184,8 +176,6 @@ end;
 {******************************************************************************}
 { function MSI_GetItemList: TIntegerArray;                                     }
 { By: Coh3n                                                                    }
-{ Rev: 5                                                                       }
-{ Date: 24 Feb 2010                                                            }
 { Description: Gets the materials required depending on the object autoed      }
 {******************************************************************************}
 function MSI_GetItemList(whichPlayer, whichSkill: Integer): TIntegerArray;
@@ -206,8 +196,6 @@ end;
 {******************************************************************************}
 { function MSI_GetExpList: TIntegerArray;                                      }
 { By: Coh3n                                                                    }
-{ Rev: 5                                                                       }
-{ Date: 24 Feb 2010                                                            }
 { Description: Gets the experience gained by obtaining items in the item list  }
 {******************************************************************************}
 function MSI_GetExpList: TExtendedArray;
@@ -227,8 +215,6 @@ end;
 {******************************************************************************}
 { function MSI_WalkToLoc: Boolean;                                             }
 { By: The MSI Team                                                             }
-{ Rev: 5                                                                       }
-{ Date: 23 Feb 2010                                                            }
 { Description: Walks to the proper location depending on skill/location        }
 {******************************************************************************}
 function MSI_WalkToLoc: Boolean;
@@ -265,8 +251,6 @@ end;
 {******************************************************************************}
 { function MSI_WalkToBank: Boolean;                                            }
 { By: The MSI Team                                                             }
-{ Rev: 5                                                                       }
-{ Date: 23 Feb 2010                                                            }
 { Description: Walks to the bank depending on skill/location                   }
 {******************************************************************************}
 function MSI_WalkToBank: Boolean;
@@ -306,8 +290,6 @@ end;
 {******************************************************************************}
 { function MSI_DoSkill: Boolean;                                               }
 { By: The MSI Team                                                             }
-{ Rev: 5                                                                       }
-{ Date: 23 Feb 2010                                                            }
 { Description: Performs the specified skill                                    }
 {******************************************************************************}
 function MSI_DoSkill: Boolean;
@@ -335,8 +317,6 @@ end;
 {******************************************************************************}
 { procedure MSI_CountItems;                                                    }
 { By: Coh3n                                                                    }
-{ Rev: 5                                                                       }
-{ Date: 24 Feb 2010                                                            }
 { Description: Counts the materials and calculates the experience gained       }
 {              from items in the inventory                                     }
 {******************************************************************************}
@@ -407,7 +387,7 @@ end;
 
 {******************************************************************************}
 { procedure MSI_HandleBreaking;                                                }
-{ By: MSI_HandleBreaking                                                       }
+{ By: Coh3n                                                                    }
 { Description: Simple procedure for breaking                                   }
 {******************************************************************************}
 procedure MSI_HandleBreaking;
@@ -434,55 +414,85 @@ begin
 end;
 
 {******************************************************************************}
+{ function MSI_TimedOut: Boolean;                                              }
+{ By: Coh3n                                                                    }
+{ Description: Handles connection losses                                       }
+{******************************************************************************}
+function MSI_TimedOut: Boolean;
+var
+  t: Integer;
+begin
+  t := GetSystemTime + 10000;
+  while ((not Result) and (GetSystemTime < t)) do
+  begin
+    Wait(RandomRange(100, 200));
+    Result := (LobbyScreen) or (not LoggedIn);
+  end;
+  
+  if (Result) then
+    MSI_Debug('MSI_TimedOut', 'Suspicion of connection loss', DEBUG_FUNCTIONS);
+    
+  if (LobbyScreen) then
+    MouseBox(80, 450, 560, 470, 1);
+  
+  if (not LoggedIn) then
+    LoginPlayer;
+end;
+
+{******************************************************************************}
 { procedure MSI_MainLoop;                                                      }
-{ By: The MSI Team                                                             }
-{ Date: 23 Feb 2010                                                            }
+{ By: Coh3n                                                                    }
 { Description: The MainLoop - performs all actions of the script               }
 {******************************************************************************}
 procedure MSI_MainLoop;
 var
-  loadTime, totalLoads, i: Integer;
+  totalLoads, i: Integer;
 begin
   repeat
-    if (AllPlayersInactive) then
-    begin
-      MSI_Debug('MSI_MainLoop', 'All players are now inactive, terminating script...', Debug_PlayerActions);
-      ProgressReport;
-      TerminateScript;
-    end;
-
     if (not MSI_SetupPlayer) then
     begin
+      if (MSI_TimedOut) then
+        Continue;
+        
       MSI_Debug('MSI_MainLoop', 'Failed to setup player!', Debug_PlayerActions);
       Players[CurrentPlayer].Active := False;
       ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to setup player';
       ProgressReport;
-      NextPlayer(False);
+      if (not AllPlayersInactive) then //To avoid infinite loop in NextPlayer
+        NextPlayer(False);
       Continue;
     end;
 
     repeat
-      MarkTime(loadTime);
-
       if (Players[CurrentPlayer].Booleans[P_BANK]) then
         if (not MSI_WalkToLoc) then
         begin
+          if (MSI_TimedOut) then
+            Break;
+            
           MSI_Debug('MSI_MainLoop', 'Failed to walk to location!', Debug_PlayerActions);
           Players[CurrentPlayer].Active := False;
           ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to walk to location';
           Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
           ProgressReport;
-          NextPlayer(False);
+          
+          if (not AllPlayersInactive) then
+            NextPlayer(False);
           Break;
         end;
 
       if (not MSI_DoSkill) then
       begin
+        if (MSI_TimedOut) then
+          Break;
+          
         MSI_Debug('MSI_MainLoop', 'Failed to perform skill!', Debug_PlayerActions);
         Players[CurrentPlayer].Active := False;
         ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to perform skill: ' + IntToStr(CurrentSkill);
         ProgressReport;
-        NextPlayer(False);
+        
+        if (not AllPlayersInactive) then
+          NextPlayer(False);
         Break;
       end;
 
@@ -490,21 +500,31 @@ begin
       begin
         if (not MSI_WalkToBank) then
         begin
+          if (MSI_TimedOut) then
+            Break;
+            
           MSI_Debug('MSI_MainLoop', 'Failed to walk to bank!', Debug_PlayerActions);
           Players[CurrentPlayer].Active := False;
           ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to walk to bank';
           Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
           ProgressReport;
-          NextPlayer(False);
+          
+          if (not AllPlayersInactive) then
+            NextPlayer(False);
           Break;
         end;
 
         if (not MSI_BankMaterials) then
         begin
+          if (MSI_TimedOut) then
+            Break;
+            
           MSI_Debug('MSI_MainLoop', 'Failed to bank materials!', Debug_PlayerActions);
           Players[CurrentPlayer].Active := False;
           ProgressReport;
-          NextPlayer(False);
+          
+          if (not AllPlayersInactive) then
+            NextPlayer(False);
           Break;
         end;
       end;
@@ -518,5 +538,12 @@ begin
         MSI_HandleBreaking;
 
     until(not Players[CurrentPlayer].Active);
+    
+    if (AllPlayersInactive) then
+    begin
+      MSI_Debug('MSI_MainLoop', 'All players inactive, terminating script', Debug_PlayerActions);
+      ProgressReport;
+      TerminateScript;
+    end;
   until(AllPlayersInactive);
 end;
