@@ -27,129 +27,110 @@ Const
 
 
   {Cities' Index}
-  //City_Varrock     =   0;
-  City_Falador     =   1;
-  City_Karamja     =   2;
-  City_Rimmington  =   3;
-  City_Edgeville   =   4;
-  City_BarbVillage =   5;
-  City_Draynor     =   6;
-  City_AlKharid    =   7;
-  City_Lumbridge   =   8;
+  //CITY_VARROCK     =   0;
+  CITY_FALADOR     =   1;
+  CITY_KARAMJA     =   2;
+  CITY_RIMMINGTON  =   3;
+  CITY_EDGEVILLE   =   4;
+  CITY_BARBVILLAGE =   5;
+  CITY_DRAYNOR     =   6;
+  CITY_ALKHARID    =   7;
+  CITY_LUMBRIDGE   =   8;
+  LOC_VEBANK       =   0;
+  LOC_VWBANK       =   1;
+  LOC_GEBANK       =   2;
+  LOC_VEMINE       =   3;
+  LOC_VWMINE       =   4;
+  LOC_GEYEW        =   5;
+  LOC_CHURCHYEW    =   6;
+  LOC_VETREE1      =   7;
+  LOC_VETREE2      =   8;
+  LOC_VWTREE       =   9;
+  LOC_VARROCKCG    =   10;
+  LOC_VE_DUMMY     =   11;
+  LOC_VE_DUNGEON   =   12;
+  LOC_VARROCKDW    =   13;
+  LOC_VW_ANVIL     =   14;
+  LOC_WHEATFIELD   =   15;
+  LOC_AUBURYSHOP   =   16;
+  LOC_EARTHALTAR   =   17;
+  LOC_SAWMILL      =   18;
+  LOC_APHOTECARY   =   19;
+  LOC_AIRALTAR     =   20;
+  LOC_FWBANK       =   21;
+  LOC_FEBANK       =   22;
+  LOC_MININGGUILD  =   23;
+  LOC_FWWATERPUMP  =   24;
+  LOC_FW_FURNACE   =   25;
+  LOC_DWARFMINE    =   26;
+  LOC_WHITEKNIGHTS =   27;
+  LOC_SOUTHYEW1    =   28;
+  LOC_SOUTHYEW2    =   29;
+  LOC_SOUTHYEW3    =   30;
+  LOC_FALLYCOWS    =   31;
+  LOC_CHICKENS     =   32;
+  LOC_CRAFTGUILD   =   33;
+  LOC_MAINDOCK     =   34;
+  LOC_KARAMJAGS    =   35;
+  LOC_FISHINGDOCK  =   36;
+  LOC_JUNGLE       =   37;
+  LOC_VDUNGEON     =   38;
+  LOC_RIMMYMINE    =   39;
+  LOC_YEW1         =   40;
+  LOC_WILLOWS1     =   41;
+  LOC_TREES1       =   42;
+  LOC_RIMMYGS      =   43;
+  LOC_TREES2       =   44;
+  LOC_WILLOWS2     =   45;
+  LOC_FISHINGSPOT  =   46;
+  LOC_COOKERY      =   47;
+  LOC_EVBANK       =   48;
+  LOC_EVYEWS1      =   49;
+  LOC_RVYEWS2      =   50;
+  LOC_EV_CS        =   51;
+  LOC_MONASTERY    =   52;
 
-  {Places' Index}
-
-  {Varrock}
-  Loc_VEBank       =   0;
-  Loc_VWBank       =   1;
-  Loc_GEBank       =   2;
-  Loc_VEMine       =   3;
-  Loc_VWMine       =   4;
-  Loc_GEYew        =   5;
-  Loc_ChurchYew    =   6;
-  Loc_VETree1      =   7;
-  Loc_VETree2      =   8;
-  Loc_VWTree       =   9;
-  Loc_VarrockCG    =   10;
-  Loc_VE_Dummy     =   11;
-  Loc_VE_Dungeon   =   12;
-  Loc_VarrockDW    =   13;
-  Loc_VW_Anvil     =   14;
-  Loc_WheatField   =   15;
-  Loc_AuburyShop   =   16;
-  Loc_EarthAltar   =   17;
-  Loc_Sawmill      =   18;
-  Loc_Aphotecary   =   19;
-  Loc_AirAltar     =   20;
-
-  {Falador}
-  Loc_FWBank       =   21;
-  Loc_FEBank       =   22;
-  Loc_MiningGuild  =   23;
-  Loc_FWWaterPump  =   24;
-  Loc_FW_Furnace   =   25;
-  Loc_DwarfMine    =   26;
-  Loc_WhiteKnights =   27;
-  Loc_SouthYew1    =   28;
-  Loc_SouthYew2    =   29;
-  Loc_SouthYew3    =   30;
-  Loc_FallyCows    =   31;
-  Loc_Chickens     =   32;
-  Loc_CraftGuild   =   33;
-
-  {Karamja}
-  Loc_MainDock     =   34;
-  Loc_KaramjaGS    =   35;
-  Loc_FishingDock  =   36;
-  Loc_Jungle       =   37;
-  Loc_VDungeon     =   38;
-
-  {Rimmington}
-  Loc_RimmyMine    =   39;
-  Loc_Yew1         =   40;
-  Loc_Willows1     =   41;
-  Loc_Trees1       =   42;
-  Loc_RimmyGS      =   43;
-  Loc_Trees2       =   44;
-  Loc_Willows2     =   45;
-  Loc_FishingSpot  =   46;
-  Loc_Cookery      =   47;
-
-  {Edgeville}
-  Loc_EVBank       =   48;
-  Loc_EVYews1      =   49;
-  Loc_RVYews2      =   50;
-  Loc_EV_CS        =   51;
-  Loc_Monastery    =   52;
-
-  {Barbarian Village}
-  Loc_BVMine       =   53;
-  Loc_SOSecurity   =   54;
-  Loc_BVTrees      =   55;
-  Loc_BV_FS        =   56;
-  Loc_BodyAltar    =   57;
-  Loc_BVEvergreen  =   58;
-  Loc_SOSafety     =   59;
-  Loc_BVBar        =   60;
-
-  {Draynor Village}
-  Loc_DraynorBank  =   61;
-  Loc_DraynorFS    =   62;
-  Loc_DraynorOak   =   63;
-  Loc_WizardTower  =   64;
-  Loc_DraynorYew1  =   65;
-  Loc_DraynorYew2  =   66;
-  Loc_DraynorYew3  =   67;
-  Loc_DraynorMine  =   68;
-  Loc_LumbySwamp   =   69;
-  Loc_WaterAltar   =   70;
-  Loc_DraynorDung  =   71;
-
-  {Al Kharid}
-  Loc_AKBank       =   72;
-  Loc_AK_FS        =   73;
-  Loc_AKWarriors   =   74;
-  Loc_AKFurnace    =   75;
-  Loc_AKTanner     =   76;
-  Loc_AK_CS        =   77;
-  Loc_FireAltar    =   78;
-  Loc_AKMine       =   79;
-  Loc_LBCows       =   80;
-
-  {Lumbridge}
-  Loc_LBBank       =   81;
-  Loc_CastleTrees  =   82;
-  Loc_DukeHoracio  =   83;
-  Loc_LBSwamp2     =   84;
-  Loc_LBMine       =   85;
-  Loc_LB_FS        =   86;
-  Loc_LB_CS        =   87;
-  Loc_LB_SW        =   88;
-  Loc_CombatTutors =   89;
-  Loc_LBFurnace    =   90;
-  Loc_LB_FS2       =   91;
-  Loc_LBGoblins    =   92;
-  Loc_FredFarmer   =   93;
+  LOC_BVMINE       =   53;
+  LOC_SOSECURITY   =   54;
+  LOC_BVTREES      =   55;
+  LOC_BV_FS        =   56;
+  LOC_BODYALTAR    =   57;
+  LOC_BVEVERGREEN  =   58;
+  LOC_SOSAFETY     =   59;
+  LOC_BVBAR        =   60;
+  LOC_DRAYNORBANK  =   61;
+  LOC_DRAYNORFS    =   62;
+  LOC_DRAYNOROAK   =   63;
+  LOC_WIZARDTOWER  =   64;
+  LOC_DRAYNORYEW1  =   65;
+  LOC_DRAYNORYEW2  =   66;
+  LOC_DRAYNORYEW3  =   67;
+  LOC_DRAYNORMINE  =   68;
+  LOC_LUMBYSWAMP   =   69;
+  LOC_WATERALTAR   =   70;
+  LOC_DRAYNORDUNG  =   71;
+  LOC_AKBANK       =   72;
+  LOC_AK_FS        =   73;
+  LOC_AKWARRIORS   =   74;
+  LOC_AKFURNACE    =   75;
+  LOC_AKTANNER     =   76;
+  LOC_AK_CS        =   77;
+  LOC_FIREALTAR    =   78;
+  LOC_AKMINE       =   79;
+  LOC_LBCOWS       =   80;
+  LOC_LBBANK       =   81;
+  LOC_CASTLETREES  =   82;
+  LOC_DUKEHORACIO  =   83;
+  LOC_LBSWAMP2     =   84;
+  LOC_LBMINE       =   85;
+  LOC_LB_FS        =   86;
+  LOC_LB_CS        =   87;
+  LOC_LB_SW        =   88;
+  LOC_COMBATTUTORS =   89;
+  LOC_LBFURNACE    =   90;
+  LOC_LB_FS2       =   91;
+  LOC_LBGOBLINS    =   92;
+  LOC_FREDFARMER   =   93;
 
 {
 var
