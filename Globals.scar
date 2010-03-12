@@ -121,12 +121,13 @@ var
   Description: The several debugging levels, so the user receives as much
                detail as he wishes to receive. }
 const
-  Debug_Force         = 10;  // For MSI SLs to force it to be debuged, not for Script Users!
-  Debug_Proggie       = 7;   // Only debug proggie and more important things
-  Debug_PlayerActions = 5;   // Only debug proggie, Player Actions and more important things
-  Debug_Functions     = 3;   // Debug the at the start of each function, Player Actions, Proggie and +
-  Debug_SmallDetails  = 1;   // Debug small details and more important
-  Debug_Everything    = 0;   // For Script Users to have everything in debug box.
+  DEBUG_FORCE         = 10;  // For MSI SLs to force it to be debuged, not for Script Users!
+  DEBUG_PROGGIE       = 7;   // Only debug proggie and more important things
+  DEBUG_PLAYERACTIONS = 5;   // Only debug proggie, Player Actions and more important things
+  DEBUG_FUNCTIONS     = 3;   // Debug the at the start of each function, Player Actions, Proggie and +
+  DEBUG_SMALLDETAILS  = 1;   // Debug small details and more important
+  DEBUG_EVERYTHING    = 0;   // For Script Users to have everything in debug box.
+
   
 { const Players.
   Constants representing the different Players array records. }
@@ -151,23 +152,21 @@ const
 { const Item Info
   Description: Constants representing all the items used in MSI. }
 Const
-  Cavada_Berries = 0; //test item
+  CAVADA_BERRIES = 0; //Test
 
-  Pickaxe_Bronze  = 1;    //Pickaxe for mining
-  Pickaxe_Iron    = 2;
-  Pickaxe_Steel   = 3;
-  Pickaxe_Mithril = 4;
-  Pickaxe_Adamant = 5;
-  Pickaxe_Rune    = 6;
+  PICKAXE_BRONZE  = 1;    //Pickaxe for mining
+  PICKAXE_IRON    = 2;
+  PICKAXE_STEEL   = 3;
+  PICKAXE_MITHRIL = 4;
+  PICKAXE_ADAMANT = 5;
+  PICKAXE_RUNE    = 6;
 
-  Hatchet_Bronze  = 7;   //Hatchets for wood cutting :D
-  Hatchet_Iron    = 8;
-  Hatchet_Steel   = 9;
-  Hatchet_Mithril = 10;
-  Hatchet_Adamant = 11;
-  Hatchet_Rune    = 12;
+  HATCHET_BRONZE  = 7;   //Hatchets for wood cutting :D
+  HATCHET_IRON    = 8;
+  HATCHET_STEEL   = 9;
+  HATCHET_MITHRIL = 10;
+  HATCHET_ADAMANT = 11;
+  HATCHET_RUNE    = 12;
 
   LOGS_NORMAL = 13; //Logs supported
   LOGS_OAK    = 14;
-  
-  

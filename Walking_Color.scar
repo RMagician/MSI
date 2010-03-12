@@ -24,16 +24,16 @@ const
 { const AutoColor
   Description: Constants used for the walking autocoloring. }
 const
-  SRLAC_RoadColour = 6579821;
-  SRLAC_VarrockRoadColour = 8291719;
-  SRLAC_FallyRoadColour = 7831173;
-  SRLAC_LumbyRoadColour = 8225677;
-  SRLAC_DirtRoadColour = 1853272;
-  SRLAC_WaterColour = 10850700;
-  SRLAC_RockColour = 5789528;
-  SRLAC_SandColour = 0;
-  SRLAC_BankerColour = 1179390;
-  SRLAC_TreeColour = 1532978;
+  SRLAC_ROADCOLOUR = 6579821;
+  SRLAC_VARROCKROADCOLOUR = 8291719;
+  SRLAC_FALLYROADCOLOUR = 7831173;
+  SRLAC_LUMBYROADCOLOUR = 8225677;
+  SRLAC_DIRTROADCOLOUR = 1853272;
+  SRLAC_WATERCOLOUR = 10850700;
+  SRLAC_ROCKCOLOUR = 5789528;
+  SRLAC_SANDCOLOUR = 0;
+  SRLAC_BANKERCOLOUR = 1179390;
+  SRLAC_TREECOLOUR = 1532978;
 
 Procedure SortColors(var Colors: tIntegerArray; col: Integer);
 var

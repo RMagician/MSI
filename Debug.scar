@@ -49,6 +49,7 @@ const
   ADD_EXP   = 0;
   ADD_ITEMS = 1;
   ADD_LOADS = 2;
+  
 procedure AddToProggy(item, quantity, which: Integer);
 begin
   if (quantity = 0) then

@@ -273,52 +273,52 @@ end;
 function MSI_LoadPath(StartLocation, EndLocation: Integer): TPointArray;
 begin
   case StartLocation of
-    Loc_VEBank:
+    LOC_VEBANK:
       case EndLocation of
-        Loc_VWBank:     Result := [Point(0, 0), Point(1, 1)];
-        Loc_VEMine:     Result := [Point(0, 0), Point(1, 1)];
-        Loc_ChurchYew:  Result := [Point(0, 0), Point(1, 1)];
-        Loc_VETree1:    Result := [Point(0, 0), Point(1, 1)];
-        Loc_VETree1:    Result := [Point(0, 0), Point(1, 1)];
-        Loc_VE_Dummy:   Result := [Point(0, 0), Point(1, 1)];
-        Loc_VE_Dungeon: Result := [Point(0, 0), Point(1, 1)];
- //       Loc_AubryShop:  Result := [Point(0, 0), Point(1, 1)];
-        Loc_EarthAltar: Result := [Point(0, 0), Point(1, 1)];
-        Loc_Sawmill:    Result := [Point(0, 0), Point(1, 1)];
+        LOC_VWBANK:     Result := [Point(0, 0), Point(1, 1)];
+        LOC_VEMINE:     Result := [Point(0, 0), Point(1, 1)];
+        LOC_CHURCHYEW:  Result := [Point(0, 0), Point(1, 1)];
+        LOC_VETREE1:    Result := [Point(0, 0), Point(1, 1)];
+        LOC_VETREE1:    Result := [Point(0, 0), Point(1, 1)];
+        LOC_VE_DUMMY:   Result := [Point(0, 0), Point(1, 1)];
+        LOC_VE_DUNGEON: Result := [Point(0, 0), Point(1, 1)];
+ //       LOC_AUBRYSHOP:  Result := [Point(0, 0), Point(1, 1)];
+        LOC_EARTHALTAR: Result := [Point(0, 0), Point(1, 1)];
+        LOC_SAWMILL:    Result := [Point(0, 0), Point(1, 1)];
       end;
 
-    Loc_VWBank:
+    LOC_VWBANK:
       case EndLocation of
-        Loc_VEBank:   Result := [Point(0, 0), Point(1, 1)];
-        Loc_GEBank:   Result := [Point(0, 0), Point(1, 1)];
-        Loc_VWMine:   Result := [Point(0, 0), Point(1, 1)];
-        Loc_VWTree:   Result := [Point(0, 0), Point(1, 1)];
-        Loc_AirAltar: Result := [Point(0, 0), Point(1, 1)];
+        LOC_VEBANK:   Result := [Point(0, 0), Point(1, 1)];
+        LOC_GEBANK:   Result := [Point(0, 0), Point(1, 1)];
+        LOC_VWMINE:   Result := [Point(0, 0), Point(1, 1)];
+        LOC_VWTREE:   Result := [Point(0, 0), Point(1, 1)];
+        LOC_AIRALTAR: Result := [Point(0, 0), Point(1, 1)];
       end;
 
-    Loc_GEBank:
+    LOC_GEBANK:
       case EndLocation of
-        Loc_GEYew:  Result := [Point(0, 0), Point(1, 1)];
-        Loc_VWBank: Result := [Point(0, 0), Point(1, 1)];
+        LOC_GEYEW:  Result := [Point(0, 0), Point(1, 1)];
+        LOC_VWBANK: Result := [Point(0, 0), Point(1, 1)];
       end;
 
-    Loc_VEMine:     Result := [Point(0, 0), Point(1, 1)];
-    Loc_VWMine:     Result := [Point(0, 0), Point(1, 1)];
-    Loc_GEYew:      Result := [Point(0, 0), Point(1, 1)];
-    Loc_ChurchYew:  Result := [Point(0, 0), Point(1, 1)];
-    Loc_VETree1:    Result := [Point(0, 0), Point(1, 1)];// ??
-    Loc_VETree2:    Result := [Point(0, 0), Point(1, 1)];// ??
-    Loc_VarrockCG:  Result := [Point(0, 0), Point(1, 1)];// ??
-    Loc_VE_Dummy:   Result := [Point(0, 0), Point(1, 1)];
-    Loc_VE_Dungeon: Result := [Point(0, 0), Point(1, 1)];
-    Loc_VarrockDW:  Result := [Point(0, 0), Point(1, 1)];// ??
-    Loc_VW_Anvil:   Result := [Point(0, 0), Point(1, 1)];
- //   Loc_WhatField:  Result := [Point(0, 0), Point(1, 1)];// ??
-    Loc_AuburyShop: Result := [Point(0, 0), Point(1, 1)];
-    Loc_EarthAltar: Result := [Point(0, 0), Point(1, 1)];
-    Loc_Sawmill:    Result := [Point(0, 0), Point(1, 1)];
-    Loc_Aphotecary: Result := [Point(0, 0), Point(1, 1)];
-    Loc_AirAltar:   Result := [Point(0, 0), Point(1, 1)];
+    LOC_VEMINE:     Result := [Point(0, 0), Point(1, 1)];
+    LOC_VWMINE:     Result := [Point(0, 0), Point(1, 1)];
+    LOC_GEYEW:      Result := [Point(0, 0), Point(1, 1)];
+    LOC_CHURCHYEW:  Result := [Point(0, 0), Point(1, 1)];
+    LOC_VETREE1:    Result := [Point(0, 0), Point(1, 1)];// ??
+    LOC_VETREE2:    Result := [Point(0, 0), Point(1, 1)];// ??
+    LOC_VARROCKCG:  Result := [Point(0, 0), Point(1, 1)];// ??
+    LOC_VE_DUMMY:   Result := [Point(0, 0), Point(1, 1)];
+    LOC_VE_DUNGEON: Result := [Point(0, 0), Point(1, 1)];
+    LOC_VARROCKDW:  Result := [Point(0, 0), Point(1, 1)];// ??
+    LOC_VW_ANVIL:   Result := [Point(0, 0), Point(1, 1)];
+ //   LOC_WHATFIELD:  Result := [Point(0, 0), Point(1, 1)];// ??
+    LOC_AUBURYSHOP: Result := [Point(0, 0), Point(1, 1)];
+    LOC_EARTHALTAR: Result := [Point(0, 0), Point(1, 1)];
+    LOC_SAWMILL:    Result := [Point(0, 0), Point(1, 1)];
+    LOC_APHOTECARY: Result := [Point(0, 0), Point(1, 1)];
+    LOC_AIRALTAR:   Result := [Point(0, 0), Point(1, 1)];
   end;
 
 end;
@@ -334,53 +334,54 @@ end;
 function MSI_LoadWalk(StartLocation, EndLocation: Integer): TWalk;
 begin
   case StartLocation of
-    Loc_VEBank:
+    LOC_VEBANK:
       case EndLocation of
-        Loc_VWBank:     Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-        Loc_VEMine:     Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-        Loc_ChurchYew:  Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-        Loc_VETree1:    Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-        Loc_VETree1:    Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-        Loc_VE_Dummy:   Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-        Loc_VE_Dungeon: Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-       // Loc_AubryShop:  Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-        Loc_EarthAltar: Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-        Loc_Sawmill:    Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
+        LOC_VWBANK:     Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+        LOC_VEMINE:     Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+        LOC_CHURCHYEW:  Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+        LOC_VETREE1:    Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+        LOC_VETREE1:    Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+        LOC_VE_DUMMY:   Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+        LOC_VE_DUNGEON: Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+ //       LOC_AUBRYSHOP:  Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+        LOC_EARTHALTAR: Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+        LOC_SAWMILL:    Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
       end;
 
-    Loc_VWBank:
+    LOC_VWBANK:
       case EndLocation of
-        Loc_VEBank:     Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-        Loc_GEBank:     Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-        Loc_VWMine:     Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-        Loc_VWTree:     Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-        Loc_AirAltar:   Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
+        LOC_VEBANK:   Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+        LOC_GEBANK:   Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+        LOC_VWMINE:   Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+        LOC_VWTREE:   Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+        LOC_AIRALTAR: Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
       end;
-      
-    Loc_GEBank:
+
+    LOC_GEBANK:
       case EndLocation of
-        Loc_GEYew:      Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-        Loc_VWBank:     Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
+        LOC_GEYEW:  Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+        LOC_VWBANK: Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
       end;
-      
-    Loc_VEMine:         Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-    Loc_VWMine:         Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-    Loc_GEYew:          Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-    Loc_ChurchYew:      Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-    Loc_VETree1:        Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));// ??
-    Loc_VETree2:        Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));// ??
-    Loc_VarrockCG:      Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));// ??
-    Loc_VE_Dummy:       Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-    Loc_VE_Dungeon:     Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-    Loc_VarrockDW:      Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));// ??
-    Loc_VW_Anvil:       Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-    //Loc_WhatField:      Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));// ??
-    Loc_AuburyShop:     Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-    Loc_EarthAltar:     Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-    Loc_Sawmill:        Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-    Loc_Aphotecary:     Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
-    Loc_AirAltar:       Result := FormWalk(City_Varrock, EndLocation, LoadPath(StartLocation, EndLocation));
+
+    LOC_VEMINE:     Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+    LOC_VWMINE:     Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+    LOC_GEYEW:      Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+    LOC_CHURCHYEW:  Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+    LOC_VETREE1:    Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));// ??
+    LOC_VETREE2:    Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));// ??
+    LOC_VARROCKCG:  Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));// ??
+    LOC_VE_DUMMY:   Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+    LOC_VE_DUNGEON: Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+    LOC_VARROCKDW:  Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));// ??
+    LOC_VW_ANVIL:   Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+ //   LOC_WHATFIELD:  Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));// ??
+    LOC_AUBURYSHOP: Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+    LOC_EARTHALTAR: Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+    LOC_SAWMILL:    Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+    LOC_APHOTECARY: Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+    LOC_AIRALTAR:   Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
   end;
+
 end;
 
 

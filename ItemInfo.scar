@@ -30,8 +30,8 @@ Function MSI_GetItem(ID : Integer) : Boolean;
 Begin
   Case ID Of
     //Test item xP
-    Cavada_Berries :
-    With MSI_Item[Cavada_Berries] Do
+    CAVADA_BERRIES :
+    With MSI_Item[CAVADA_BERRIES] Do
     Begin
       Name := 'Cadava Berries';
       UpText := ['dava ber'];
@@ -46,8 +46,8 @@ Begin
     End;
 
     //Pickaxe's
-    Pickaxe_Bronze :
-    with MSI_Item[Pickaxe_Bronze] do
+    PICKAXE_BRONZE :
+    with MSI_Item[PICKAXE_BRONZE] do
     begin
       Name := 'Bronze Pickaxe';
       UpText := ['onze pic'];
@@ -64,8 +64,8 @@ Begin
            'hr6yiIm6uDkAMJYQhg==');
     end;
 
-    Pickaxe_Iron :
-    with MSI_Item[Pickaxe_Iron] do
+    PICKAXE_IRON :
+    with MSI_Item[PICKAXE_IRON] do
     begin
       Name := 'Iron Pickaxe';
       UpText := ['on picka'];
@@ -82,8 +82,8 @@ Begin
              'WFkBuWHBQbEAKO0ZXg==');
     end;
 
-    Pickaxe_Steel :
-    with MSI_Item[Pickaxe_Steel] do
+    PICKAXE_STEEL :
+    with MSI_Item[PICKAXE_STEEL] do
     begin
       Name := 'Steel Pickaxe';
       UpText := ['eel pick'];
@@ -100,8 +100,8 @@ Begin
              'ODpamZsbGRiYm5paAQDj0hYh');
     end;
 
-    Pickaxe_Mithril :
-    with MSI_Item[Pickaxe_Mithril] do
+    PICKAXE_MITHRIL :
+    with MSI_Item[PICKAXE_MITHRIL] do
     begin
       Name := 'Mithril Pickaxe';
       UpText := ['thril pi'];
@@ -118,8 +118,8 @@ Begin
              'NEBWVgfIBarUAwAohhCm');
     end;
 
-    Pickaxe_Adamant :
-    with MSI_Item[Pickaxe_Adamant] do
+    PICKAXE_ADAMANT :
+    with MSI_Item[PICKAXE_ADAMANT] do
     begin
       Name := 'Adamant Pickaxe';
       UpText := ['amant pi'];
@@ -136,8 +136,8 @@ Begin
              'gnLKctpG2gbmBkYAQW8RIg==');
     end;
 
-    Pickaxe_Rune :
-    with MSI_Item[Pickaxe_Rune] do
+    PICKAXE_RUNE :
+    with MSI_Item[PICKAXE_RUNE] do
     begin
       Name := 'Rune Pickaxe';
       UpText := ['ne picka'];
@@ -155,8 +155,8 @@ Begin
     end;
 
     //Hatchet's (Axes)
-    Hatchet_Bronze :
-    with MSI_Item[Hatchet_Bronze] do
+    HATCHET_BRONZE :
+    with MSI_Item[HATCHET_BRONZE] do
     begin
       Name := 'Bronze Hatchet';
       UpText := ['onze hat'];
@@ -172,8 +172,8 @@ Begin
              'SlgSiMEEeCAOIzDUlgFwgicw1UhWFsIEoRJBbX1kEzg4BAL4aC8A=' + '');
     end;
 
-    Hatchet_Iron :
-    with MSI_Item[Hatchet_Iron] do
+    HATCHET_IRON :
+    with MSI_Item[HATCHET_IRON] do
     begin
       Name := 'Iron Hatchet';
       UpText := ['on hatch'];
@@ -189,8 +189,8 @@ Begin
              'xsgKiMEEeCAOIrMzNgVwgicw1MTKCsIEoRJDbyMAAzg4BAEz1D2E=' + '');
     end;
 
-    Hatchet_Steel :
-    with MSI_Item[Hatchet_Steel] do
+    HATCHET_STEEL :
+    with MSI_Item[HATCHET_STEEL] do
     begin
       Name := 'Steel Hatchet';
       UpText := ['eel hatc'];
@@ -207,8 +207,8 @@ Begin
              '7BAAfpcXBA==');
     end;
 
-    Hatchet_Mithril :
-    with MSI_Item[Hatchet_Mithril] do
+    HATCHET_MITHRIL :
+    with MSI_Item[HATCHET_MITHRIL] do
     begin
       Name := 'Mithril Hatchet';
       UpText := ['thril ha'];
@@ -224,8 +224,8 @@ Begin
              'w8NTTdwsT5AEyIGxdXRcgF0gic7W07CFsIAoR5FZTt4KzQwAvWg6p' + '');
     end;
 
-    Hatchet_Adamant :
-    with MSI_Item[Hatchet_Adamant] do
+    HATCHET_ADAMANT :
+    with MSI_Item[HATCHET_ADAMANT] do
     begin
       Name := 'Adamant Hatchet';
       UpText := ['amant ha'];
@@ -241,8 +241,8 @@ Begin
              'xMQGiMEEeCAOIjKyMgFwgiczVNdGFsIEoRJBb20gbzg4BACsqDo4=' + '');
     end;
 
-    Hatchet_Rune :
-    with MSI_Item[Hatchet_Rune] do
+    HATCHET_RUNE :
+    with MSI_Item[HATCHET_RUNE] do
     begin
       Name := 'Rune Hatchet';
       UpText := ['ne hatch'];

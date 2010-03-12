@@ -11,19 +11,19 @@
  
 const
   { Trees }
-  Obj_Tree              = 0;
-  Obj_Oak               = 1;
-  Obj_Willow            = 2;
-  Obj_Yew               = 3;
+  OBJ_TREE              = 0;
+  OBJ_OAK               = 1;
+  OBJ_WILLOW            = 2;
+  OBJ_YEW               = 3;
   { Rocks }
-  Obj_Rock_Clay         = 4;
-  Obj_Rock_Tin          = 5;
-  Obj_Rock_Copper       = 6;
-  Obj_Rock_Iron         = 7;
-  Obj_Rock_Silver       = 8;
+  OBJ_ROCK_CLAY         = 4;
+  OBJ_ROCK_TIN          = 5;
+  OBJ_ROCK_COPPER       = 6;
+  OBJ_ROCK_IRON         = 7;
+  OBJ_ROCK_SILVER       = 8;
   { Banks }
   OBJ_BANK_VE           = 9;
-  
+
 
 {*******************************************************************************
 Function MSI_GetObject(Which: Integer): TMSObject;
@@ -33,7 +33,7 @@ Description: Load object info
 Function MSI_GetObject(Which: Integer): TMSObject;
 Begin
   Case Which Of
-    Obj_Tree:
+    OBJ_TREE:
     With Result Do
     Begin
       Name               := 'Normal tree';
@@ -57,7 +57,7 @@ Begin
       BadColorTolerance  := 10;
     End;
 
-    Obj_Oak:
+    OBJ_OAK:
     With Result Do
     Begin
       Name               := 'Oak tree';
