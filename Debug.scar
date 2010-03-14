@@ -29,9 +29,9 @@ begin
   
   case DebugLevel of
     //to add some more detail
-    Debug_PlayerActions: DebugMSG := DebugMSG + 'Player Action: ';
-    Debug_Functions    : DebugMSG := DebugMSG + 'Entering Func: ';
-    Debug_SmallDetails : DebugMSG := DebugMSG + 'Detail: ';
+    DEBUG_PLAYER_ACTIONS: DebugMSG := DebugMSG + 'Player Action: ';
+    DEBUG_FUNCTIONS     : DebugMSG := DebugMSG + 'Entering Func: ';
+    DEBUG_SMALL_DETAILS : DebugMSG := DebugMSG + 'Detail: ';
   end;
   
   DebugMSG := DebugMSG + ProcName + ': ';
@@ -277,57 +277,58 @@ var
   skill, item: TStringArray;
   intItems: TIntegerArray;
 begin
+  ClearReport;
   GetReportInfo;
-  Writeln('{----------------------------------------------------------------}');
-  Writeln('{                   MSI Extreme Player Report                    }');
-  Writeln('{----------------------------------------------------------------}'); //64 from '{' to '}'
-  Writeln('{     ' + PadR('Time Running: ' + TimeRunning, 59) + '}');
-  Writeln('{----------------------------------------------------------------}');
+  AddToReport('{----------------------------------------------------------------}');
+  AddToReport('{                   MSI Extreme Player Report                    }');
+  AddToReport('{----------------------------------------------------------------}'); //64 from '{' to '}'
+  AddToReport('{     ' + PadR('Time Running: ' + TimeRunning, 59) + '}');
+  AddToReport('{----------------------------------------------------------------}');
   
   for i := 0 to (HowManyPlayers - 1) do
     with ProgressReportArray[i] do
     begin
-      Writeln('{                                                                }');
-      //       {     Player 0: Player Name                                      }
-      Writeln('{     ' + PadR('Player ' + IntToStr(i) + ': ' + Capitalize(PlayerName), 59) + '}'); //PlayerName
-      //       {     City: Varrock                                              }
-      Writeln('{     ' + PadR('City: ' + LocToText(PlayerCity), 59) + '}');                        //PlayerCity
-      //       {     Location: VE_Trees                                         }
-      Writeln('{     ' + PadR('Location: ' + LocToText(PlayerLoc), 59) + '}');                     //PlayerLoc
-      //       {     Active: True                                               }
-      Writeln('{     ' + PadR('Active: ' + Capitalize(BoolToStr(PlayerStatus)), 59) + '}');        //PlayerStatus
+      AddToReport('{                                                                }');
+      //           {     Player 0: Player Name                                      }
+      AddToReport('{     ' + PadR('Player ' + IntToStr(i) + ': ' + Capitalize(PlayerName), 59) + '}'); //PlayerName
+      //           {     City: Varrock                                              }
+      AddToReport('{     ' + PadR('City: ' + LocToText(PlayerCity), 59) + '}');                        //PlayerCity
+      //           {     Location: VE_Trees                                         }
+      AddToReport('{     ' + PadR('Location: ' + LocToText(PlayerLoc), 59) + '}');                     //PlayerLoc
+      //           {     Active: True                                               }
+      AddToReport('{     ' + PadR('Active: ' + Capitalize(BoolToStr(PlayerStatus)), 59) + '}');        //PlayerStatus
       if (not PlayerStatus) then
-        //       {       Reason: Failed to bank items                             }                //FalseReason
-        Writeln('{       ' + PadR('Reason: ' + FalseReason, 57) + '}');
-      Writeln('{                                                                }');
+        //           {       Reason: Failed to bank items                             }                //FalseReason
+        AddToReport('{       ' + PadR('Reason: ' + FalseReason, 57) + '}');
+      AddToReport('{                                                                }');
 
       for j := 0 to High(SkillInfo) do                                                               //SkillInfo
         with SkillInfo[j] do
         begin
           skill := SkillTextArray(PlayerSkills[CurrentPlayer][j]);
-          //       {     Skill: Woodcutting                                         }
-          Writeln('{     ' + PadR('Skill: ' + skill[0], 59) + '}');
-          //       {       Loads: 45                                                }
-          Writeln('{       ' + PadR('Loads: ' + IntToStr(TotalLoads), 57) + '}');                    //TotalLoads
-          //       {       Experience: 38,650                                       }
-          Writeln('{       ' + PadR('Experience: ' + GroupDigits(Round(TotalEXP), ','), 57) + '}');  //TotalEXP
-          //       {       Level: 91                                                }
-          Writeln('{       ' + PadR('Level: ' + IntToStr(Level), 57) + '}');                         //Level
+          //           {     Skill: Woodcutting                                         }
+          AddToReport('{     ' + PadR('Skill: ' + skill[0], 59) + '}');
+          //           {       Loads: 45                                                }
+          AddToReport('{       ' + PadR('Loads: ' + IntToStr(TotalLoads), 57) + '}');                    //TotalLoads
+          //           {       Experience: 38,650                                       }
+          AddToReport('{       ' + PadR('Experience: ' + GroupDigits(Round(TotalEXP), ','), 57) + '}');  //TotalEXP
+          //           {       Level: 91                                                }
+          AddToReport('{       ' + PadR('Level: ' + IntToStr(Level), 57) + '}');                         //Level
 
           intItems := MSI_GetItemList(i, j);
           for k := 0 to High(intItems) do                                                            //TotalObj
           begin
             item := ObjTextArray(PlayerSkills[CurrentPlayer][j], intItems[k]);
-            //       {         Item: Normal logs                                      }
-            Writeln('{         ' + PadR('Item: ' + item[0], 55) + '}');
-            //       {         Amount: 1,546                                          }
-            Writeln('{         ' + PadR('Amount: ' + GroupDigits(ObjQuants[k], ','), 55) + '}');     //ObjQuants
+            //           {         Item: Normal logs                                      }
+            AddToReport('{         ' + PadR('Item: ' + item[0], 55) + '}');
+            //           {         Amount: 1,546                                          }
+            AddToReport('{         ' + PadR('Amount: ' + GroupDigits(ObjQuants[k], ','), 55) + '}');     //ObjQuants
           end;
           
-          Writeln('{                                                                }');
-          Writeln('{----------------------------------------------------------------}');
+          AddToReport('{                                                                }');
+          AddToReport('{----------------------------------------------------------------}');
         end;
     end;
   
-  Writeln('{----------------------------------------------------------------}');
+  AddToReport('{----------------------------------------------------------------}');
 end;

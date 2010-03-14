@@ -7,25 +7,19 @@
 | * function MSI_BestTool: Integer;                * by Coh3n                  |
 | * function MSI_WorstTool: Integer;               * by Coh3n                  |
 | * function MSI_SetupPlayer: Boolean;             * by Coh3n                  |
-| * function MSI_GetObjectList: TIntegerArray;     * by Coh3n                  |
+| * function MSI_GetObjectList(): TIntegerArray;   * by Coh3n                  |
+| * function MSI_GetItemList(): TIntegerArray;     * by Coh3n                  |
+| * function MSI_GetExpList; TExtendedArray;       * by Coh3n                  |
 | * function MSI_WalkToLoc: Boolean;               * by The MSI Team           |
 | * function MSI_WalkToBank: Boolean;              * by The MSI Team           |
 | * function MSI_DoSkill: Boolean;                 * by The MSI Team           |
 | * procedure MSI_CountItems: Boolean;             * by Coh3n                  |
 | * function MSI_BankMaterials: Boolean;           * by The MSI Team           |
+| * procedure MSI_HandleBreaking;                  * by Coh3n                  |
+| * function MSI_TimedOut: Boolean;                * by Coh3n                  |
+| * procedure MSI_UnsetPlayer();                   * by RM and Coh3n           |
 | * function MSI_MainLoop: Boolean;                * by Coh3n                  |
  \_____________________________________________________________________________}
-
-{ const Hatchet/Pickaze requirements.
-  Constants representing the requirements to use each pickaxe/hatchet. }
-const
-  REQ_BRONZE    = 1;
-  REQ_IRON      = 1;
-  REQ_STEEL     = 6;
-  REQ_MITHRIL   = 21;
-  REQ_ADAMANT   = 31;
-  REQ_RUNE      = 41;
-  REQ_MAX_LEVEL = 99;
 
 {******************************************************************************}
 { function MSI_BestTool: Integer;                                              }
@@ -400,15 +394,15 @@ begin
 
   if (HowManyPlayers = 1) then
   begin
-    MSI_Debug('MSI_HandleBreaking', 'Taking a short break', Debug_PlayerActions);
+    MSI_Debug('MSI_HandleBreaking', 'Taking a short break', DEBUG_PLAYER_ACTIONS);
     ExitToLobby;
     Wait((BreakTime * 60000) + RandomRange(-300000, 300000));
-    MSI_Debug('MSI_MainLoop', 'Break over, continuing to play', Debug_PlayerActions);
+    MSI_Debug('MSI_MainLoop', 'Break over, continuing to play', DEBUG_PLAYER_ACTIONS);
     if (LobbyScreen) then
       MouseBox(80, 450, 560, 470, 1);
   end else
   begin
-    MSI_Debug('MSI_MainLoop', 'Switching players', Debug_PlayerActions);
+    MSI_Debug('MSI_MainLoop', 'Switching players', DEBUG_PLAYER_ACTIONS);
     NextPlayer(True);
   end;
 end;
@@ -441,6 +435,24 @@ begin
 end;
 
 {******************************************************************************}
+{ procedure MSI_UnsetPlayer(func, reason: String; setReason: Boolean);         }
+{ By: RM and Coh3n                                                             }
+{ Description: Sets the player to false if something fails                     }
+{******************************************************************************}
+procedure MSI_UnsetPlayer(func, reason: String; setReason: Boolean);
+begin
+  MSI_Debug(func, reason, DEBUG_PLAYER_ACTIONS);
+  Players[CurrentPlayer].Active := False;
+  
+  if (setReason) then
+    ProgressReportArray[CurrentPlayer].FalseReason := reason;
+    
+  ProgressReport;
+  if (not AllPlayersInactive) then //To avoid infinite loop in NextPlayer
+    NextPlayer(False);
+end;
+
+{******************************************************************************}
 { procedure MSI_MainLoop;                                                      }
 { By: Coh3n                                                                    }
 { Description: The MainLoop - performs all actions of the script               }
@@ -450,99 +462,77 @@ var
   totalLoads, i: Integer;
 begin
   repeat
+    //Setup player
     if (not MSI_SetupPlayer) then
     begin
       if (MSI_TimedOut) then
         Continue;
-        
-      MSI_Debug('MSI_MainLoop', 'Failed to setup player!', Debug_PlayerActions);
-      Players[CurrentPlayer].Active := False;
-      ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to setup player';
-      ProgressReport;
-      if (not AllPlayersInactive) then //To avoid infinite loop in NextPlayer
-        NextPlayer(False);
+
+      MSI_UnsetPlayer('MSI_MainLoop', 'Failed to setup player', True);
       Continue;
     end;
 
     repeat
       if (Players[CurrentPlayer].Booleans[P_BANK]) then
+        //Walk to location if not power skilling
         if (not MSI_WalkToLoc) then
         begin
           if (MSI_TimedOut) then
             Break;
-            
-          MSI_Debug('MSI_MainLoop', 'Failed to walk to location!', Debug_PlayerActions);
-          Players[CurrentPlayer].Active := False;
-          ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to walk to location';
+
+          MSI_UnsetPlayer('MSI_MainLoop', 'Failed to walk to location', True);
           Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
-          ProgressReport;
-          
-          if (not AllPlayersInactive) then
-            NextPlayer(False);
           Break;
         end;
 
+      //Perform the skill
       if (not MSI_DoSkill) then
       begin
         if (MSI_TimedOut) then
           Break;
-          
-        MSI_Debug('MSI_MainLoop', 'Failed to perform skill!', Debug_PlayerActions);
-        Players[CurrentPlayer].Active := False;
-        ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to perform skill: ' + IntToStr(CurrentSkill);
-        ProgressReport;
-        
-        if (not AllPlayersInactive) then
-          NextPlayer(False);
+
+        MSI_UnsetPlayer('MSI_MainLoop', 'Failed to perform skill: ' + IntToStr(CurrentSkill), True);
         Break;
       end;
 
       if (Players[CurrentPlayer].Booleans[P_BANK]) then
       begin
+        //Walk to the bank
         if (not MSI_WalkToBank) then
         begin
           if (MSI_TimedOut) then
             Break;
-            
-          MSI_Debug('MSI_MainLoop', 'Failed to walk to bank!', Debug_PlayerActions);
-          Players[CurrentPlayer].Active := False;
-          ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to walk to bank';
+
+          MSI_UnsetPlayer('MSI_MainLoop', ' Failed to walk to bank', True);
           Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
-          ProgressReport;
-          
-          if (not AllPlayersInactive) then
-            NextPlayer(False);
           Break;
         end;
 
+        //Bank the materials
         if (not MSI_BankMaterials) then
         begin
           if (MSI_TimedOut) then
             Break;
-            
-          MSI_Debug('MSI_MainLoop', 'Failed to bank materials!', Debug_PlayerActions);
-          Players[CurrentPlayer].Active := False;
-          ProgressReport;
-          
-          if (not AllPlayersInactive) then
-            NextPlayer(False);
+
+          MSI_UnsetPlayer('MSI_MainLoop', 'Failed to bank materials', False);
           Break;
         end;
       end;
 
       ProgressReport;
 
+      //Count the total loads for the current player - used for breaking
       for i := 0 to High(PlayerSkills[CurrentPlayer]) do
         IncEx(totalLoads, ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalLoads);
 
-      if (totalLoads >= BreakAfter) then
+      if (totalLoads >= (BreakAfter + RandomRange(-2, 2))) then
         MSI_HandleBreaking;
-
+        
     until(not Players[CurrentPlayer].Active);
     
     if (AllPlayersInactive) then
     begin
-      MSI_Debug('MSI_MainLoop', 'All players inactive, terminating script', Debug_PlayerActions);
+      MSI_Debug('MSI_MainLoop', 'All players inactive, terminating script', DEBUG_PLAYER_ACTIONS);
       ProgressReport;
       TerminateScript;
     end;

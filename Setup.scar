@@ -20,7 +20,6 @@
 {.include srl/srl/MSI/ItemInfo.scar}
 {.include srl/srl/MSI/Objects.scar}
 {.include srl/srl/MSI/Banking.scar}
-{.include srl/srl/MSI/AutoColors.scar}
 {.include srl/srl/MSI/Walking_Color.scar}
 {.include srl/srl/MSI/Walking_Reflection.scar}
 

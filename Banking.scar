@@ -149,7 +149,7 @@ Begin
         If Result Then Exit;
 
        MSI_Debug('MSI_Deposit', 'Deposited Amount '+IntToStr(Amount[I])+
-                 ' Of Item : ''' +MSI_Item[Items[I]].Name+'''', Debug_SmallDetails);
+                 ' Of Item : ''' +MSI_Item[Items[I]].Name+'''', DEBUG_SMALL_DETAILS);
       End;
     End;
   End;
@@ -225,7 +225,7 @@ Begin
         WithDrawP := MSTPointToBankPoint(Point(XX, YY));
         Withdraw(WithDrawP.X, WithDrawP.Y, Amount[I]);
         MSI_Debug('MSI_Withdraw', 'Withdrew Amount '+IntToStr(Amount[I])+
-                 ' Of Item : ''' +MSI_Item[Items[I]].Name+'''', Debug_SmallDetails);
+                 ' Of Item : ''' +MSI_Item[Items[I]].Name+'''', DEBUG_SMALL_DETAILS);
       End;
     End;
   End;

@@ -331,7 +331,7 @@ Begin
    For I := 0 To H Do
      If (Length(ATPA) < 1) Then
      Begin
-       MSI_Debug('MSI_FindObjectsTPA', 'All colors weren''t found!', Debug_SmallDetails);
+       MSI_Debug('MSI_FindObjectsTPA', 'All colors weren''t found!', DEBUG_SMALL_DETAILS);
        Objs := [];
        Exit;
      End;
@@ -342,7 +342,7 @@ Begin
  
  If (Length(TPA) < Accuracy) Then
  Begin
-   MSI_Debug('MSI_FindObjectsTPA', 'No colors found!', Debug_SmallDetails);
+   MSI_Debug('MSI_FindObjectsTPA', 'No colors found!', DEBUG_SMALL_DETAILS);
    Objs := [];
    Exit;
  End;
@@ -379,7 +379,7 @@ Begin
    If CheckAnimation Then
      If (Not Animating2[I]) Then
      Begin
-       MSI_Debug('MSI_FindObjectsTPA', 'Not animating!', Debug_SmallDetails);
+       MSI_Debug('MSI_FindObjectsTPA', 'Not animating!', DEBUG_SMALL_DETAILS);
        BadPoint := True;
      End;
 
@@ -388,7 +388,7 @@ Begin
    If ExcludeSelf Then
      If PointInBox(TPA[I], Box) Then
      Begin
-       MSI_Debug('MSI_FindObjectsTPA', 'Own character!', Debug_SmallDetails);
+       MSI_Debug('MSI_FindObjectsTPA', 'Own character!', DEBUG_SMALL_DETAILS);
        BadPoint := True;
      End;
 
@@ -396,7 +396,7 @@ Begin
    If (Not BadPoint) Then
    If ((TPA[I].X + TPA[I].Y) < 1) Then
    Begin
-     MSI_Debug('MSI_FindObjectsTPA', 'Invalid point!', Debug_SmallDetails);
+     MSI_Debug('MSI_FindObjectsTPA', 'Invalid point!', DEBUG_SMALL_DETAILS);
      BadPoint := True;
    End;
 
@@ -404,7 +404,7 @@ Begin
    If (Not BadPoint) Then
    If (Length(ATPA[I]) < Accuracy) Then
    Begin
-     MSI_Debug('MSI_FindObjectsTPA', 'Not enough points!', Debug_SmallDetails);
+     MSI_Debug('MSI_FindObjectsTPA', 'Not enough points!', DEBUG_SMALL_DETAILS);
      BadPoint := True;
    End;
 
@@ -412,10 +412,10 @@ Begin
    If (Not BadPoint) Then
    For II := 0 To High(BadColors) Do
    Begin
-     MSI_Debug('MSI_FindObjectsTPA', 'Looking for bad color: '+IntToStr(BadColors[II]), Debug_SmallDetails);
+     MSI_Debug('MSI_FindObjectsTPA', 'Looking for bad color: '+IntToStr(BadColors[II]), DEBUG_SMALL_DETAILS);
      If FindColorSpiralTolerance(TMP, TMP, BadColors[II], TPA[I].X - (Width / 2), TPA[I].Y - (Height / 2), TPA[I].X + (Width / 2), TPA[I].Y + (Height / 2), BadColorTolerance) Then
      Begin
-       MSI_Debug('MSI_FindObjectsTPA', 'Bad color found!', Debug_SmallDetails);
+       MSI_Debug('MSI_FindObjectsTPA', 'Bad color found!', DEBUG_SMALL_DETAILS);
        BadPoint := True;
        Break;
      End;
@@ -429,7 +429,7 @@ Begin
        TempTPA := MSI_ReturnPointsInBox(ATPA[II], IntToBox(TPA[I].X - (Width / 2), TPA[I].Y - (Height / 2), TPA[I].X + (Width / 2), TPA[I].Y + (Height / 2)));
        If (Length(TempTPA) < 1) Then
        Begin
-         MSI_Debug('MSI_FindObjectsTPA', 'All colors weren''t found!', Debug_SmallDetails);
+         MSI_Debug('MSI_FindObjectsTPA', 'All colors weren''t found!', DEBUG_SMALL_DETAILS);
          BadPoint := True;
          Break;
        End;
@@ -482,7 +482,7 @@ Begin
 
       For I := 0 to HH Do
       Begin
-        MSI_Debug('MSI_FindObjects', IntToStr(Length(TPA))+' objects found!', Debug_SmallDetails);
+        MSI_Debug('MSI_FindObjects', IntToStr(Length(TPA))+' objects found!', DEBUG_SMALL_DETAILS);
         X := Objs[II].X;
         Y := Objs[II].Y;
         IndexFound := II;
@@ -535,11 +535,11 @@ Begin
 
           Exit;
         End Else
-          MSI_Debug('MSI_FindObjects', 'Uptext didn''t match!', Debug_SmallDetails);
+          MSI_Debug('MSI_FindObjects', 'Uptext didn''t match!', DEBUG_SMALL_DETAILS);
       End;
     End;
 
-  MSI_Debug('MSI_FindObjects', 'Objects not found!', Debug_SmallDetails);
+  MSI_Debug('MSI_FindObjects', 'Objects not found!', DEBUG_SMALL_DETAILS);
 End;
 
 
