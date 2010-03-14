@@ -217,6 +217,8 @@ var
 begin
   if (not LoggedIn) then
     Exit;
+  MakeCompass('n');
+  RunEnergy(20);
 
   case PlayerSkills[CurrentPlayer][CurrentSkill] of
     SKILL_WOODCUTTING:
@@ -253,7 +255,9 @@ var
 begin
   if (not InvFull) or (not LoggedIn) then
     Exit;
-
+  MakeCompass('n');
+  RunEnergy(20);
+  
   case PlayerSkills[CurrentPlayer][CurrentSkill] of
     SKILL_WOODCUTTING:
       case Players[CurrentPlayer].Integers[P_LOC] of
