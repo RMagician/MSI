@@ -290,18 +290,24 @@ begin
 
     WALK_WC_VE_TREE_2:
       begin
-        TPA := CreateWalkTPA(MMx2, MMcy, RoadColor, 2, 2, 8);
-        if Length(TPA) <= 0 then Exit;
-        Result := walkTPAPoint(TPA, Point(MMx2, MMcy), random(15));
-        if Result then Exit;
-        if not LinearWalkTolerance(RoadColor, randomRange(80, 90), randomRange(59, 68), random(8), random(8), 8) then
-          if not RadialWalkTolerance(RoadColor, 80, 90, randomRange(55, 69), random(8), random(8), 10) then
+        for i := 0 to 2 do
         begin
-          WriteLn('Walking Failed Here. Submit a Fix.');
-          logOut;
-          NextPlayer(False);
-          Exit;
+          RoadColor := FindNewVarrockRoadColor();
+          FindColorsTolerance(TPA, RoadColor, MMCx, MMy1, MMx2, MMCy, 8);
+          if Length(TPA) > 0 then
+            Break;
+          if i = 2 then
+          begin
+            srl_Warn('Walk_WC_VE_Tree_2', 'Failed to find the road.', warn_AllVersions);
+            LogOut;
+            NextPlayer(False);
+            Exit;
+          end;
         end;
+        SortTPAFrom(TPA, Point(MMCx, MMCy));
+        i := (High(TPA) - 1);
+        Mouse(TPA[i].x, TPA[i].y, 1, 1, True);
+        FFlag(4);
         Result := True;
         Exit;
       end;
@@ -373,14 +379,14 @@ begin
     WALK_WC_VE_BANK_2:
       begin
         RoadColor := FindNewVarrockRoadColor();
-        FindColorsTolerance(TPA, RoadColor, MMx1, MMCy, MMCx, MMy2, 4);
+        FindColorsTolerance(TPA, RoadColor, MMx1, MMCy + 15, MMx2 - 20, MMy2, 4);
         if Length(TPA) <= 0 then
           Exit;
         SortTPAFrom(TPA, Point(MMCx, MMCy));
 
         for t := 0 to 4 do
         begin
-          i := Length(TPA) - RandomRange(1, 4);
+          i := Length(TPA) - Random(2);
           try
             if rs_OnMiniMap(TPA[i].x, TPA[i].y) then
               BC := 1;
@@ -391,7 +397,7 @@ begin
             Break;
         end;
 
-        if t = 4 then
+        if (t = 4) or (BC < 1) then
         begin
           MSI_Debug('CreatWalkIndex(WALK_WC_VE_BANK_2)', 'Failed to find road on minimap', Debug_Functions);
           Exit;
@@ -420,7 +426,7 @@ begin
               Exit;
             wait(250+random(500));
           end;
-          FFlag(RandomRange(3, 7));
+          FFlag(RandomRange(3, 5));
           Result := True;
           Exit;
         end;
@@ -431,7 +437,7 @@ begin
         for i := 0 to 2 do
         begin
           BC := AutoColorMM(SRLAC_BankerColour);
-          FindColorsTolerance(TPA, BC, MMx1, MMCy, MMx2, MMy2, 1);
+          FindColorsTolerance(TPA, BC, MMx1, MMCy, MMx2, MMy2, 5);
           if Length(TPA) > 5 then
             Break;
           if i = 2 then
@@ -441,20 +447,12 @@ begin
           end;
         end;
 
-        SortTPAFrom(TPA, Point(MMCx, MMCy));
-        for i := 0 to High(TPA) do
-        begin
-          t := Random(High(TPA));
-          if rs_OnMiniMap(TPA[t].x, TPA[t].y) then
-            Break;
-          if i = High(TPA) then
-          begin
-            MSI_Debug('CreateWalkIndex(WALK_BANK_Final);', 'Points not on MiniMap!', Debug_Functions);
-            Exit;
-          end;
-        end;
+        aTPA := TPAToATPAEx(TPA, 25, 5);
+        SortATPASize(aTPA, True);
 
-        Mouse(TPA[t].x, TPA[t].y - RandomRange(3, 7), 3, 3, True);
+        i := Length(aTPA[0]);
+        t := RandomRange(0, i);
+        Mouse(aTPA[0][t].x, aTPA[0][t].y - RandomRange(3, 7), 3, 3, True);
         t := getSystemTime;
         while not flagPresent() do
         begin
