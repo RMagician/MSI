@@ -13,10 +13,10 @@
 |  Procedure MSI_FreeItemRange;               *By Naum edited by RM            |
  \_____________________________________________________________________________}
 
-Const MSI_TItemCount = 15;  //Change this to the number of items
+Const MSI_ITEM_COUNT = 15;  //Change this to the number of items
 
 Var
-  MSI_Item : Array[0..(MSI_TItemCount - 1)] Of TItem;
+  MSI_Item : Array[0..(MSI_ITEM_COUNT - 1)] Of TItem;
 
 {********************************************************************************}
 { Function MSI_GetItem(ID : Integer) : Boolean;                                  }
@@ -386,7 +386,7 @@ end;
 Procedure MSI_FreeItems;
 var i : Integer;
 begin
-  for i := 0 to (MSI_TItemCount - 1) do
+  for i := 0 to (MSI_ITEM_COUNT - 1) do
     MSI_FreeItemEx(i);
 end;
 

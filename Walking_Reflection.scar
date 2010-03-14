@@ -6,7 +6,7 @@
 |                                                                              |
  \_____________________________________________________________________________}
 
-Const
+//Const
   { Abbreviations:
     - FS: Fishing Spot
     - GS: General Store
@@ -23,11 +23,12 @@ Const
     - SW: Spinning Wheel
     - LB: Lumby
     - EV: EdgeVille
-    - BV: Barbarian Village}
+    - BV: Barbarian Village }
 
 
   {Cities' Index}
-  //CITY_VARROCK     =   0;
+{
+  CITY_VARROCK     =   0;
   CITY_FALADOR     =   1;
   CITY_KARAMJA     =   2;
   CITY_RIMMINGTON  =   3;
@@ -131,7 +132,7 @@ Const
   LOC_LB_FS2       =   91;
   LOC_LBGOBLINS    =   92;
   LOC_FREDFARMER   =   93;
-
+}
 {
 var
   CurrentLocation: TWalk; // This should probably go to Globals.scar?

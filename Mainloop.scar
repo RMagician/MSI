@@ -422,21 +422,22 @@ function MSI_TimedOut: Boolean;
 var
   t: Integer;
 begin
+  Result := False;
+  
   t := GetSystemTime + 10000;
-  while ((not Result) and (GetSystemTime < t)) do
-  begin
-    Wait(RandomRange(100, 200));
-    Result := (LobbyScreen) or (not LoggedIn);
-  end;
-  
-  if (Result) then
-    MSI_Debug('MSI_TimedOut', 'Suspicion of connection loss', DEBUG_FUNCTIONS);
-    
-  if (LobbyScreen) then
-    MouseBox(80, 450, 560, 470, 1);
-  
-  if (not LoggedIn) then
-    LoginPlayer;
+  while (GetSystemTime < t) do
+    if (LobbyScreen) or (not LoggedIn) then
+    begin
+      MSI_Debug('MSI_TimedOut', 'Suspicion of connection loss', DEBUG_FUNCTIONS);
+      
+      if (LobbyScreen) then
+        MouseBox(80, 450, 560, 470, 1)
+      else
+        LoginPlayer;
+
+      Result := True;
+      Break;
+    end;
 end;
 
 {******************************************************************************}
