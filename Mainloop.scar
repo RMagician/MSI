@@ -48,7 +48,7 @@ begin
   currLevel := GetSkillLevel(skillsArr[currSkill]);
 
   MSI_Debug('MSI_PlayerSetup', 'Current ' + Capitalize(skillsArr[currSkill])
-            + ' level is ' + IntToStr(currLevel) + '.', debug_Functions);
+            + ' level is ' + IntToStr(currLevel) + '.', DEBUG_FUNCTIONS);
 
   case PlayerSkills[CurrentPlayer][CurrentSkill] of
     SKILL_WOODCUTTING:
@@ -120,7 +120,7 @@ begin
         bankCheck := MSI_OpenBank(OBJ_BANK_VE, WALK_WC_VE_BANK_4, Players[CurrentPlayer].Pin);
 
       else
-        MSI_Debug('MSI_SetupPlayer', 'Invalid Player.Integers[P_LOC]', debug_Functions);
+        MSI_Debug('MSI_SetupPlayer', 'Invalid Player.Integers[P_LOC]', DEBUG_FUNCTIONS);
     end;
 
     if bankCheck then
@@ -133,11 +133,11 @@ begin
 
         begin
           CloseBank;
-          MSI_Debug('MSI_PlayerSetup', 'Couldn''t Withdraw Tool.', debug_Functions);
+          MSI_Debug('MSI_PlayerSetup', 'Couldn''t Withdraw Tool.', DEBUG_FUNCTIONS);
         end;
       end
     else
-      MSI_Debug('MSI_SetupPlayer', 'Unable to Open Bank.', debug_Functions);
+      MSI_Debug('MSI_SetupPlayer', 'Unable to Open Bank.', DEBUG_FUNCTIONS);
   end;
 end;
 
@@ -162,7 +162,7 @@ begin
       Result[i] := StrToInt(tempStr);
     end;
   except
-    MSI_Debug('MSI_GetObjectList', 'Invalid object type in DeclarePlayers!', debug_Functions);
+    MSI_Debug('MSI_GetObjectList', 'Invalid object type in DeclarePlayers!', DEBUG_FUNCTIONS);
     Exit;
   end;
 end;
@@ -212,35 +212,24 @@ end;
 { Description: Walks to the proper location depending on skill/location        }
 {******************************************************************************}
 function MSI_WalkToLoc: Boolean;
-var
-  i: Integer;
 begin
   if (not LoggedIn) then
     Exit;
-  MakeCompass('n');
-  RunEnergy(20);
 
   case PlayerSkills[CurrentPlayer][CurrentSkill] of
     SKILL_WOODCUTTING:
       case Players[CurrentPlayer].Integers[P_LOC] of
         LOC_VE_BANK:
-          begin
-            RoadColor := FindNewVarrockRoadColor();
-            for i := WALK_WC_VE_TREE_1 to WALK_WC_VE_TREE_3 do
-              WalkPath(i);
+          Result := MSI_ColorWalk(LOC_VE_BANK, LOC_VE_TREES);
 
-            Result := WalkPath(WALK_WC_VE_TREE_4);
-            if Result then
-              Players[CurrentPlayer].Integers[P_LOC] := LOC_VE_TREES;
-          end;
-
-        LOC_VE_TREES: Result := True;
+        LOC_VE_TREES:
+          Result := True;
 
         else
-          MSI_Debug('MSI_WalkToLoc', 'Invalid location for woodcutting skill.', debug_Functions);
+          MSI_Debug('MSI_WalkToLoc', 'Invalid location for woodcutting skill.', DEBUG_FUNCTIONS);
       end;
     else
-      MSI_Debug('MSI_WalkToLoc', 'Invalid player skill!', debug_Functions);
+      MSI_Debug('MSI_WalkToLoc', 'Invalid player skill!', DEBUG_FUNCTIONS);
   end;
 end;
 
@@ -250,39 +239,25 @@ end;
 { Description: Walks to the bank depending on skill/location                   }
 {******************************************************************************}
 function MSI_WalkToBank: Boolean;
-var
-  i: Integer;
 begin
   if (not InvFull) or (not LoggedIn) then
     Exit;
-  MakeCompass('n');
-  RunEnergy(20);
   
   case PlayerSkills[CurrentPlayer][CurrentSkill] of
     SKILL_WOODCUTTING:
       case Players[CurrentPlayer].Integers[P_LOC] of
         LOC_VE_TREES:
-          begin
-            RoadColor := FindNewVarrockRoadColor;
-            for i := WALK_WC_VE_BANK_1 to WALK_WC_VE_BANK_3 do
-              WalkPath(i);
+          Result := MSI_ColorWalk(LOC_VE_TREES, LOC_VE_BANK);
 
-            Result := WalkPath(WALK_WC_VE_BANK_4);
-            if Result then
-              Players[CurrentPlayer].Integers[P_LOC] := LOC_VE_BANK;
-          end;
-
-        LOC_VE_BANK: Result := True;
+        LOC_VE_BANK:
+          Result := True;
 
         else
-          MSI_Debug('MSI_WalkToBank', 'Invalid location for woodcutting skill.', debug_Functions);
+          MSI_Debug('MSI_WalkToBank', 'Invalid location for woodcutting skill', DEBUG_FUNCTIONS);
       end;
     else
-      MSI_Debug('MSI_WalkToBank', 'Invalid player skill!', debug_Functions);
+      MSI_Debug('MSI_WalkToBank', 'Invalid player skill!', DEBUG_FUNCTIONS);
   end;
-  
-  if (Result) then
-    Wait(RandomRange(750, 1500)); // To be sure to not look for the bank too early
 end;
 
 {******************************************************************************}
@@ -308,7 +283,7 @@ begin
         Result := MSI_PowerChop(objectTypes, itemTypes);
 
     else
-      MSI_Debug('MSI_WalkToBank', 'Invalid player skill!', debug_Functions);
+      MSI_Debug('MSI_WalkToBank', 'Invalid player skill!', DEBUG_FUNCTIONS);
   end;
 end;
 
@@ -376,10 +351,10 @@ begin
           end;
 
         else
-          MSI_Debug('MSI_BankMaterials', 'Invalid location for woodcutting skill.', debug_Functions);
+          MSI_Debug('MSI_BankMaterials', 'Invalid location for woodcutting skill.', DEBUG_FUNCTIONS);
       end;
     else
-      MSI_Debug('MSI_BankMaterials', 'Invalid player skill!', debug_Functions);
+      MSI_Debug('MSI_BankMaterials', 'Invalid player skill!', DEBUG_FUNCTIONS);
   end;
 end;
 

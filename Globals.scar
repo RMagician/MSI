@@ -69,11 +69,12 @@ Type
   Type MSI_TItemArray = Array Of TItem;
 
 { Type TWalk
-  Description: Stores all needed tilewalking information. }
+  Description: Stores all needed walking information. }
   TWalk = Record
-    City  : integer;
-    Loc   : integer;
-    Path  : TPointArray;
+    City    : integer;
+    Loc     : integer;
+    RefPath : TPointArray;
+    ColPath : TIntegerArray;
   End;
 
 { Type TMMLocation
@@ -117,9 +118,6 @@ var
   CurrentSkill: Integer;
   { Used like CurrentPlayer, but for the skills in the player array }
   
-  CurrentLocation: TWalk;
-  { Used for reflection walking }
-  
   Debug_LevelToDebug: integer;
   { Description: For script user to choose how much to debug. }
   
@@ -161,10 +159,28 @@ const
   LOC_IN_RANDOM = 3;
   
   CITY_VARROCK = 4;
+
+{ const AutoColor indexes
+  Description: Constants used for the autocolor indexes }
+const
+  AC_ROAD_VARROCK = 0;
+
+{ const AutoColor
+  Description: Constants used for autocoloring the minimap }
+const
+  GENERAL_ROAD_COLOR = 6579821;
+  VARROCK_ROAD_COLOR = 8291719;
+  FALLY_ROAD_COLOR   = 7831173;
+  LUMBY_ROAD_COLOR   = 8225677;
+  DIRT_ROAD_COLOR    = 1853272;
+  WATER_COLOR        = 10850700;
+  ROCK_COLOR         = 5789528;
+  SAND_COLOR         = 0;
+  BANKER_COLOR       = 1179390;
+  TREE_COLOR         = 1532978;
   
-{ const Varrock East Woodcutting
-  Description: Constants used for the walking to and from the trees at the
-               Varrock east bank }
+{ const Walking
+  Description: Constants representing the color walking points }
 const
   WALK_WC_VE_TREE_1 = 0; // rock
   WALK_WC_VE_TREE_2 = 1; // road
@@ -177,8 +193,9 @@ const
   WALK_WC_VE_BANK_4 = 7; // final
   
 { const Hatchet/Pickaze requirements.
-  Constants representing the requirements to use each pickaxe/hatchet. }
+  Constants representing the requirements to use each tool }
 const
+  //hatchets and pickaxes
   REQ_BRONZE    = 1;
   REQ_IRON      = 1;
   REQ_STEEL     = 6;
@@ -190,23 +207,25 @@ const
 { const Item Info
   Description: Constants representing all the items used in MSI. }
 const
+{
   CAVADA_BERRIES = 0; //Test
 
-  PICKAXE_BRONZE  = 1;    //Pickaxe for mining
+  PICKAXE_BRONZE  = 1;
   PICKAXE_IRON    = 2;
   PICKAXE_STEEL   = 3;
   PICKAXE_MITHRIL = 4;
   PICKAXE_ADAMANT = 5;
   PICKAXE_RUNE    = 6;
+}
 
-  HATCHET_BRONZE  = 7;   //Hatchets for wood cutting :D
+  HATCHET_BRONZE  = 7;
   HATCHET_IRON    = 8;
   HATCHET_STEEL   = 9;
   HATCHET_MITHRIL = 10;
   HATCHET_ADAMANT = 11;
   HATCHET_RUNE    = 12;
 
-  LOGS_NORMAL = 13; //Logs supported
+  LOGS_NORMAL = 13;
   LOGS_OAK    = 14;
 
 { const Objects

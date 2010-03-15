@@ -5,10 +5,10 @@
 | For all the walking functions that are reflection based                      |
 |                                                                              |
 | * function MSI_WalkToTile(): Boolean;            * by marpis                 |
-| * function MSI_ReflectionWalk(): Boolean;        * by marpis                 |
-| * function MSI_CreateWalk(): TWalk;              * by marpis                 |
-| * function MSI_LoadPath(): TPointArray;          * by The MSI Team           |
-| * function MSI_LoadWalk(): TWalk;                * by The MSI Team           |
+| * function MSI_RefWalk(): Boolean;               * by marpis                 |
+| * function MSI_CreateRefWalk(): TWalk;           * by marpis                 |
+| * function MSI_LoadRefPath(): TPointArray;       * by The MSI Team           |
+| * function MSI_LoadRefWalk(): TWalk;             * by The MSI Team           |
 | * function MSI_FixPosition(): Boolean;           * by marpis                 |
  \_____________________________________________________________________________}
 
@@ -26,64 +26,66 @@ begin
   MP := TileToMM(P);
   if (InCircle(MP.X, MP.Y, MMCX, MMCY, 76)) then
   begin
-    MSI_Debug('MSI_WalkToTile', 'Tile on MM', Debug_SmallDetails);
+    MSI_Debug('MSI_WalkToTile', 'Tile on MM', DEBUG_SMALL_DETAILS);
     Result := True;
     Mouse(MP.X, MP.Y, Randomness, Randomness, True);
     MSI_Flag(FlagD);
   end else
-    MSI_Debug('MSI_WalkToTile', 'Tile not on MM!', Debug_SmallDetails);
+    MSI_Debug('MSI_WalkToTile', 'Tile not on MM!', DEBUG_SMALL_DETAILS);
 end;
 
 {******************************************************************************}
-{ function MSI_ReflectionWalk(StartLoc, EndLoc: Integer): Boolean;             }
-{ By: marpis                                                                   }
+{ function MSI_RefWalk(StartLoc, EndLoc: Integer): Boolean;                    }
+{ By: marpis, edited by Coh3n                                                  }
 { Description: Walks from A to B                                               }
 {******************************************************************************}
-function MSI_ReflectionWalk(StartLoc, EndLoc: Integer): Boolean;
+function MSI_RefWalk(StartLoc, EndLoc: Integer): Boolean;
 var
   TheWalk: TWalk;
   I, T: Integer;
 begin
-  MSI_Debug('MSI_ReflectionWalk', '', Debug_Functions);
-  TheWalk := MSI_LoadWalk(StartLoc, EndLoc);
-  T := GetSystemTime + (Length(TheWalk.Path) * 60 + 180) * 1000; // a minute for each tile + 3 minutes
+  MSI_Debug('MSI_RefWalk', '', Debug_Functions);
+  TheWalk := MSI_LoadRefWalk(StartLoc, EndLoc);
+  T := GetSystemTime + (Length(TheWalk.RefPath) * 60 + 180) * 1000; // a minute for each tile + 3 minutes
   repeat
-    for I := High(TheWalk.Path) downto 0 do
+    for I := High(TheWalk.RefPath) downto 0 do
     begin
-      if TileOnMM(TheWalk.Path[I]) then
-        if (not MSI_WalkToTile(TheWalk.Path[I], 4, 10)) then
+      if TileOnMM(TheWalk.RefPath[I]) then
+        if (not MSI_WalkToTile(TheWalk.RefPath[I], 4, 10)) then
+        begin
+          MSI_Debug('MSI_RefWalk', 'Failed to walk to tile: ' + IntToStr(i), DEBUG_SMALL_DETAILS);
           Exit;
-      Result := (I = High(TheWalk.Path));
+        end;
+      Result := (I = High(TheWalk.RefPath));
       Break;
     end;
   until(Result or (GetSystemTime > T));
   if Result then
   begin
-    MSI_Debug('MSI_ReflectionWalk', 'Successfully walked!', Debug_SmallDetails);
-    CurrentLocation.City := TheWalk.City;
-    CurrentLocation.Loc  := TheWalk.Loc;
+    MSI_Debug('MSI_RefWalk', 'Successfully walked!', DEBUG_SMALL_DETAILS);
+    Players[CurrentPlayer].Integers[P_LOC] := TheWalk.Loc; // the ending location
   end else
-    MSI_Debug('MSI_ReflectionWalk', 'Walking failed!', Debug_SmallDetails);
+    MSI_Debug('MSI_RefWalk', 'Walking failed!', DEBUG_SMALL_DETAILS);
 end;
 
 {******************************************************************************}
-{ function FormWalk(City, Loc: Integer; Path: TPointArray): TWalk;             }
+{ function MSI_CreateRefWalk(City, Loc: Integer; Path: TPointArray): TWalk;    }
 { By: marpis                                                                   }
 { Description: Forms TWalk from parameters                                     }
 {******************************************************************************}
-function MSI_CreateWalk(City, Loc: Integer; Path: TPointArray): TWalk;
+function MSI_CreateRefWalk(City, Loc: Integer; Path: TPointArray): TWalk;
 begin
   Result.City := City;
   Result.Loc  := Loc;
-  Result.Path := Path;
+  Result.RefPath := Path;
 end;
 
 {******************************************************************************}
-{ function LoadPath(StartLoc, EndLoc: Integer): TPointArray;                   }
+{ function MSI_LoadRefPath(StartLoc, EndLoc: Integer): TPointArray;            }
 { By: The MSI Team                                                             }
 { Description: Loads tiles from A to B                                         }
 {******************************************************************************}
-function MSI_LoadPath(StartLoc, EndLoc: Integer): TPointArray;
+function MSI_LoadRefPath(StartLoc, EndLoc: Integer): TPointArray;
 begin
   case StartLoc of
     LOC_VE_BANK:
@@ -103,23 +105,23 @@ begin
 end;
 
 {******************************************************************************}
-{ function MSI_LoadWalk(StartLoc, EndLoc: Integer): TWalk;                     }
+{ function MSI_LoadRefWalk(StartLoc, EndLoc: Integer): TWalk;                  }
 { By: The MSI Team                                                             }
 { Description: Loads TWalk from A to B                                         }
 {******************************************************************************}
-function MSI_LoadWalk(StartLoc, EndLoc: Integer): TWalk;
+function MSI_LoadRefWalk(StartLoc, EndLoc: Integer): TWalk;
 begin
   case StartLoc of
     LOC_VE_BANK:
       case EndLoc of
         LOC_VE_TREES:
-          Result := MSI_CreateWalk(CITY_VARROCK, EndLoc, MSI_LoadPath(StartLoc, EndLoc));
+          Result := MSI_CreateRefWalk(CITY_VARROCK, EndLoc, MSI_LoadRefPath(StartLoc, EndLoc));
       end;
       
     LOC_VE_TREES:
       case EndLoc of
         LOC_VE_BANK:
-          Result := MSI_CreateWalk(CITY_VARROCK, EndLoc, MSI_LoadPath(StartLoc, EndLoc));
+          Result := MSI_CreateRefWalk(CITY_VARROCK, EndLoc, MSI_LoadRefPath(StartLoc, EndLoc));
       end;
   end;
 end;
@@ -131,11 +133,11 @@ end;
 {******************************************************************************}
 function MSI_FixPosition(Location: Integer): Boolean;
 begin
-  Result := MSI_ReflectionWalk(CurrentLocation.Loc, Location);
+  Result := MSI_RefWalk(Players[CurrentPlayer].Integers[P_LOC], Location);
   if Result then
-    MSI_Debug('FixPosition', 'Position fixed successfully!', Debug_SmallDetails)
+    MSI_Debug('FixPosition', 'Position fixed successfully!', DEBUG_SMALL_DETAILS)
   else
-    MSI_Debug('FixPosition', 'Failed fixing position!', Debug_SmallDetails);
+    MSI_Debug('FixPosition', 'Failed fixing position!', DEBUG_SMALL_DETAILS);
 end;
 
 {$ENDIF}

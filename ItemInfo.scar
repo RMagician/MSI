@@ -30,6 +30,7 @@ Function MSI_GetItem(ID : Integer) : Boolean;
 Begin
   Case ID Of
     //Test item xP
+{
     CAVADA_BERRIES :
     With MSI_Item[CAVADA_BERRIES] Do
     Begin
@@ -44,6 +45,7 @@ Begin
       BMP := BitmapFromString(7, 7, 'beNoTrfVwMPGwM3G2NmRgYHTT5XTRASE3B2MIAgraa3A'+
                 'ASYggUDGEbaTABmEASSAyV2YH6oWwgYxpIuUdQjlAtoc+F5B8pbDzkfzmWsHkqSJlEAXXZFcdlZ6zVbI/lz8Mogto1G7JKWvFO+cCACNQHR0=');
     End;
+
 
     //Pickaxe's
     PICKAXE_BRONZE :
@@ -153,7 +155,7 @@ Begin
              'wUYpwUjNzdLP2j6hcsr1p/RFjV1/70HinyGT/7HI9CxtrD197nyCg' +
              'YiVNHQMre6BKSwBlwhLp')
     end;
-
+}
     //Hatchet's (Axes)
     HATCHET_BRONZE :
     with MSI_Item[HATCHET_BRONZE] do

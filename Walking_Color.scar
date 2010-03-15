@@ -6,20 +6,6 @@
 |                                                                              |
  \_____________________________________________________________________________}
 
-{ const AutoColor
-  Description: Constants used for the walking autocoloring. }
-const
-  SRLAC_ROADCOLOUR = 6579821;
-  SRLAC_VARROCKROADCOLOUR = 8291719;
-  SRLAC_FALLYROADCOLOUR = 7831173;
-  SRLAC_LUMBYROADCOLOUR = 8225677;
-  SRLAC_DIRTROADCOLOUR = 1853272;
-  SRLAC_WATERCOLOUR = 10850700;
-  SRLAC_ROCKCOLOUR = 5789528;
-  SRLAC_SANDCOLOUR = 0;
-  SRLAC_BANKERCOLOUR = 1179390;
-  SRLAC_TREECOLOUR = 1532978;
-
 {******************************************************************************}
 { function MSI_IsMoving: boolean;                                              }
 { By: marpis                                                                   }
@@ -50,7 +36,7 @@ begin
     end;
 end;
 
-Procedure SortColors(var Colors: tIntegerArray; col: Integer);
+procedure MSI_SortColors(var Colors: tIntegerArray; col: Integer);
 var
   tempB: tIntegerArray;
   Tol: ShortInt;
@@ -172,7 +158,7 @@ Begin
     End;
 End;
 
-Function AutoColorMM(const color: Integer): Integer;
+function MSI_AutoColorMM(const color: Integer): Integer;
 var
   TPA: tPointArray;
   List: tIntegerArray;
@@ -185,17 +171,20 @@ begin
   end;
   if Length(TPA) <= 0 then Exit;
   List := getColors(TPA);
-  sortColors(List, color);
+  MSI_SortColors(List, color);
   if Length(List) <= 0 then Exit;
   result := List[0];
 end;
 
-Function FindNewVarrockRoadColor: Integer;
+function MSI_FindAutoColor(Which: Integer): Integer;
 begin
-  Result := AutoColorMM(SRLAC_VarrockRoadColour);
+  case Which of
+    AC_ROAD_VARROCK:
+      Result := MSI_AutoColorMM(VARROCK_ROAD_COLOR);
+  end;
 end;
 
-Function CreateWalkTPA(x, y, color, width, height, tolerance: Integer): TpointArray;
+function MSI_CreateWalkTPA(x, y, color, width, height, tolerance: Integer): TpointArray;
 var
   TPA: tPointArray;
   aTPA: t2DPointArray;
@@ -219,7 +208,7 @@ begin
   if p = 0 then SetArrayLength(Result, 0);
 end;
 
-Function walkTPApoint(TPA: tPointArray; sortP: tPoint; flagDist: shortInt): Boolean;
+function MSI_WalkTPAPoint(TPA: tPointArray; sortP: tPoint; flagDist: shortInt): Boolean;
 var
   i: Integer;
   t: LongInt;
@@ -246,7 +235,7 @@ begin
   end;
 end;
 
-Function CreateColorBox(Color: Integer): TBox;
+function MSI_CreateColorBox(Color: Integer): TBox;
 var
   TPA: tPointArray;
 begin
@@ -255,7 +244,7 @@ begin
   Result := GetTPABounds(TPA);
 end;
 
-Function FindColorInBox(Color: Integer; Box: TBox): Boolean;
+function MSI_FindColorInBox(Color: Integer; Box: TBox): Boolean;
 var
   TPA: tPointArray;
   i: Integer;
@@ -277,7 +266,7 @@ begin
   end;
 end;
 
-Function CreateWalkIndex(index: Integer): Boolean;
+function MSI_CreateWalkIndex(index: Integer): Boolean;
 var
   i: Integer;
   aTPA: t2DPointArray;
@@ -289,15 +278,15 @@ begin
   case index of
     WALK_WC_VE_TREE_1:
       begin
-        if countColor(RoadColor, MMx1, MMy1, MMx2, MMy2) <= 5 then RoadColor := FindNewVarrockRoadColor;
-        if FindColorInBox(RoadColor, CreateColorBox(FindRockColor)) then
+        if countColor(RoadColor, MMx1, MMy1, MMx2, MMy2) <= 5 then RoadColor := MSI_FindAutoColor(AC_ROAD_VARROCK);
+        if MSI_FindColorInBox(RoadColor, MSI_CreateColorBox(FindRockColor)) then
         begin
           Result := True;
           Exit;
         end;
-        TPA := CreateWalkTPA(MMx2, MMy1, RoadColor, 2, 2, 8);
+        TPA := MSI_CreateWalkTPA(MMx2, MMy1, RoadColor, 2, 2, 8);
         if Length(TPA) <= 0 then Exit;
-        Result := walkTPApoint(TPA, Point(MMx2-randomRange(5, 15), MMy1), random(10));
+        Result := MSI_WalkTPAPoint(TPA, Point(MMx2-randomRange(5, 15), MMy1), random(10));
         Exit;
       end;
 
@@ -305,15 +294,13 @@ begin
       begin
         for i := 0 to 2 do
         begin
-          RoadColor := FindNewVarrockRoadColor();
+          RoadColor := MSI_FindAutoColor(AC_ROAD_VARROCK);
           FindColorsTolerance(TPA, RoadColor, MMCx, MMy1, MMx2, MMCy, 8);
           if Length(TPA) > 0 then
             Break;
           if i = 2 then
           begin
-            srl_Warn('Walk_WC_VE_Tree_2', 'Failed to find the road.', warn_AllVersions);
-            LogOut;
-            NextPlayer(False);
+            MSI_Debug('WALK_WC_VE_TREE_2', 'Failed to find the road.', DEBUG_SMALL_DETAILS);
             Exit;
           end;
         end;
@@ -327,8 +314,8 @@ begin
 
     WALK_WC_VE_TREE_3:
       begin
-        RockColor := AutoColorMM(SRLAC_RockColour);
-        TPA := CreateWalkTPA(MMcx, MMy1, RockColor, 2, 2, 8);
+        RockColor := MSI_AutoColorMM(ROCK_COLOR);
+        TPA := MSI_CreateWalkTPA(MMcx, MMy1, RockColor, 2, 2, 8);
         if length(TPA) <= 0 then Exit;
         for i := 0 to High(TPA) do
         begin
@@ -349,7 +336,7 @@ begin
 
     WALK_WC_VE_TREE_4:
       begin
-        TreeColor := AutoColorMM(SRLAC_TreeColour);
+        TreeColor := MSI_AutoColorMM(TREE_COLOR);
         writeLn('Tree AutoColor = '+IntToStr(TreeColor));
         FindColorsTolerance(TPA, TreeColor, MMx1, MMy1, MMx2, MMy2, 8);
         if Length(TPA) <= 0 then Exit;
@@ -368,8 +355,8 @@ begin
 
     WALK_WC_VE_BANK_1:
       begin
-        RockColor := AutoColorMM(SRLAC_RockColour);
-        TPA := CreateWalkTPA(MMcx, MMy2, RockColor, 2, 2, randomRange(5, 10));
+        RockColor := MSI_AutoColorMM(ROCK_COLOR);
+        TPA := MSI_CreateWalkTPA(MMcx, MMy2, RockColor, 2, 2, randomRange(5, 10));
         if Length(TPA) <= 0 then Exit;
         SortTPAFrom(TPA, point(700, 150));
         for i := 0 to High(TPA) do
@@ -391,7 +378,7 @@ begin
 
     WALK_WC_VE_BANK_2:
       begin
-        RoadColor := FindNewVarrockRoadColor();
+        RoadColor := MSI_FindAutoColor(AC_ROAD_VARROCK);
         FindColorsTolerance(TPA, RoadColor, MMx1, MMCy + 15, MMx2 - 20, MMy2, 4);
         if Length(TPA) <= 0 then
           Exit;
@@ -424,7 +411,7 @@ begin
 
     WALK_WC_VE_BANK_3:
       begin
-        TPA := CreateWalkTPA(MMx1, MMcy, RoadColor, 3, 3, 8);
+        TPA := MSI_CreateWalkTPA(MMx1, MMcy, RoadColor, 3, 3, 8);
         if Length(TPA) <= 0 then
           Exit;
         SortTPAFrom(TPA, point(MMx1-10, MMcy));
@@ -449,13 +436,13 @@ begin
       begin
         for i := 0 to 2 do
         begin
-          BC := AutoColorMM(SRLAC_BankerColour);
+          BC := MSI_AutoColorMM(BANKER_COLOR);
           FindColorsTolerance(TPA, BC, MMx1, MMCy, MMx2, MMy2, 5);
           if Length(TPA) > 5 then
             Break;
           if i = 2 then
           begin
-            MSI_Debug('CreateWalkIndex(WALK_BANK_Final);', 'Failed to find bankers on MiniMap.', Debug_Functions);
+            MSI_Debug('MSI_CreateWalkTPA(WALK_BANK_Final);', 'Failed to find bankers on MiniMap.', Debug_Functions);
             Exit;
           end;
         end;
@@ -480,9 +467,9 @@ begin
   end;
 end;
 
-Function WalkPath(index: byte): Boolean;
+function MSI_CreateWalkFailsafe(index: byte): Boolean;
 begin
-  if not CreateWalkIndex(index) then
+  if not MSI_CreateWalkIndex(index) then
   begin
     case index of
       WALK_WC_VE_TREE_1:
@@ -490,7 +477,7 @@ begin
         if not RadialWalkTolerance(RoadColor, 45, 90, randomRange(60, 70), random(8), random(8), 10) then
           if not RadialWalkTolerance(findRockColor, 45, 90, randomRange(60, 70), 3, 3, 10) then
           begin
-            MSI_Debug('WalkPath('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_1', Debug_Functions);
+            MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_1', Debug_Functions);
             Exit;
           end;
       end;
@@ -500,7 +487,7 @@ begin
         if not RadialWalkTolerance(RoadColor, 75, 105, randomRange(60, 70), random(5), random(5), 10) then
           if not RadialWalkTolerance(RoadColor, 65, 115, randomRange(60, 70), random(5), random(5), 10) then
           begin
-            MSI_Debug('WalkPath('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_2', Debug_Functions);
+            MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_2', Debug_Functions);
             Exit;
           end;
       end;
@@ -511,7 +498,7 @@ begin
           if not RadialWalkTolerance(findRockColor, 345, 35, 60, 2, 2, 10) then
             if not RadialWalkTolerance(RoadColor, 0, 45, randomRange(60, 70), 5, 5, 10) then
             begin
-              MSI_Debug('WalkPath('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_3', Debug_Functions);
+              MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_3', Debug_Functions);
               Exit;
             end;
       end;
@@ -534,7 +521,7 @@ begin
           end;
         end else
         begin
-          MSI_Debug('WalkPath('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_1', Debug_Functions);
+          MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_1', Debug_Functions);
           Exit;
         end;
       end;
@@ -544,7 +531,7 @@ begin
         if not RadialWalkTolerance(RoadColor, 180, 200, randomRange(60, 70), random(5), random(5), 10) then
           if not RadialWalkTolerance(RoadColor, 170, 220, randomRange(60, 70), 3, 3, 10) then
           begin
-            MSI_Debug('WalkPath('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_2', Debug_Functions);
+            MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_2', Debug_Functions);
             Exit;
           end;
       end;
@@ -554,7 +541,7 @@ begin
         if not RadialWalkTolerance(RoadColor, 255, 280, randomRange(60, 70), random(8), random(8), 10) then
           if not RadialWalkTolerance(RoadColor, 245, 290, randomRange(60, 70), 5, 5, 10) then
           begin
-            MSI_Debug('WalkPath('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_3', Debug_Functions);
+            MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_3', Debug_Functions);
             Exit;
           end;
       end;
@@ -566,4 +553,98 @@ begin
     end;
   end;
   result := true;
+end;
+
+{******************************************************************************}
+{ function MSI_CreateColorWalk(City, Loc: Integer; Path: TIntegerArray): TWalk;}
+{ By: Coh3n                                                                    }
+{ Description: Forms TWalk from parameters                                     }
+{******************************************************************************}
+function MSI_CreateColorWalk(City, Loc: Integer; Path: TIntegerArray): TWalk;
+begin
+  Result.City := City;
+  Result.Loc  := Loc;
+  Result.ColPath := Path;
+end;
+
+{******************************************************************************}
+{ function MSI_LoadColorPath(StartLoc, EndLoc: Integer): TIntegerArray;        }
+{ By: The MSI Team                                                             }
+{ Description: Loads the specified color walking path                          }
+{******************************************************************************}
+function MSI_LoadColorPath(StartLoc, EndLoc: Integer): TIntegerArray;
+begin
+  case StartLoc of
+    LOC_VE_BANK:
+      case EndLoc of
+        LOC_VE_TREES:
+          Result := [ WALK_WC_VE_TREE_1, WALK_WC_VE_TREE_2, WALK_WC_VE_TREE_3,
+                      WALK_WC_VE_TREE_4 ];
+      end;
+
+    LOC_VE_TREES:
+      case EndLoc of
+        LOC_VE_BANK:
+          Result := [ WALK_WC_VE_BANK_1, WALK_WC_VE_BANK_2, WALK_WC_VE_BANK_3,
+                      WALK_WC_VE_BANK_4 ];
+      end;
+  end;
+end;
+
+{******************************************************************************}
+{ function MSI_LoadColorWalk(StartLoc, EndLoc: Integer): TWalk;                }
+{ By: The MSI Team                                                             }
+{ Description: Loads TWalk from A to B                                         }
+{******************************************************************************}
+function MSI_LoadColorWalk(StartLoc, EndLoc: Integer): TWalk;
+begin
+  case StartLoc of
+    LOC_VE_BANK:
+      case EndLoc of
+        LOC_VE_TREES:
+          Result := MSI_CreateColorWalk(CITY_VARROCK, EndLoc, MSI_LoadColorPath(StartLoc, EndLoc));
+      end;
+
+    LOC_VE_TREES:
+      case EndLoc of
+        LOC_VE_BANK:
+          Result := MSI_CreateColorWalk(CITY_VARROCK, EndLoc, MSI_LoadColorPath(StartLoc, EndLoc));
+      end;
+  end;
+end;
+
+{******************************************************************************}
+{ function MSI_ColorWalk(startLoc, endLoc, colorIndex: Integer): Boolean;      }
+{ By: Coh3n                                                                    }
+{ Description: Walks from startLoc to endLoc                                   }
+{******************************************************************************}
+function MSI_ColorWalk(startLoc, endLoc: Integer): Boolean;
+var
+  i: Integer;
+  theWalk: TWalk;
+begin
+  if (not LoggedIn) then
+    Exit;
+
+  MakeCompass('n');
+  RunEnergy(20);
+  
+  theWalk := MSI_LoadColorWalk(startLoc, endLoc);
+  for i := 0 to High(theWalk.ColPath) do
+  begin
+    if (not MSI_CreateWalkFailsafe(theWalk.ColPath[i])) then
+    begin
+      MSI_Debug('MSI_ColorWalk', 'Failed to walk to point: ' + IntToStr(i), DEBUG_SMALL_DETAILS);
+      Exit;
+    end;
+    
+    Result := (i = High(theWalk.ColPath));
+  end;
+  
+  if (Result) then
+  begin
+    MSI_Debug('MSI_ColorWalk', 'Successfully walked to location', DEBUG_SMALL_DETAILS);
+    Players[CurrentPlayer].Integers[P_LOC] := theWalk.Loc;
+    Wait(RandomRange(750, 1500));
+  end;
 end;

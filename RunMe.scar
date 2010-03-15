@@ -40,7 +40,7 @@ begin
     PlayerObjects[0] := [[OBJ_TREE]];
     Integers[P_CITY] := CITY_VARROCK; //City to auto in
     Integers[P_LOC]  := LOC_VE_TREES;  //Starting location
-    Booleans[P_BANK] := False;         //True if you want to bank, false if you want to drop
+    Booleans[P_BANK] := True;         //True if you want to bank, false if you want to drop
   end;
 
   with Players[1] do
