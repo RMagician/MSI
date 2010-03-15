@@ -68,15 +68,6 @@ Type
   {Used in Banking.Scar}
   Type MSI_TItemArray = Array Of TItem;
 
-{ Type TWalk
-  Description: Stores all needed walking information. }
-  TWalk = Record
-    City    : integer;
-    Loc     : integer;
-    RefPath : TPointArray;
-    ColPath : TIntegerArray;
-  End;
-
 { Type TMMLocation
   Description: Stores all needed colorwalking information. }
   TMMLocation = Record

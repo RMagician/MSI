@@ -556,18 +556,6 @@ begin
 end;
 
 {******************************************************************************}
-{ function MSI_CreateColorWalk(City, Loc: Integer; Path: TIntegerArray): TWalk;}
-{ By: Coh3n                                                                    }
-{ Description: Forms TWalk from parameters                                     }
-{******************************************************************************}
-function MSI_CreateColorWalk(City, Loc: Integer; Path: TIntegerArray): TWalk;
-begin
-  Result.City := City;
-  Result.Loc  := Loc;
-  Result.ColPath := Path;
-end;
-
-{******************************************************************************}
 { function MSI_LoadColorPath(StartLoc, EndLoc: Integer): TIntegerArray;        }
 { By: The MSI Team                                                             }
 { Description: Loads the specified color walking path                          }
@@ -592,28 +580,6 @@ begin
 end;
 
 {******************************************************************************}
-{ function MSI_LoadColorWalk(StartLoc, EndLoc: Integer): TWalk;                }
-{ By: The MSI Team                                                             }
-{ Description: Loads TWalk from A to B                                         }
-{******************************************************************************}
-function MSI_LoadColorWalk(StartLoc, EndLoc: Integer): TWalk;
-begin
-  case StartLoc of
-    LOC_VE_BANK:
-      case EndLoc of
-        LOC_VE_TREES:
-          Result := MSI_CreateColorWalk(CITY_VARROCK, EndLoc, MSI_LoadColorPath(StartLoc, EndLoc));
-      end;
-
-    LOC_VE_TREES:
-      case EndLoc of
-        LOC_VE_BANK:
-          Result := MSI_CreateColorWalk(CITY_VARROCK, EndLoc, MSI_LoadColorPath(StartLoc, EndLoc));
-      end;
-  end;
-end;
-
-{******************************************************************************}
 { function MSI_ColorWalk(startLoc, endLoc, colorIndex: Integer): Boolean;      }
 { By: Coh3n                                                                    }
 { Description: Walks from startLoc to endLoc                                   }
@@ -621,7 +587,7 @@ end;
 function MSI_ColorWalk(startLoc, endLoc: Integer): Boolean;
 var
   i: Integer;
-  theWalk: TWalk;
+  thePath: TIntegerArray;
 begin
   if (not LoggedIn) then
     Exit;
@@ -629,22 +595,29 @@ begin
   MakeCompass('n');
   RunEnergy(20);
   
-  theWalk := MSI_LoadColorWalk(startLoc, endLoc);
-  for i := 0 to High(theWalk.ColPath) do
+  thePath := MSI_LoadColorPath(startLoc, endLoc);
+  for i := 0 to High(thePath) do
   begin
-    if (not MSI_CreateWalkFailsafe(theWalk.ColPath[i])) then
+    if (not MSI_CreateWalkFailsafe(thePath[i])) then
     begin
       MSI_Debug('MSI_ColorWalk', 'Failed to walk to point: ' + IntToStr(i), DEBUG_SMALL_DETAILS);
+      Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
       Exit;
     end;
     
-    Result := (i = High(theWalk.ColPath));
+    Result := (i = High(thePath));
   end;
   
   if (Result) then
   begin
     MSI_Debug('MSI_ColorWalk', 'Successfully walked to location', DEBUG_SMALL_DETAILS);
-    Players[CurrentPlayer].Integers[P_LOC] := theWalk.Loc;
+    Players[CurrentPlayer].Integers[P_LOC] := endLoc;
     Wait(RandomRange(750, 1500));
   end;
 end;
+
+function MSI_HybridWalk(startLoc, endLoc: Integer): Boolean;
+begin
+  Result := False;
+end;
+

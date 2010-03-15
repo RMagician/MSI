@@ -23,7 +23,7 @@ var
 begin
   HowManyPlayers := 8;
   NumberOfPlayers(HowManyPlayers);
-  CurrentPlayer := 0;
+  CurrentPlayer := 1;
   CurrentSkill := 0;
   SetLength(ProgressReportArray, HowManyPlayers);
   SetLength(PlayerSkills, HowManyPlayers);
@@ -53,8 +53,8 @@ begin
     PlayerSkills[1]  := [SKILL_WOODCUTTING];
     PlayerObjects[1] := [[OBJ_TREE]];
     Integers[P_CITY] := CITY_VARROCK; //City to auto in
-    Integers[P_LOC]  := LOC_VE_TREES;  //Starting location
-    Booleans[P_BANK] := False;
+    Integers[P_LOC]  := LOC_VE_BANK;  //Starting location
+    Booleans[P_BANK] := True;
   end;
 
   with Players[2] do
@@ -176,5 +176,6 @@ begin
   BreakTime := BREAK_TIME;
 
   DeclarePlayers;
-  MSI_MainLoop;
+  //MSI_MainLoop;
+  MSI_WalkToLoc;
 end.
