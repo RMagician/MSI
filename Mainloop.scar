@@ -459,7 +459,7 @@ begin
           if (MSI_TimedOut) then
             Break;
 
-          MSI_UnsetPlayer('MSI_MainLoop', 'Failed to walk to location', True);
+          MSI_UnsetPlayer('MSI_MainLoop', 'Failed to walk to location('+IntToStr(WalkIndex)+')', True);
           Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
           Break;
         end;
@@ -482,7 +482,7 @@ begin
           if (MSI_TimedOut) then
             Break;
 
-          MSI_UnsetPlayer('MSI_MainLoop', ' Failed to walk to bank', True);
+          MSI_UnsetPlayer('MSI_MainLoop', ' Failed to walk to bank('+IntToStr(WalkIndex)+')', True);
           Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
           Break;
         end;
