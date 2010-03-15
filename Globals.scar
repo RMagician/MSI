@@ -97,6 +97,9 @@ var
   CurrentSkill: Integer;
   { Used like CurrentPlayer, but for the skills in the player array }
   
+  CurrentLocation: TWalk;
+  { Used for reflection walking }
+  
   Debug_LevelToDebug: integer;
   { Description: For script user to choose how much to debug. }
   
@@ -119,7 +122,7 @@ const
   DEBUG_EVERYTHING     = 0;   // For Script Users to have everything in debug box.
 
   
-{ const Players.
+{ const Players
   Constants representing the different Players array records. }
 const
   // Integers

@@ -133,10 +133,7 @@
   LOC_LBGOBLINS    =   92;
   LOC_FREDFARMER   =   93;
 }
-{
-var
-  CurrentLocation: TWalk; // This should probably go to Globals.scar?
-}
+
 {******************************************************************************}
 { function MSI_IsMoving: boolean;                                              }
 { By: marpis                                                                   }
@@ -197,20 +194,20 @@ end;
 
 
 {******************************************************************************}
-{ function MSI_Walk(StartLocation, EndLocation: Integer): Boolean;             }
+{ function MSI_Walk(StartLoc, EndLoc: Integer): Boolean;                       }
 { By: marpis                                                                   }
 { Rev: 1                                                                       }
 { Date: 1 Nov 09                                                               }
 { Description: Walks from A to B                                               }
 {******************************************************************************}
-function MSI_Walk(StartLocation, EndLocation: Integer): Boolean;
+function MSI_Walk(StartLoc, EndLoc: Integer): Boolean;
 var
   TheWalk: TWalk;
   I, T: Integer;
 begin
   MSI_Debug('MSI_Walk', '', Debug_Functions);
-  TheWalk := LoadWalk(StartLocation, EndLocation);
-  T := GetSystemTime + (Length(TheWalk.Path) * 60 + 180) * 1000; // a minute for each ile + 3 minutes
+  TheWalk := MSI_LoadWalk(StartLoc, EndLoc);
+  T := GetSystemTime + (Length(TheWalk.Path) * 60 + 180) * 1000; // a minute for each tile + 3 minutes
   repeat
     for I := High(TheWalk.Path) downto 0 do
     begin
@@ -237,26 +234,39 @@ end;
 { Date: 1 Nov 09                                                               }
 { Description: Forms TWalk from parameters                                     }
 {******************************************************************************}
-function MSI_FormWalk(City, Loc: Integer; Path: TPointArray): TWalk;
+function MSI_CreateWalk(City, Loc: Integer; Path: TPointArray): TWalk;
 begin
   Result.City := City;
   Result.Loc  := Loc;
   Result.Path := Path;
 end;
 
-
 {******************************************************************************}
-{ function LoadPath(StartLocation, EndLocation: Integer): TPointArray;         }
-{ By: marpis                                                                   }
+{ function LoadPath(StartLoc, EndLoc: Integer): TPointArray;                   }
+{ By: The MSI Team                                                             }
 { Rev: 1                                                                       }
 { Date: 1 Nov 09                                                               }
 { Description: Loads tiles from A to B                                         }
 {******************************************************************************}
-function MSI_LoadPath(StartLocation, EndLocation: Integer): TPointArray;
+function MSI_LoadPath(StartLoc, EndLoc: Integer): TPointArray;
 begin
-  case StartLocation of
-    LOC_VEBANK:
-      case EndLocation of
+  case StartLoc of
+    LOC_VE_BANK:
+      case EndLoc of
+        LOC_VE_TREES:
+          Result := [ Point(3265, 3428), Point(3275, 3429), Point(3280, 3439),
+                      Point(3276, 3450) ];
+      end;
+      
+    LOC_VE_TREES:
+      case EndLoc of
+        LOC_VE_BANK:
+          Result := [ Point(3280, 3439), Point(3276, 3428), Point(3260, 3428),
+                      Point(3253, 3421) ];
+      end;
+  end;
+end;
+        {
         LOC_VWBANK:     Result := [Point(0, 0), Point(1, 1)];
         LOC_VEMINE:     Result := [Point(0, 0), Point(1, 1)];
         LOC_CHURCHYEW:  Result := [Point(0, 0), Point(1, 1)];
@@ -264,13 +274,12 @@ begin
         LOC_VETREE1:    Result := [Point(0, 0), Point(1, 1)];
         LOC_VE_DUMMY:   Result := [Point(0, 0), Point(1, 1)];
         LOC_VE_DUNGEON: Result := [Point(0, 0), Point(1, 1)];
- //       LOC_AUBRYSHOP:  Result := [Point(0, 0), Point(1, 1)];
+        LOC_AUBRYSHOP:  Result := [Point(0, 0), Point(1, 1)];
         LOC_EARTHALTAR: Result := [Point(0, 0), Point(1, 1)];
         LOC_SAWMILL:    Result := [Point(0, 0), Point(1, 1)];
-      end;
 
     LOC_VWBANK:
-      case EndLocation of
+      case EndLoc of
         LOC_VEBANK:   Result := [Point(0, 0), Point(1, 1)];
         LOC_GEBANK:   Result := [Point(0, 0), Point(1, 1)];
         LOC_VWMINE:   Result := [Point(0, 0), Point(1, 1)];
@@ -279,7 +288,7 @@ begin
       end;
 
     LOC_GEBANK:
-      case EndLocation of
+      case EndLoc of
         LOC_GEYEW:  Result := [Point(0, 0), Point(1, 1)];
         LOC_VWBANK: Result := [Point(0, 0), Point(1, 1)];
       end;
@@ -288,83 +297,91 @@ begin
     LOC_VWMINE:     Result := [Point(0, 0), Point(1, 1)];
     LOC_GEYEW:      Result := [Point(0, 0), Point(1, 1)];
     LOC_CHURCHYEW:  Result := [Point(0, 0), Point(1, 1)];
-    LOC_VETREE1:    Result := [Point(0, 0), Point(1, 1)];// ??
-    LOC_VETREE2:    Result := [Point(0, 0), Point(1, 1)];// ??
-    LOC_VARROCKCG:  Result := [Point(0, 0), Point(1, 1)];// ??
+    LOC_VETREE1:    Result := [Point(0, 0), Point(1, 1)];
+    LOC_VETREE2:    Result := [Point(0, 0), Point(1, 1)];
+    LOC_VARROCKCG:  Result := [Point(0, 0), Point(1, 1)];
     LOC_VE_DUMMY:   Result := [Point(0, 0), Point(1, 1)];
     LOC_VE_DUNGEON: Result := [Point(0, 0), Point(1, 1)];
-    LOC_VARROCKDW:  Result := [Point(0, 0), Point(1, 1)];// ??
+    LOC_VARROCKDW:  Result := [Point(0, 0), Point(1, 1)];
     LOC_VW_ANVIL:   Result := [Point(0, 0), Point(1, 1)];
- //   LOC_WHATFIELD:  Result := [Point(0, 0), Point(1, 1)];// ??
+    LOC_WHATFIELD:  Result := [Point(0, 0), Point(1, 1)];
     LOC_AUBURYSHOP: Result := [Point(0, 0), Point(1, 1)];
     LOC_EARTHALTAR: Result := [Point(0, 0), Point(1, 1)];
     LOC_SAWMILL:    Result := [Point(0, 0), Point(1, 1)];
     LOC_APHOTECARY: Result := [Point(0, 0), Point(1, 1)];
     LOC_AIRALTAR:   Result := [Point(0, 0), Point(1, 1)];
-  end;
-
-end;
+    }
 
 
 {******************************************************************************}
-{ function LoadWalk(StartLocation, EndLocation: Integer): TWalk;               }
-{ By: marpis                                                                   }
+{ function MSI_LoadWalk(StartLoc, EndLoc: Integer): TWalk;                     }
+{ By: The MSI Team                                                             }
 { Rev: 1                                                                       }
 { Date: 1 Nov 09                                                               }
 { Description: Loads TWalk from A to B                                         }
 {******************************************************************************}
-function MSI_LoadWalk(StartLocation, EndLocation: Integer): TWalk;
+function MSI_LoadWalk(StartLoc, EndLoc: Integer): TWalk;
 begin
-  case StartLocation of
-    LOC_VEBANK:
-      case EndLocation of
-        LOC_VWBANK:     Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-        LOC_VEMINE:     Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-        LOC_CHURCHYEW:  Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-        LOC_VETREE1:    Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-        LOC_VETREE1:    Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-        LOC_VE_DUMMY:   Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-        LOC_VE_DUNGEON: Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
- //       LOC_AUBRYSHOP:  Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-        LOC_EARTHALTAR: Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-        LOC_SAWMILL:    Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+  case StartLoc of
+    LOC_VE_BANK:
+      case EndLoc of
+        LOC_VE_TREES:
+          Result := MSI_CreateWalk(CITY_VARROCK, EndLoc, MSI_LoadPath(StartLoc, EndLoc));
+      end;
+      
+    LOC_VE_TREES:
+      case EndLoc of
+        LOC_VE_BANK:
+          Result := MSI_CreateWalk(CITY_VARROCK, EndLoc, MSI_LoadPath(StartLoc, EndLoc));
+      end;
+  end;
+end;
+      {
+        LOC_VWBANK:     Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+        LOC_VEMINE:     Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+        LOC_CHURCHYEW:  Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+        LOC_VETREE1:    Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+        LOC_VETREE1:    Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+        LOC_VE_DUMMY:   Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+        LOC_VE_DUNGEON: Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+        LOC_AUBRYSHOP:  Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+        LOC_EARTHALTAR: Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+        LOC_SAWMILL:    Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
       end;
 
     LOC_VWBANK:
-      case EndLocation of
-        LOC_VEBANK:   Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-        LOC_GEBANK:   Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-        LOC_VWMINE:   Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-        LOC_VWTREE:   Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-        LOC_AIRALTAR: Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+      case EndLoc of
+        LOC_VEBANK:   Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+        LOC_GEBANK:   Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+        LOC_VWMINE:   Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+        LOC_VWTREE:   Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+        LOC_AIRALTAR: Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
       end;
 
     LOC_GEBANK:
-      case EndLocation of
-        LOC_GEYEW:  Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-        LOC_VWBANK: Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
+      case EndLoc of
+        LOC_GEYEW:  Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+        LOC_VWBANK: Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
       end;
 
-    LOC_VEMINE:     Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-    LOC_VWMINE:     Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-    LOC_GEYEW:      Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-    LOC_CHURCHYEW:  Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-    LOC_VETREE1:    Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));// ??
-    LOC_VETREE2:    Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));// ??
-    LOC_VARROCKCG:  Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));// ??
-    LOC_VE_DUMMY:   Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-    LOC_VE_DUNGEON: Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-    LOC_VARROCKDW:  Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));// ??
-    LOC_VW_ANVIL:   Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
- //   LOC_WHATFIELD:  Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));// ??
-    LOC_AUBURYSHOP: Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-    LOC_EARTHALTAR: Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-    LOC_SAWMILL:    Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-    LOC_APHOTECARY: Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-    LOC_AIRALTAR:   Result := FormWalk(CITY_VARROCK, EndLocation, LoadPath(StartLocation, EndLocation));
-  end;
-
-end;
+    LOC_VEMINE:     Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+    LOC_VWMINE:     Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+    LOC_GEYEW:      Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+    LOC_CHURCHYEW:  Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+    LOC_VETREE1:    Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));// ??
+    LOC_VETREE2:    Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));// ??
+    LOC_VARROCKCG:  Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));// ??
+    LOC_VE_DUMMY:   Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+    LOC_VE_DUNGEON: Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+    LOC_VARROCKDW:  Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));// ??
+    LOC_VW_ANVIL:   Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+    LOC_WHATFIELD:  Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));// ??
+    LOC_AUBURYSHOP: Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+    LOC_EARTHALTAR: Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+    LOC_SAWMILL:    Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+    LOC_APHOTECARY: Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+    LOC_AIRALTAR:   Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
+    }
 
 
 {******************************************************************************}
