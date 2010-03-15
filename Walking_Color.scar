@@ -275,7 +275,8 @@ var
   RockColor, TreeColor, BC: Integer;
   t: LongInt;
 begin
-  case index of
+  index := WalkIndex;
+  case WalkIndex of
     WALK_WC_VE_TREE_1:
       begin
         if countColor(RoadColor, MMx1, MMy1, MMx2, MMy2) <= 5 then RoadColor := MSI_FindAutoColor(AC_ROAD_VARROCK);
