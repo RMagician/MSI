@@ -7,23 +7,6 @@
 | * function MSI_FindTool(Tool: TItem; var X, Y: Integer): Boolean;            | * by Coh3n
 |                                                                              |
  \_____________________________________________________________________________}
- 
- 
-const
-  { Trees }
-  OBJ_TREE              = 0;
-  OBJ_OAK               = 1;
-  OBJ_WILLOW            = 2;
-  OBJ_YEW               = 3;
-  { Rocks }
-  OBJ_ROCK_CLAY         = 4;
-  OBJ_ROCK_TIN          = 5;
-  OBJ_ROCK_COPPER       = 6;
-  OBJ_ROCK_IRON         = 7;
-  OBJ_ROCK_SILVER       = 8;
-  { Banks }
-  OBJ_BANK_VE           = 9;
-
 
 {*******************************************************************************
 Function MSI_GetObject(Which: Integer): TMSObject;
@@ -289,7 +272,28 @@ Begin
 
 End;
 
-Function MSI_ReturnPointsInBox(TPA: TPointArray; B: TBox): TPointArray; Forward;
+{******************************************************************************}
+{ Function ReturnPointsInBox(TPA: TPointArray; B: TBox): TPointArray;          }
+{ By: marpis                                                                   }
+{ Description: Self explanatory                                                }
+{******************************************************************************}
+Function MSI_ReturnPointsInBox(TPA: TPointArray; B: TBox): TPointArray;
+Var
+  I, H, N: Integer;
+Begin
+  H := High(TPA);
+  SetLength(Result, 1 shl 20);
+
+  For I := 0 To H Do
+    If PointInBox(TPA[I], B) Then
+    Begin
+      Result[N] := TPA[I];
+      Inc(N);
+    End;
+
+  SetLength(Result, N);
+End;
+
 {*******************************************************************************
 Function MSI_FindObjectsTPA( ... ): Boolean;
 By: marpis

@@ -6,21 +6,6 @@
 |                                                                              |
  \_____________________________________________________________________________}
 
-{ const Varrock East Woodcutting
-  Description: Constants used for the walking to and from the trees at the
-               Varrock east bank. }
-
-const
-  WALK_WC_VE_TREE_1 = 0; // rock
-  WALK_WC_VE_TREE_2 = 1; // road
-  WALK_WC_VE_TREE_3 = 2; // path
-  WALK_WC_VE_TREE_4 = 3; // final
-
-  WALK_WC_VE_BANK_1 = 4; // rock
-  WALK_WC_VE_BANK_2 = 5; // path
-  WALK_WC_VE_BANK_3 = 6; // road
-  WALK_WC_VE_BANK_4 = 7; // final
-
 { const AutoColor
   Description: Constants used for the walking autocoloring. }
 const
@@ -34,6 +19,36 @@ const
   SRLAC_SANDCOLOUR = 0;
   SRLAC_BANKERCOLOUR = 1179390;
   SRLAC_TREECOLOUR = 1532978;
+
+{******************************************************************************}
+{ function MSI_IsMoving: boolean;                                              }
+{ By: marpis                                                                   }
+{ Description: Returns True if moving                                          }
+{******************************************************************************}
+function MSI_IsMoving: boolean;
+begin
+  {$IFDEF REFLECTION}
+  Result := CharacterMoving;
+  {$ELSE}
+  Result := IsMoving;
+  {$ENDIF}
+end;
+
+{******************************************************************************}
+{ procedure MSI_Flag(Distance: Integer);                                       }
+{ By: marpis                                                                   }
+{ Description: Flag wait                                                       }
+{******************************************************************************}
+procedure MSI_Flag(FlagDist: integer);
+begin
+  if WaitFunc(@MSI_IsMoving, 1, 2500 + random(200)) then
+    while (MSI_IsMoving or FlagPresent) do
+    begin
+      FFlag(FlagDist);
+      if (FlagDistance <= FlagDist) then
+        Break;
+    end;
+end;
 
 Procedure SortColors(var Colors: tIntegerArray; col: Integer);
 var
@@ -66,8 +81,6 @@ end;
 {******************************************************************************}
 { Function FindMMLocation(Var X, Y: Integer; Location: TMMLocation): Boolean;  }
 { By: marpis                                                                   }
-{ Rev: 35                                                                      }
-{ Date: 30 Nov 09                                                              }
 { Description: Finds a location in minimap. First tries to find DTM, then      }
 {              colors, and if still not found it will find it by symbol        }
 {******************************************************************************}

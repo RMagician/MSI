@@ -4,179 +4,21 @@
 |==============================================================================|
 | For all the walking functions that are reflection based                      |
 |                                                                              |
+| * function MSI_WalkToTile(): Boolean;            * by marpis                 |
+| * function MSI_ReflectionWalk(): Boolean;        * by marpis                 |
+| * function MSI_CreateWalk(): TWalk;              * by marpis                 |
+| * function MSI_LoadPath(): TPointArray;          * by The MSI Team           |
+| * function MSI_LoadWalk(): TWalk;                * by The MSI Team           |
+| * function MSI_FixPosition(): Boolean;           * by marpis                 |
  \_____________________________________________________________________________}
 
-//Const
-  { Abbreviations:
-    - FS: Fishing Spot
-    - GS: General Store
-    - GE: Grand Exchange
-    - VE: Varrock East
-    - VW: Varrock West
-    - FW: Falador West
-    - FE: Falador East
-    - CG: Castle Guards
-    - DW: Dark Wizards
-    - V: Volcan
-    - SO: Stronghold Of *
-    - AK: Al Kharid
-    - SW: Spinning Wheel
-    - LB: Lumby
-    - EV: EdgeVille
-    - BV: Barbarian Village }
-
-
-  {Cities' Index}
-{
-  CITY_VARROCK     =   0;
-  CITY_FALADOR     =   1;
-  CITY_KARAMJA     =   2;
-  CITY_RIMMINGTON  =   3;
-  CITY_EDGEVILLE   =   4;
-  CITY_BARBVILLAGE =   5;
-  CITY_DRAYNOR     =   6;
-  CITY_ALKHARID    =   7;
-  CITY_LUMBRIDGE   =   8;
-  LOC_VEBANK       =   0;
-  LOC_VWBANK       =   1;
-  LOC_GEBANK       =   2;
-  LOC_VEMINE       =   3;
-  LOC_VWMINE       =   4;
-  LOC_GEYEW        =   5;
-  LOC_CHURCHYEW    =   6;
-  LOC_VETREE1      =   7;
-  LOC_VETREE2      =   8;
-  LOC_VWTREE       =   9;
-  LOC_VARROCKCG    =   10;
-  LOC_VE_DUMMY     =   11;
-  LOC_VE_DUNGEON   =   12;
-  LOC_VARROCKDW    =   13;
-  LOC_VW_ANVIL     =   14;
-  LOC_WHEATFIELD   =   15;
-  LOC_AUBURYSHOP   =   16;
-  LOC_EARTHALTAR   =   17;
-  LOC_SAWMILL      =   18;
-  LOC_APHOTECARY   =   19;
-  LOC_AIRALTAR     =   20;
-  LOC_FWBANK       =   21;
-  LOC_FEBANK       =   22;
-  LOC_MININGGUILD  =   23;
-  LOC_FWWATERPUMP  =   24;
-  LOC_FW_FURNACE   =   25;
-  LOC_DWARFMINE    =   26;
-  LOC_WHITEKNIGHTS =   27;
-  LOC_SOUTHYEW1    =   28;
-  LOC_SOUTHYEW2    =   29;
-  LOC_SOUTHYEW3    =   30;
-  LOC_FALLYCOWS    =   31;
-  LOC_CHICKENS     =   32;
-  LOC_CRAFTGUILD   =   33;
-  LOC_MAINDOCK     =   34;
-  LOC_KARAMJAGS    =   35;
-  LOC_FISHINGDOCK  =   36;
-  LOC_JUNGLE       =   37;
-  LOC_VDUNGEON     =   38;
-  LOC_RIMMYMINE    =   39;
-  LOC_YEW1         =   40;
-  LOC_WILLOWS1     =   41;
-  LOC_TREES1       =   42;
-  LOC_RIMMYGS      =   43;
-  LOC_TREES2       =   44;
-  LOC_WILLOWS2     =   45;
-  LOC_FISHINGSPOT  =   46;
-  LOC_COOKERY      =   47;
-  LOC_EVBANK       =   48;
-  LOC_EVYEWS1      =   49;
-  LOC_RVYEWS2      =   50;
-  LOC_EV_CS        =   51;
-  LOC_MONASTERY    =   52;
-
-  LOC_BVMINE       =   53;
-  LOC_SOSECURITY   =   54;
-  LOC_BVTREES      =   55;
-  LOC_BV_FS        =   56;
-  LOC_BODYALTAR    =   57;
-  LOC_BVEVERGREEN  =   58;
-  LOC_SOSAFETY     =   59;
-  LOC_BVBAR        =   60;
-  LOC_DRAYNORBANK  =   61;
-  LOC_DRAYNORFS    =   62;
-  LOC_DRAYNOROAK   =   63;
-  LOC_WIZARDTOWER  =   64;
-  LOC_DRAYNORYEW1  =   65;
-  LOC_DRAYNORYEW2  =   66;
-  LOC_DRAYNORYEW3  =   67;
-  LOC_DRAYNORMINE  =   68;
-  LOC_LUMBYSWAMP   =   69;
-  LOC_WATERALTAR   =   70;
-  LOC_DRAYNORDUNG  =   71;
-  LOC_AKBANK       =   72;
-  LOC_AK_FS        =   73;
-  LOC_AKWARRIORS   =   74;
-  LOC_AKFURNACE    =   75;
-  LOC_AKTANNER     =   76;
-  LOC_AK_CS        =   77;
-  LOC_FIREALTAR    =   78;
-  LOC_AKMINE       =   79;
-  LOC_LBCOWS       =   80;
-  LOC_LBBANK       =   81;
-  LOC_CASTLETREES  =   82;
-  LOC_DUKEHORACIO  =   83;
-  LOC_LBSWAMP2     =   84;
-  LOC_LBMINE       =   85;
-  LOC_LB_FS        =   86;
-  LOC_LB_CS        =   87;
-  LOC_LB_SW        =   88;
-  LOC_COMBATTUTORS =   89;
-  LOC_LBFURNACE    =   90;
-  LOC_LB_FS2       =   91;
-  LOC_LBGOBLINS    =   92;
-  LOC_FREDFARMER   =   93;
-}
-
-{******************************************************************************}
-{ function MSI_IsMoving: boolean;                                              }
-{ By: marpis                                                                   }
-{ Rev: 1                                                                       }
-{ Date: 1 Nov 09                                                               }
-{ Description: Returns True if moving                                          }
-{******************************************************************************}
-function MSI_IsMoving: boolean;
-begin
-  {$IFDEF REFLECTION}
-  Result := CharacterMoving;
-  {$ELSE}
-  Result := IsMoving;
-  {$ENDIF}
-end;
-
-
-{******************************************************************************}
-{ procedure MSI_Flag(Distance: Integer);                                       }
-{ By: marpis                                                                   }
-{ Rev: 1                                                                       }
-{ Date: 1 Nov 09                                                               }
-{ Description: Flag wait                                                       }
-{******************************************************************************}
-procedure MSI_Flag(FlagDist: integer);
-begin
-  if WaitFunc(@IsMoving, 1, 2500 + random(200)) then
-    while (IsMoving or FlagPresent) do
-    begin
-      FFlag(FlagDist);
-      if (FlagDistance <= FlagDist) then
-        Break;
-    end;
-end;
+{$IFDEF REFLECTION}
 
 {******************************************************************************}
 { function MSI_WalkToTile(P: TPoint; Randomness, FlagD: Integer): Boolean;     }
 { By: marpis                                                                   }
-{ Rev: 1                                                                       }
-{ Date: 1 Nov 09                                                               }
 { Description: Walks to tile                                                   }
 {******************************************************************************}
-{$IFDEF REFLECTION}
 function MSI_WalkToTile(P: TPoint; Randomness, FlagD: Integer): Boolean;
 var
   MP: TPoint;
@@ -192,20 +34,17 @@ begin
     MSI_Debug('MSI_WalkToTile', 'Tile not on MM!', Debug_SmallDetails);
 end;
 
-
 {******************************************************************************}
-{ function MSI_Walk(StartLoc, EndLoc: Integer): Boolean;                       }
+{ function MSI_ReflectionWalk(StartLoc, EndLoc: Integer): Boolean;             }
 { By: marpis                                                                   }
-{ Rev: 1                                                                       }
-{ Date: 1 Nov 09                                                               }
 { Description: Walks from A to B                                               }
 {******************************************************************************}
-function MSI_Walk(StartLoc, EndLoc: Integer): Boolean;
+function MSI_ReflectionWalk(StartLoc, EndLoc: Integer): Boolean;
 var
   TheWalk: TWalk;
   I, T: Integer;
 begin
-  MSI_Debug('MSI_Walk', '', Debug_Functions);
+  MSI_Debug('MSI_ReflectionWalk', '', Debug_Functions);
   TheWalk := MSI_LoadWalk(StartLoc, EndLoc);
   T := GetSystemTime + (Length(TheWalk.Path) * 60 + 180) * 1000; // a minute for each tile + 3 minutes
   repeat
@@ -220,18 +59,16 @@ begin
   until(Result or (GetSystemTime > T));
   if Result then
   begin
-    MSI_Debug('MSI_Walk', 'Successfully walked!', Debug_SmallDetails);
+    MSI_Debug('MSI_ReflectionWalk', 'Successfully walked!', Debug_SmallDetails);
     CurrentLocation.City := TheWalk.City;
     CurrentLocation.Loc  := TheWalk.Loc;
   end else
-    MSI_Debug('MSI_Walk', 'Walking failed!', Debug_SmallDetails);
+    MSI_Debug('MSI_ReflectionWalk', 'Walking failed!', Debug_SmallDetails);
 end;
 
 {******************************************************************************}
 { function FormWalk(City, Loc: Integer; Path: TPointArray): TWalk;             }
 { By: marpis                                                                   }
-{ Rev: 1                                                                       }
-{ Date: 1 Nov 09                                                               }
 { Description: Forms TWalk from parameters                                     }
 {******************************************************************************}
 function MSI_CreateWalk(City, Loc: Integer; Path: TPointArray): TWalk;
@@ -244,8 +81,6 @@ end;
 {******************************************************************************}
 { function LoadPath(StartLoc, EndLoc: Integer): TPointArray;                   }
 { By: The MSI Team                                                             }
-{ Rev: 1                                                                       }
-{ Date: 1 Nov 09                                                               }
 { Description: Loads tiles from A to B                                         }
 {******************************************************************************}
 function MSI_LoadPath(StartLoc, EndLoc: Integer): TPointArray;
@@ -266,58 +101,10 @@ begin
       end;
   end;
 end;
-        {
-        LOC_VWBANK:     Result := [Point(0, 0), Point(1, 1)];
-        LOC_VEMINE:     Result := [Point(0, 0), Point(1, 1)];
-        LOC_CHURCHYEW:  Result := [Point(0, 0), Point(1, 1)];
-        LOC_VETREE1:    Result := [Point(0, 0), Point(1, 1)];
-        LOC_VETREE1:    Result := [Point(0, 0), Point(1, 1)];
-        LOC_VE_DUMMY:   Result := [Point(0, 0), Point(1, 1)];
-        LOC_VE_DUNGEON: Result := [Point(0, 0), Point(1, 1)];
-        LOC_AUBRYSHOP:  Result := [Point(0, 0), Point(1, 1)];
-        LOC_EARTHALTAR: Result := [Point(0, 0), Point(1, 1)];
-        LOC_SAWMILL:    Result := [Point(0, 0), Point(1, 1)];
-
-    LOC_VWBANK:
-      case EndLoc of
-        LOC_VEBANK:   Result := [Point(0, 0), Point(1, 1)];
-        LOC_GEBANK:   Result := [Point(0, 0), Point(1, 1)];
-        LOC_VWMINE:   Result := [Point(0, 0), Point(1, 1)];
-        LOC_VWTREE:   Result := [Point(0, 0), Point(1, 1)];
-        LOC_AIRALTAR: Result := [Point(0, 0), Point(1, 1)];
-      end;
-
-    LOC_GEBANK:
-      case EndLoc of
-        LOC_GEYEW:  Result := [Point(0, 0), Point(1, 1)];
-        LOC_VWBANK: Result := [Point(0, 0), Point(1, 1)];
-      end;
-
-    LOC_VEMINE:     Result := [Point(0, 0), Point(1, 1)];
-    LOC_VWMINE:     Result := [Point(0, 0), Point(1, 1)];
-    LOC_GEYEW:      Result := [Point(0, 0), Point(1, 1)];
-    LOC_CHURCHYEW:  Result := [Point(0, 0), Point(1, 1)];
-    LOC_VETREE1:    Result := [Point(0, 0), Point(1, 1)];
-    LOC_VETREE2:    Result := [Point(0, 0), Point(1, 1)];
-    LOC_VARROCKCG:  Result := [Point(0, 0), Point(1, 1)];
-    LOC_VE_DUMMY:   Result := [Point(0, 0), Point(1, 1)];
-    LOC_VE_DUNGEON: Result := [Point(0, 0), Point(1, 1)];
-    LOC_VARROCKDW:  Result := [Point(0, 0), Point(1, 1)];
-    LOC_VW_ANVIL:   Result := [Point(0, 0), Point(1, 1)];
-    LOC_WHATFIELD:  Result := [Point(0, 0), Point(1, 1)];
-    LOC_AUBURYSHOP: Result := [Point(0, 0), Point(1, 1)];
-    LOC_EARTHALTAR: Result := [Point(0, 0), Point(1, 1)];
-    LOC_SAWMILL:    Result := [Point(0, 0), Point(1, 1)];
-    LOC_APHOTECARY: Result := [Point(0, 0), Point(1, 1)];
-    LOC_AIRALTAR:   Result := [Point(0, 0), Point(1, 1)];
-    }
-
 
 {******************************************************************************}
 { function MSI_LoadWalk(StartLoc, EndLoc: Integer): TWalk;                     }
 { By: The MSI Team                                                             }
-{ Rev: 1                                                                       }
-{ Date: 1 Nov 09                                                               }
 { Description: Loads TWalk from A to B                                         }
 {******************************************************************************}
 function MSI_LoadWalk(StartLoc, EndLoc: Integer): TWalk;
@@ -336,129 +123,26 @@ begin
       end;
   end;
 end;
-      {
-        LOC_VWBANK:     Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-        LOC_VEMINE:     Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-        LOC_CHURCHYEW:  Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-        LOC_VETREE1:    Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-        LOC_VETREE1:    Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-        LOC_VE_DUMMY:   Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-        LOC_VE_DUNGEON: Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-        LOC_AUBRYSHOP:  Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-        LOC_EARTHALTAR: Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-        LOC_SAWMILL:    Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-      end;
-
-    LOC_VWBANK:
-      case EndLoc of
-        LOC_VEBANK:   Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-        LOC_GEBANK:   Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-        LOC_VWMINE:   Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-        LOC_VWTREE:   Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-        LOC_AIRALTAR: Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-      end;
-
-    LOC_GEBANK:
-      case EndLoc of
-        LOC_GEYEW:  Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-        LOC_VWBANK: Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-      end;
-
-    LOC_VEMINE:     Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-    LOC_VWMINE:     Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-    LOC_GEYEW:      Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-    LOC_CHURCHYEW:  Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-    LOC_VETREE1:    Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));// ??
-    LOC_VETREE2:    Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));// ??
-    LOC_VARROCKCG:  Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));// ??
-    LOC_VE_DUMMY:   Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-    LOC_VE_DUNGEON: Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-    LOC_VARROCKDW:  Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));// ??
-    LOC_VW_ANVIL:   Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-    LOC_WHATFIELD:  Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));// ??
-    LOC_AUBURYSHOP: Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-    LOC_EARTHALTAR: Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-    LOC_SAWMILL:    Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-    LOC_APHOTECARY: Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-    LOC_AIRALTAR:   Result := FormWalk(CITY_VARROCK, EndLoc, LoadPath(StartLoc, EndLoc));
-    }
-
 
 {******************************************************************************}
 { function FixPosition(Location: Integer): Boolean;                            }
 { By: marpis                                                                   }
-{ Rev: 1                                                                       }
-{ Date: 1 Nov 09                                                               }
 { Description: Fix position if lost                                            }
 {******************************************************************************}
 function MSI_FixPosition(Location: Integer): Boolean;
 begin
-  Result := MSI_Walk(CurrentLocation.Loc, Location);
+  Result := MSI_ReflectionWalk(CurrentLocation.Loc, Location);
   if Result then
     MSI_Debug('FixPosition', 'Position fixed successfully!', Debug_SmallDetails)
   else
     MSI_Debug('FixPosition', 'Failed fixing position!', Debug_SmallDetails);
 end;
+
 {$ENDIF}
-
-{
-East Mine -> Bank
-3285, 3366
-3287, 3369
-3290, 3373
-3292, 3377
-3292, 3383
-3292, 3387
-3291, 3390
-3292, 3393
-3291, 3396
-3292, 3400
-3292, 3404
-3290, 3409
-3289, 3413
-3286, 3418
-3285, 3421
-3284, 3425
-3278, 3428
-3274, 3428
-3269, 3428
-3265, 3428
-3261, 3428
-3258, 3428
-3255, 3428
-3253, 3425
-3253, 3421
-}
-
-{******************************************************************************}
-{ Function ReturnPointsInBox(TPA: TPointArray; B: TBox): TPointArray;          }
-{ By: marpis                                                                   }
-{ Rev: 35                                                                      }
-{ Date: 30 Nov 09                                                              }
-{ Description: Self explanatory                                                }
-{******************************************************************************}
-Function MSI_ReturnPointsInBox(TPA: TPointArray; B: TBox): TPointArray;
-Var
-  I, H, N: Integer;
-Begin
-  H := High(TPA);
-  SetLength(Result, 1 shl 20);
-
-  For I := 0 To H Do
-    If PointInBox(TPA[I], B) Then
-    Begin
-      Result[N] := TPA[I];
-      Inc(N);
-    End;
-
-  SetLength(Result, N);
-End;
 
 {******************************************************************************}
 { Procedure MSI_AntiBan(HowLong : Integer);                                    }
 { By: Naum, edited by Coh3n                                                    }
-{ Rev: 54                                                                      }
-{ Date: 21 Dec 09                                                              }
 { Description: The AntiBan procedure to be used throughout the scripts.        }
 {******************************************************************************}
 Procedure MSI_AntiBan(HowLong : Integer);
@@ -501,3 +185,34 @@ Begin
                       MSI_AntiBan(7000 + Random(200));
   End;
 End;
+
+{
+  Unused paths:
+
+  East Mine -> Bank
+  3285, 3366
+  3287, 3369
+  3290, 3373
+  3292, 3377
+  3292, 3383
+  3292, 3387
+  3291, 3390
+  3292, 3393
+  3291, 3396
+  3292, 3400
+  3292, 3404
+  3290, 3409
+  3289, 3413
+  3286, 3418
+  3285, 3421
+  3284, 3425
+  3278, 3428
+  3274, 3428
+  3269, 3428
+  3265, 3428
+  3261, 3428
+  3258, 3428
+  3255, 3428
+  3253, 3425
+  3253, 3421
+}

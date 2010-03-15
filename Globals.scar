@@ -5,7 +5,27 @@
 | Used to store all necessary global types, consts and vars                    |
 |                                                                              |
  \_____________________________________________________________________________}
-  
+
+{
+  Abbreviations:
+    - FS: Fishing Spot
+    - GS: General Store
+    - GE: Grand Exchange
+    - VE: Varrock East
+    - VW: Varrock West
+    - FW: Falador West
+    - FE: Falador East
+    - CG: Castle Guards
+    - DW: Dark Wizards
+    - V: Volcan
+    - SO: Stronghold Of *
+    - AK: Al Kharid
+    - SW: Spinning Wheel
+    - LB: Lumby
+    - EV: EdgeVille
+    - BV: Barbarian Village
+}
+    
 { Type TMSObject
   Description: To be used for finding on the MS. Stores all necessary
                information. }
@@ -142,6 +162,20 @@ const
   
   CITY_VARROCK = 4;
   
+{ const Varrock East Woodcutting
+  Description: Constants used for the walking to and from the trees at the
+               Varrock east bank }
+const
+  WALK_WC_VE_TREE_1 = 0; // rock
+  WALK_WC_VE_TREE_2 = 1; // road
+  WALK_WC_VE_TREE_3 = 2; // path
+  WALK_WC_VE_TREE_4 = 3; // final
+
+  WALK_WC_VE_BANK_1 = 4; // rock
+  WALK_WC_VE_BANK_2 = 5; // path
+  WALK_WC_VE_BANK_3 = 6; // road
+  WALK_WC_VE_BANK_4 = 7; // final
+  
 { const Hatchet/Pickaze requirements.
   Constants representing the requirements to use each pickaxe/hatchet. }
 const
@@ -174,3 +208,21 @@ const
 
   LOGS_NORMAL = 13; //Logs supported
   LOGS_OAK    = 14;
+
+{ const Objects
+  Description: Constants representing all the main screen objects used in MSI }
+const
+  OBJ_TREE              = 0;
+  OBJ_OAK               = 1;
+  OBJ_WILLOW            = 2;
+  OBJ_YEW               = 3;
+  
+{
+  OBJ_ROCK_CLAY         = 4;
+  OBJ_ROCK_TIN          = 5;
+  OBJ_ROCK_COPPER       = 6;
+  OBJ_ROCK_IRON         = 7;
+  OBJ_ROCK_SILVER       = 8;
+}
+
+  OBJ_BANK_VE           = 9;
