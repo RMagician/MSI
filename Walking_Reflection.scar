@@ -14,6 +14,11 @@
 
 {$IFDEF REFLECTION}
 
+procedure TestReflection;
+begin
+  Writeln('Reflection has been compiled!');
+end;
+
 {******************************************************************************}
 { function MSI_WalkToTile(P: TPoint; Randomness, FlagD: Integer): Boolean;     }
 { By: marpis                                                                   }
@@ -32,40 +37,6 @@ begin
     MSI_Flag(FlagD);
   end else
     MSI_Debug('MSI_WalkToTile', 'Tile not on MM!', DEBUG_SMALL_DETAILS);
-end;
-
-{******************************************************************************}
-{ function MSI_RefWalk(StartLoc, EndLoc: Integer): Boolean;                    }
-{ By: marpis, edited by Coh3n                                                  }
-{ Description: Walks from A to B                                               }
-{******************************************************************************}
-function MSI_RefWalk(StartLoc, EndLoc: Integer): Boolean;
-var
-  TheWalk: TWalk;
-  I, T: Integer;
-begin
-  MSI_Debug('MSI_RefWalk', '', Debug_Functions);
-  TheWalk := MSI_LoadRefWalk(StartLoc, EndLoc);
-  T := GetSystemTime + (Length(TheWalk.RefPath) * 60 + 180) * 1000; // a minute for each tile + 3 minutes
-  repeat
-    for I := High(TheWalk.RefPath) downto 0 do
-    begin
-      if TileOnMM(TheWalk.RefPath[I]) then
-        if (not MSI_WalkToTile(TheWalk.RefPath[I], 4, 10)) then
-        begin
-          MSI_Debug('MSI_RefWalk', 'Failed to walk to tile: ' + IntToStr(i), DEBUG_SMALL_DETAILS);
-          Exit;
-        end;
-      Result := (I = High(TheWalk.RefPath));
-      Break;
-    end;
-  until(Result or (GetSystemTime > T));
-  if Result then
-  begin
-    MSI_Debug('MSI_RefWalk', 'Successfully walked!', DEBUG_SMALL_DETAILS);
-    Players[CurrentPlayer].Integers[P_LOC] := TheWalk.Loc; // the ending location
-  end else
-    MSI_Debug('MSI_RefWalk', 'Walking failed!', DEBUG_SMALL_DETAILS);
 end;
 
 {******************************************************************************}
@@ -124,6 +95,40 @@ begin
           Result := MSI_CreateRefWalk(CITY_VARROCK, EndLoc, MSI_LoadRefPath(StartLoc, EndLoc));
       end;
   end;
+end;
+
+{******************************************************************************}
+{ function MSI_RefWalk(StartLoc, EndLoc: Integer): Boolean;                    }
+{ By: marpis, edited by Coh3n                                                  }
+{ Description: Walks from A to B                                               }
+{******************************************************************************}
+function MSI_RefWalk(StartLoc, EndLoc: Integer): Boolean;
+var
+  TheWalk: TWalk;
+  I, T: Integer;
+begin
+  MSI_Debug('MSI_RefWalk', '', Debug_Functions);
+  TheWalk := MSI_LoadRefWalk(StartLoc, EndLoc);
+  T := GetSystemTime + (Length(TheWalk.RefPath) * 60 + 180) * 1000; // a minute for each tile + 3 minutes
+  repeat
+    for I := High(TheWalk.RefPath) downto 0 do
+    begin
+      if TileOnMM(TheWalk.RefPath[I]) then
+        if (not MSI_WalkToTile(TheWalk.RefPath[I], 4, 10)) then
+        begin
+          MSI_Debug('MSI_RefWalk', 'Failed to walk to tile: ' + IntToStr(i), DEBUG_SMALL_DETAILS);
+          Exit;
+        end;
+      Result := (I = High(TheWalk.RefPath));
+      Break;
+    end;
+  until(Result or (GetSystemTime > T));
+  if Result then
+  begin
+    MSI_Debug('MSI_RefWalk', 'Successfully walked!', DEBUG_SMALL_DETAILS);
+    Players[CurrentPlayer].Integers[P_LOC] := TheWalk.Loc; // the ending location
+  end else
+    MSI_Debug('MSI_RefWalk', 'Walking failed!', DEBUG_SMALL_DETAILS);
 end;
 
 {******************************************************************************}

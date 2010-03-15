@@ -7,8 +7,8 @@
  \_____________________________________________________________________________}
 
 program MSIScript;
-{.include SRL/SRL/MSI/Setup.scar}
 {$DEFINE REFLECTION} // Comment out if you don't want to use reflection walking
+{.include SRL/SRL/MSI/Setup.scar}
 
 const
   BREAK_AFTER = 5; // Loads to break after/switching players after
