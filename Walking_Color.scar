@@ -400,7 +400,7 @@ begin
 
         if (t = 4) or (BC < 1) then
         begin
-          MSI_Debug('CreatWalkIndex(WALK_WC_VE_BANK_2)', 'Failed to find road on minimap', Debug_Functions);
+          MSI_Debug('CreatWalkIndex(WALK_WC_VE_BANK_2)', 'Failed to find road on minimap', DEBUG_FUNCTIONS);
           Exit;
         end;
 
@@ -443,7 +443,7 @@ begin
             Break;
           if i = 2 then
           begin
-            MSI_Debug('MSI_CreateWalkTPA(WALK_BANK_Final);', 'Failed to find bankers on MiniMap.', Debug_Functions);
+            MSI_Debug('MSI_CreateWalkTPA(WALK_BANK_Final);', 'Failed to find bankers on MiniMap.', DEBUG_FUNCTIONS);
             Exit;
           end;
         end;
@@ -478,7 +478,7 @@ begin
         if not RadialWalkTolerance(RoadColor, 45, 90, randomRange(60, 70), random(8), random(8), 10) then
           if not RadialWalkTolerance(findRockColor, 45, 90, randomRange(60, 70), 3, 3, 10) then
           begin
-            MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_1', Debug_Functions);
+            MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_1', DEBUG_FUNCTIONS);
             Exit;
           end;
       end;
@@ -488,7 +488,7 @@ begin
         if not RadialWalkTolerance(RoadColor, 75, 105, randomRange(60, 70), random(5), random(5), 10) then
           if not RadialWalkTolerance(RoadColor, 65, 115, randomRange(60, 70), random(5), random(5), 10) then
           begin
-            MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_2', Debug_Functions);
+            MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_2', DEBUG_FUNCTIONS);
             Exit;
           end;
       end;
@@ -499,7 +499,7 @@ begin
           if not RadialWalkTolerance(findRockColor, 345, 35, 60, 2, 2, 10) then
             if not RadialWalkTolerance(RoadColor, 0, 45, randomRange(60, 70), 5, 5, 10) then
             begin
-              MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_3', Debug_Functions);
+              MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_3', DEBUG_FUNCTIONS);
               Exit;
             end;
       end;
@@ -522,7 +522,7 @@ begin
           end;
         end else
         begin
-          MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_1', Debug_Functions);
+          MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_1', DEBUG_FUNCTIONS);
           Exit;
         end;
       end;
@@ -532,7 +532,7 @@ begin
         if not RadialWalkTolerance(RoadColor, 180, 200, randomRange(60, 70), random(5), random(5), 10) then
           if not RadialWalkTolerance(RoadColor, 170, 220, randomRange(60, 70), 3, 3, 10) then
           begin
-            MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_2', Debug_Functions);
+            MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_2', DEBUG_FUNCTIONS);
             Exit;
           end;
       end;
@@ -542,7 +542,7 @@ begin
         if not RadialWalkTolerance(RoadColor, 255, 280, randomRange(60, 70), random(8), random(8), 10) then
           if not RadialWalkTolerance(RoadColor, 245, 290, randomRange(60, 70), 5, 5, 10) then
           begin
-            MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_3', Debug_Functions);
+            MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_3', DEBUG_FUNCTIONS);
             Exit;
           end;
       end;
@@ -616,9 +616,3 @@ begin
     Wait(RandomRange(750, 1500));
   end;
 end;
-
-function MSI_HybridWalk(startLoc, endLoc: Integer): Boolean;
-begin
-  Result := False;
-end;
-

@@ -97,6 +97,11 @@ begin
     MSI_Debug('MSI_RefWalk', 'Walking failed!', DEBUG_SMALL_DETAILS);
 end;
 
+function MSI_HybridWalk(startLoc, endLoc: Integer): Boolean;
+begin
+  Result := False;
+end;
+
 {******************************************************************************}
 { function FixPosition(Location: Integer): Boolean;                            }
 { By: marpis                                                                   }
