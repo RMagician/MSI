@@ -275,7 +275,7 @@ var
   RockColor, TreeColor, BC: Integer;
   t: LongInt;
 begin
-  index := WalkIndex;
+  WalkIndex := index;
   case WalkIndex of
     WALK_WC_VE_TREE_1:
       begin
