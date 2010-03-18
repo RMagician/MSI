@@ -163,7 +163,7 @@ const
   Description: Constants used for autocoloring the minimap }
 const
   GENERAL_ROAD_COLOR = 6579821;
-  VARROCK_ROAD_COLOR = 8291719;
+  VARROCK_ROAD_COLOR = 8686729;
   FALLY_ROAD_COLOR   = 7831173;
   LUMBY_ROAD_COLOR   = 8225677;
   DIRT_ROAD_COLOR    = 1853272;
