@@ -268,7 +268,7 @@ end;
 
 function MSI_CreateWalkIndex(index: Integer): Boolean;
 var
-  i: Integer;
+  i, Tol: Integer;
   aTPA: t2DPointArray;
   TPA: tPointArray;
   p: tPoint;
@@ -279,34 +279,58 @@ begin
   case WalkIndex of
     WALK_WC_VE_TREE_1:
       begin
-        if countColor(RoadColor, MMx1, MMy1, MMx2, MMy2) <= 5 then RoadColor := MSI_FindAutoColor(AC_ROAD_VARROCK);
-        if MSI_FindColorInBox(RoadColor, MSI_CreateColorBox(FindRockColor)) then
+        if countColor(RoadColor, MMx1, MMy1, MMx2, MMy2) <= 5 then
+          RoadColor := MSI_AutoColorMM(VARROCK_ROAD_COLOR);
+        Tol := 2;
+        for i := 0 to 2 do
         begin
-          Result := True;
-          Exit;
+          FindColorsTolerance(TPA, RoadColor, MMCx, MMy1, MMx2, MMCy, Tol);
+          if Length(TPA) > 10 then
+            Break;
+          if i = 2 then
+          begin
+            MSI_Debug('WALK_WC_VE_TREE_1', 'Failed to locate road.', DEBUG_SMALL_DETAILS);
+            Exit;
+          end;
+          Tol := i * 2;
         end;
-        TPA := MSI_CreateWalkTPA(MMx2, MMy1, RoadColor, 2, 2, 8);
-        if Length(TPA) <= 0 then Exit;
-        Result := MSI_WalkTPAPoint(TPA, Point(MMx2-randomRange(5, 15), MMy1), random(10));
+        SortTPAFrom(TPA, Point(MMCx, MMCy));
+        try
+          t := RandomRange(Length(TPA) - 5, Length(TPA));
+        except
+          t := Length(TPA) - 2;
+        end;
+        Mouse(TPA[t].x, TPA[t].y, 1, 1, True);
+        t := getSystemTime;
+        while not flagPresent() do
+        begin
+          if getSystemTime-t > randomRange(2000, 2500) then
+            Exit;
+          wait(250+random(500));
+        end;
+        FFlag(Random(5));
+        Result := True;
         Exit;
       end;
 
     WALK_WC_VE_TREE_2:
       begin
+        Tol := 2;
         for i := 0 to 2 do
         begin
-          RoadColor := MSI_FindAutoColor(AC_ROAD_VARROCK);
-          FindColorsTolerance(TPA, RoadColor, MMCx, MMy1, MMx2, MMCy, 8);
-          if Length(TPA) > 0 then
+          RoadColor := MSI_AutoColorMM(VARROCK_ROAD_COLOR);
+          FindColorsTolerance(TPA, RoadColor, MMCx + 10, MMy1, MMx2, MMCy, Tol);
+          if Length(TPA) > 10 then
             Break;
           if i = 2 then
           begin
             MSI_Debug('WALK_WC_VE_TREE_2', 'Failed to find the road.', DEBUG_SMALL_DETAILS);
             Exit;
           end;
+          Tol := i * 2;
         end;
         SortTPAFrom(TPA, Point(MMCx, MMCy));
-        i := (High(TPA) - 1);
+        i := (High(TPA) - RandomRange(1, 5));
         Mouse(TPA[i].x, TPA[i].y, 1, 1, True);
         FFlag(4);
         Result := True;
