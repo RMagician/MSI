@@ -266,6 +266,46 @@ begin
 end;
 
 {******************************************************************************}
+{ procedure AddToBoxes(S : String);                                            }
+{ By: Naum                                                                     }
+{ Description: Prints the string in the report and debug box                   }
+{******************************************************************************}
+
+Procedure AddToBoxes(S : String);
+Begin
+  AddToReport(S);
+  WriteLn(S);
+End;
+
+{******************************************************************************}
+{ Procedure MSI_SaveReport;                                                    }
+{ By: Naum                                                                     }
+{ Description: Saves the report in the MSI Progress Reports folder             }
+{******************************************************************************}
+
+Procedure MSI_SaveReport;
+Var FileH : Integer;
+    Path, Debug, FileS : String;
+    TSA : TStringArray;
+Begin
+  Path := AppPath+'Includes\SRL\SRL\MSI\MSI Progress Reports\';
+  WriteLn(Path);
+  FileS := Copy(TheTime, 1, Pos('PM', TheTime) - 2);
+  FileS := Replace(FileS, ':', '-');
+  WriteLn(FileS);
+  FileH := ReWriteFile(Path + FileS + ' ' + TheDate(Date_Formal) + '.txt', False);
+  WriteLn(Path + FileS + ' ' + TheDate(Date_Formal));
+  Debug := Copy(GetDebugText, (LastPos('MSI Extreme', GetDebugText) - 88),
+           iAbs((LastPos('}', GetDebugText)+1) - (LastPos('MSI Extreme', GetDebugText) - 88)));
+  FileS := Debug;
+  WriteFileString(FileH, 'Progress Report Saved:'+#13+#10);
+  WriteFileString(FileH, #13+#10+'This proggie was written '+TheTime+' at '+TheDate(Date_Formal)+#13+#10);
+  WriteFileString(FileH, FileS);
+  CloseFile(FileH);
+End;
+
+
+{******************************************************************************}
 { procedure ProgressReport;                                                    }
 { By: Coh3n                                                                    }
 { Description: Prints the progress report of each player                       }
@@ -279,56 +319,57 @@ var
 begin
   ClearReport;
   GetReportInfo;
-  AddToReport('{----------------------------------------------------------------}');
-  AddToReport('{                   MSI Extreme Player Report                    }');
-  AddToReport('{----------------------------------------------------------------}'); //64 from '{' to '}'
-  AddToReport('{     ' + PadR('Time Running: ' + TimeRunning, 59) + '}');
-  AddToReport('{----------------------------------------------------------------}');
+  AddToBoxes('{----------------------------------------------------------------}');
+  AddToBoxes('{                   MSI Extreme Player Report                    }');
+  AddToBoxes('{----------------------------------------------------------------}'); //64 from '{' to '}'
+  AddToBoxes('{     ' + PadR('Time Running: ' + TimeRunning, 59) + '}');
+  AddToBoxes('{----------------------------------------------------------------}');
   
   for i := 0 to (HowManyPlayers - 1) do
     with ProgressReportArray[i] do
     begin
-      AddToReport('{                                                                }');
+      AddToBoxes('{                                                                }');
       //           {     Player 0: Player Name                                      }
-      AddToReport('{     ' + PadR('Player ' + IntToStr(i) + ': ' + Capitalize(PlayerName), 59) + '}'); //PlayerName
+      AddToBoxes('{     ' + PadR('Player ' + IntToStr(i) + ': ' + Capitalize(PlayerName), 59) + '}'); //PlayerName
       //           {     City: Varrock                                              }
-      AddToReport('{     ' + PadR('City: ' + LocToText(PlayerCity), 59) + '}');                        //PlayerCity
+      AddToBoxes('{     ' + PadR('City: ' + LocToText(PlayerCity), 59) + '}');                        //PlayerCity
       //           {     Location: VE_Trees                                         }
-      AddToReport('{     ' + PadR('Location: ' + LocToText(PlayerLoc), 59) + '}');                     //PlayerLoc
+      AddToBoxes('{     ' + PadR('Location: ' + LocToText(PlayerLoc), 59) + '}');                     //PlayerLoc
       //           {     Active: True                                               }
-      AddToReport('{     ' + PadR('Active: ' + Capitalize(BoolToStr(PlayerStatus)), 59) + '}');        //PlayerStatus
+      AddToBoxes('{     ' + PadR('Active: ' + Capitalize(BoolToStr(PlayerStatus)), 59) + '}');        //PlayerStatus
       if (not PlayerStatus) then
         //           {       Reason: Failed to bank items                             }                //FalseReason
-        AddToReport('{       ' + PadR('Reason: ' + FalseReason, 57) + '}');
-      AddToReport('{                                                                }');
+        AddToBoxes('{       ' + PadR('Reason: ' + FalseReason, 57) + '}');
+      AddToBoxes('{                                                                }');
 
       for j := 0 to High(SkillInfo) do                                                               //SkillInfo
         with SkillInfo[j] do
         begin
           skill := SkillTextArray(PlayerSkills[CurrentPlayer][j]);
           //           {     Skill: Woodcutting                                         }
-          AddToReport('{     ' + PadR('Skill: ' + skill[0], 59) + '}');
+          AddToBoxes('{     ' + PadR('Skill: ' + skill[0], 59) + '}');
           //           {       Loads: 45                                                }
-          AddToReport('{       ' + PadR('Loads: ' + IntToStr(TotalLoads), 57) + '}');                    //TotalLoads
+          AddToBoxes('{       ' + PadR('Loads: ' + IntToStr(TotalLoads), 57) + '}');                    //TotalLoads
           //           {       Experience: 38,650                                       }
-          AddToReport('{       ' + PadR('Experience: ' + GroupDigits(Round(TotalEXP), ','), 57) + '}');  //TotalEXP
+          AddToBoxes('{       ' + PadR('Experience: ' + GroupDigits(Round(TotalEXP), ','), 57) + '}');  //TotalEXP
           //           {       Level: 91                                                }
-          AddToReport('{       ' + PadR('Level: ' + IntToStr(Level), 57) + '}');                         //Level
+          AddToBoxes('{       ' + PadR('Level: ' + IntToStr(Level), 57) + '}');                         //Level
 
           intItems := MSI_GetItemList(i, j);
           for k := 0 to High(intItems) do                                                            //TotalObj
           begin
             item := ObjTextArray(PlayerSkills[CurrentPlayer][j], intItems[k]);
             //           {         Item: Normal logs                                      }
-            AddToReport('{         ' + PadR('Item: ' + item[0], 55) + '}');
+            AddToBoxes('{         ' + PadR('Item: ' + item[0], 55) + '}');
             //           {         Amount: 1,546                                          }
-            AddToReport('{         ' + PadR('Amount: ' + GroupDigits(ObjQuants[k], ','), 55) + '}');     //ObjQuants
+            AddToBoxes('{         ' + PadR('Amount: ' + GroupDigits(ObjQuants[k], ','), 55) + '}');     //ObjQuants
           end;
           
-          AddToReport('{                                                                }');
-          AddToReport('{----------------------------------------------------------------}');
+          AddToBoxes('{                                                                }');
+          AddToBoxes('{----------------------------------------------------------------}');
         end;
     end;
   
-  AddToReport('{----------------------------------------------------------------}');
+  AddToBoxes('{----------------------------------------------------------------}');
+  MSI_SaveReport;
 end;
