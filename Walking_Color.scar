@@ -180,7 +180,7 @@ function MSI_FindAutoColor(Which: Integer): Integer;
 begin
   case Which of
     AC_ROAD_VARROCK:
-      Result := MSI_AutoColorMM(VARROCK_ROAD_COLOR);
+      Result := MSI_AutoColorMM(COLOR_ROAD_VARROCK);
   end;
 end;
 
@@ -280,7 +280,7 @@ begin
     WALK_WC_VE_TREE_1:
       begin
         if countColor(RoadColor, MMx1, MMy1, MMx2, MMy2) <= 5 then
-          RoadColor := MSI_AutoColorMM(VARROCK_ROAD_COLOR);
+          RoadColor := MSI_AutoColorMM(COLOR_ROAD_VARROCK);
         Tol := 2;
         for i := 0 to 2 do
         begin
@@ -318,7 +318,7 @@ begin
         Tol := 2;
         for i := 0 to 2 do
         begin
-          RoadColor := MSI_AutoColorMM(VARROCK_ROAD_COLOR);
+          RoadColor := MSI_AutoColorMM(COLOR_ROAD_VARROCK);
           FindColorsTolerance(TPA, RoadColor, MMCx + 10, MMy1, MMx2, MMCy, Tol);
           if Length(TPA) > 10 then
             Break;
@@ -339,7 +339,7 @@ begin
 
     WALK_WC_VE_TREE_3:
       begin
-        RockColor := MSI_AutoColorMM(ROCK_COLOR);
+        RockColor := MSI_AutoColorMM(COLOR_ROCK);
         TPA := MSI_CreateWalkTPA(MMcx, MMy1, RockColor, 2, 2, 8);
         if length(TPA) <= 0 then Exit;
         for i := 0 to High(TPA) do
@@ -361,7 +361,7 @@ begin
 
     WALK_WC_VE_TREE_4:
       begin
-        TreeColor := MSI_AutoColorMM(TREE_COLOR);
+        TreeColor := MSI_AutoColorMM(COLOR_TREE);
         writeLn('Tree AutoColor = '+IntToStr(TreeColor));
         FindColorsTolerance(TPA, TreeColor, MMx1, MMy1, MMx2, MMy2, 8);
         if Length(TPA) <= 0 then Exit;
@@ -380,7 +380,7 @@ begin
 
     WALK_WC_VE_BANK_1:
       begin
-        RockColor := MSI_AutoColorMM(ROCK_COLOR);
+        RockColor := MSI_AutoColorMM(COLOR_ROCK);
         TPA := MSI_CreateWalkTPA(MMcx, MMy2, RockColor, 2, 2, randomRange(5, 10));
         if Length(TPA) <= 0 then Exit;
         SortTPAFrom(TPA, point(700, 150));
@@ -461,7 +461,7 @@ begin
       begin
         for i := 0 to 2 do
         begin
-          BC := MSI_AutoColorMM(BANKER_COLOR);
+          BC := MSI_AutoColorMM(COLOR_BANKER);
           FindColorsTolerance(TPA, BC, MMx1, MMCy, MMx2, MMy2, 5);
           if Length(TPA) > 5 then
             Break;

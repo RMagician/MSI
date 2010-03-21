@@ -450,8 +450,12 @@ begin
       MSI_UnsetPlayer('MSI_MainLoop', 'Failed to setup player', True);
       Continue;
     end;
+    
+    MarkTime(ProgressReportArray[CurrentPlayer].PlayerTime);
 
     repeat
+      MarkTime(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalTime); //Resets everytime called, am I right?
+    
       if (Players[CurrentPlayer].Booleans[P_BANK]) then
         //Walk to location if not power skilling
         if (not MSI_WalkToLoc) then
@@ -498,6 +502,10 @@ begin
         end;
       end;
 
+      //Set the progress report times
+      ProgressReportArray[CurrentPlayer].PlayerTime := TimeFromMark(ProgressReportArray[CurrentPlayer].PlayerTime);
+      IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalTime,
+            TimeFromMark(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalTime));
       ProgressReport;
 
       //Count the total loads for the current player - used for breaking

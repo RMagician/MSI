@@ -82,6 +82,7 @@ Type
 { Type TPlayerSkillInfo
   Description: Stores information for one player for one skill. }
   TPlayerSkillInfo = record
+    TotalTime  : integer;
     TotalObj   : integer;
     TotalLoads : integer;
     Level      : integer;
@@ -99,6 +100,7 @@ Type
     PlayerRandom: string;
     PlayerCity  : integer;
     PlayerLoc   : integer;
+    PlayerTime  : integer;
     SkillInfo   : array of TPlayerSkillInfo;
   end;
 
@@ -162,16 +164,16 @@ const
 { const AutoColor
   Description: Constants used for autocoloring the minimap }
 const
-  GENERAL_ROAD_COLOR = 6579821;
-  VARROCK_ROAD_COLOR = 8686729;
-  FALLY_ROAD_COLOR   = 7831173;
-  LUMBY_ROAD_COLOR   = 8225677;
-  DIRT_ROAD_COLOR    = 1853272;
-  WATER_COLOR        = 10850700;
-  ROCK_COLOR         = 5789528;
-  SAND_COLOR         = 0;
-  BANKER_COLOR       = 1179390;
-  TREE_COLOR         = 1532978;
+  COLOR_ROAD_GENERAL = 6579821;
+  COLOR_ROAD_VARROCK = 8686729;
+  COLOR_ROAD_FALLY   = 7831173;
+  COLOR_ROAD_LUMBY   = 8225677;
+  COLOR_ROAD_DIRT    = 1853272;
+  COLOR_BANKER       = 1179390;
+  COLOR_WATER        = 10850700;
+  COLOR_ROCK         = 5789528;
+  COLOR_SAND         = 0;
+  COLOR_TREE         = 1532978;
   
 { const Walking
   Description: Constants representing the color walking points }
