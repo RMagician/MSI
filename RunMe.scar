@@ -11,7 +11,7 @@ program MSIScript;
 {.include SRL/SRL/MSI/Setup.scar}
 
 const
-  BREAK_AFTER = 5;  // Loads to break after/switching players after
+  BREAK_AFTER = 10;  // Loads to break after/switching players after
   BREAK_TIME  = 15; // How long to break for in minutes (for single player only, multiplayer will switch players)
 
   WORLD_SMART   = 152;
@@ -23,7 +23,7 @@ var
 begin
   HowManyPlayers := 8;
   NumberOfPlayers(HowManyPlayers);
-  CurrentPlayer := 0;
+  CurrentPlayer := 4;
   CurrentSkill := 0;
   SetLength(ProgressReportArray, HowManyPlayers);
   SetLength(PlayerSkills, HowManyPlayers);
@@ -39,7 +39,7 @@ begin
     PlayerSkills[0]  := [SKILL_WOODCUTTING];
     PlayerObjects[0] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK; //City to auto in
-    Integers[P_LOC]  := LOC_VE_TREES; //Starting location
+    Integers[P_LOC]  := LOC_VE_BANK;  //Starting location
     Booleans[P_BANK] := True;         //True if you want to bank, false if you want to drop
   end;
 
@@ -53,7 +53,7 @@ begin
     PlayerSkills[1]  := [SKILL_WOODCUTTING];
     PlayerObjects[1] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_VE_TREES;
+    Integers[P_LOC]  := LOC_VE_BANK;
     Booleans[P_BANK] := True;
   end;
 
@@ -85,12 +85,12 @@ begin
     Booleans[P_BANK] := True;
   end;
 
-  with Players[4] do //maze
+  with Players[4] do
   begin
     Name   := 'broddi cohen';
     Pass   := 'jackaster';
     Nick   := 'rod';
-    Active := False;
+    Active := True;
     Pin    := '';
     PlayerSkills[4]  := [SKILL_WOODCUTTING];
     PlayerObjects[4] := [[OBJ_TREE_NORMAL]];

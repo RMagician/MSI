@@ -4,19 +4,28 @@
 |==============================================================================|
 | Object and Item finding routines                                             |
 |                                                                              |
-| * function MSI_FindTool(Tool: TItem; var X, Y: Integer): Boolean;            | * by Coh3n
-|                                                                              |
+| * function MSI_GetObject(): TMSObject;                  * by The MSI Team    |
+| * function MSI_GetObjects(): TMSObjectArray;            * by marpis          |
+| * function MSI_FindTool(): Boolean;                     * by Coh3n           |
+| * function MSI_FindItemSlots(): TIntegerArray;          * by marpis          |
+| * procedure MSI_ClickItems;                             * by marpis          |
+| * function MSI_ReturnPointsInBox(): TPointArray;        * by marpis          |
+| * function MSI_FindObjectsTPA(): Boolean;               * by marpis          |
+| * function MSI_FindObjectsIn(): Boolean;                * by marpis          |
+| * function MSI_FindObjects(): Boolean;                  * by marpis          |
+| * function MSI_FindObjectIn(): Boolean;                 * by marpis          |
+| * function MSI_FindObject(): Boolean;                   * by marpis          |
  \_____________________________________________________________________________}
 
-{*******************************************************************************
-Function MSI_GetObject(Which: Integer): TMSObject;
-By: marpis
-Description: Load object info
-*******************************************************************************}
+{******************************************************************************}
+{ Function MSI_GetObject(Which: Integer): TMSObject;                           }
+{ By: The MSI Team                                                             }
+{ Description: Load all the necessary object information                       }
+{******************************************************************************}
 Function MSI_GetObject(Which: Integer): TMSObject;
 Begin
   Case Which Of
-    OBJ_TREE_NORMAL:
+    OBJ_TREE_NORMAL: // marpis
     With Result Do
     Begin
       Name               := 'Normal tree';
@@ -40,7 +49,7 @@ Begin
       BadColorTolerance  := 10;
     End;
 
-    OBJ_TREE_OAK:
+    OBJ_TREE_OAK: // marpis
     With Result Do
     Begin
       Name               := 'Oak tree';
@@ -64,7 +73,7 @@ Begin
       BadColorTolerance  := 10;
     End;
 
-    OBJ_TREE_WILLOW:
+    OBJ_TREE_WILLOW: // Coh3n
     With Result Do
     Begin
       Name               := 'Willow tree';
@@ -88,7 +97,7 @@ Begin
       BadColorTolerance  := 10;
     End;
 
-    OBJ_TREE_MAPLE:
+    OBJ_TREE_MAPLE: // Coh3n
     With Result Do
     Begin
       Name               := 'Maple tree';
@@ -112,7 +121,7 @@ Begin
       BadColorTolerance  := 10;
     End;
 
-    OBJ_TREE_YEW:
+    OBJ_TREE_YEW: // Coh3n
     With Result Do
     Begin
       Name               := 'Yew tree';
@@ -136,7 +145,7 @@ Begin
       BadColorTolerance  := 10;
     End;
 
-    OBJ_TREE_MAGIC:
+    OBJ_TREE_MAGIC: // Coh3n
     With Result Do
     Begin
       Name               := 'Magic tree';
@@ -160,7 +169,7 @@ Begin
       BadColorTolerance  := 10;
     End;
       
-    OBJ_BANK_VE:
+    OBJ_BANK_VE: // Coh3n
     With Result Do
     Begin
       Name               := 'Varrock east bank';
@@ -185,12 +194,11 @@ Begin
   End;
 End;
 
-
-{*******************************************************************************
-Function MSI_GetObjects(Which: TIntegerArray): TMSObjectArray;
-By: marpis
-Description: Load object info
-*******************************************************************************}
+{******************************************************************************}
+{ Function MSI_GetObjects(Which: TIntegerArray): TMSObjectArray;               }
+{ By: marpis                                                                   }
+{ Description: Load all object info for object in the array                    }
+{******************************************************************************}
 Function MSI_GetObjects(Which: TIntegerArray): TMSObjectArray;
 Var
   I, H: Integer;
@@ -202,12 +210,9 @@ Begin
     Result[I] := MSI_GetObject(Which[I]);
 End;
   
-
 {******************************************************************************}
 { function MSI_FindTool(Tool, WhichTab: Integer; var X, Y: Integer): Boolean;  }
 { By: Coh3n                                                                    }
-{ Rev: 25                                                                      }
-{ Date: 12 Nov 09                                                              }
 { Description: Finds the specified tool                                        }
 {******************************************************************************}
 function MSI_FindTool(Tool, WhichTab: Integer; var X, Y: Integer): Boolean;
@@ -290,12 +295,11 @@ begin
   MSI_FreeItemEx(Tool);
 end;
 
-
-{*******************************************************************************}
-{ Function MSI_FindItemSlots(ItemID: Integer): TIntegerArray;                   }
-{ By: marpis                                                                    }
-{ Description: Returns itemslots in which item "ItemID" is found                }
-{*******************************************************************************}
+{******************************************************************************}
+{ Function MSI_FindItemSlots(ItemID: Integer): TIntegerArray;                  }
+{ By: marpis                                                                   }
+{ Description: Returns itemslots in which item "ItemID" is found               }
+{******************************************************************************}
 Function MSI_FindItemSlots(ItemID: Integer): TIntegerArray;
 Var
   I, II, H, tmp: Integer;
@@ -334,11 +338,11 @@ Begin
   End;
 End;
 
-{*******************************************************************************}
-{ Procedure MSI_ClickItems(ItemIDs: TIntegerArray; Option: String);             }
-{ By: marpis                                                                    }
-{ Description: Clicks all items declared in ItemIDs array.                      }
-{*******************************************************************************}
+{******************************************************************************}
+{ Procedure MSI_ClickItems(ItemIDs: TIntegerArray; Option: String);            }
+{ By: marpis                                                                   }
+{ Description: Clicks all items declared in ItemIDs array.                     }
+{******************************************************************************}
 Procedure MSI_ClickItems(ItemIDs: TIntegerArray; Option: String);
 Var
   I, L, X, Y: Integer;
@@ -390,11 +394,11 @@ Begin
   SetLength(Result, N);
 End;
 
-{*******************************************************************************
-Function MSI_FindObjectsTPA( ... ): Boolean;
-By: marpis
-Description: Finds objects in mainscreen, saves co-ords in TPA
-*******************************************************************************}
+{******************************************************************************}
+{ Function MSI_FindObjectsTPA( ... ): Boolean;                                 }
+{ By: marpis                                                                   }
+{ Description: Finds objects in mainscreen, saves co-ords in TPA               }
+{******************************************************************************}
 Function MSI_FindObjectsTPA(Var Objs: TPointArray; Width, Height: Integer;
                            Colors: TIntegerArray; Accuracy, Tolerance: Integer; HueMod, SatMod: Extended;
                            FindAllColors: Boolean;
@@ -546,14 +550,11 @@ Begin
  Result := (Length(Objs) > 0);
 End;
 
-
-
-
-{*******************************************************************************
-Function MSI_FindObjectsIn
-By: marpis
-Description: Finds objects in mainscreen
-*******************************************************************************}
+{******************************************************************************}
+{ Function MSI_FindObjectsIn( ... ): Boolean;                                  }
+{ By: marpis                                                                   }
+{ Description: Finds objects in mainscreen                                     }
+{******************************************************************************}
 function MSI_IsMoving: boolean; Forward;
 Function MSI_FindObjectsIn(Objs: TMSObjectArray; Var IndexFound: Integer; X1, Y1, X2, Y2: Integer; Action: fnct_ActionOptions): Boolean;
 Var
@@ -642,23 +643,21 @@ Begin
   MSI_Debug('MSI_FindObjects', 'Objects not found!', DEBUG_SMALL_DETAILS);
 End;
 
-
-{*******************************************************************************
-Function MSI_FindObjects
-By: marpis
-Description: Finds objects in mainscreen
-*******************************************************************************}
+{******************************************************************************}
+{ Function MSI_FindObjects( ... ): Boolean;                                    }
+{ By: marpis                                                                   }
+{ Description: Finds multiple objects on the mainscreen                        }
+{******************************************************************************}
 Function MSI_FindObjects(Objs: TMSObjectArray; Var IndexFound: Integer; Action: fnct_ActionOptions): Boolean;
 Begin
   Result := MSI_FindObjectsIn(Objs, IndexFound, MSX1, MSY1, MSX2, MSY2, Action);
 End;
 
-
-{*******************************************************************************
-Function MSI_FindObjectIn
-By: marpis
-Description: Finds object in mainscreen
-*******************************************************************************}
+{******************************************************************************}
+{ Function MSI_FindObjectIn( ... ): Boolean;                                   }
+{ By: marpis                                                                   }
+{ Description: Finds object in specified location                              }
+{******************************************************************************}
 Function MSI_FindObjectIn(Obj: TMSObject; X1, Y1, X2, Y2: Integer; Action: fnct_ActionOptions): Boolean;
 Var
   TMP: Integer;
@@ -666,11 +665,11 @@ Begin
   Result := MSI_FindObjectsIn([Obj], TMP, X1, Y1, X2, Y2, Action);
 End;
 
-{*******************************************************************************
-Function MSI_FindObject
-By: marpis
-Description: Finds object in mainscreen
-*******************************************************************************}
+{******************************************************************************}
+{ Function MSI_FindObject( ... ): Boolean;                                     }
+{ By: marpis                                                                   }
+{ Description: Finds object on the mainscreen                                  }
+{******************************************************************************}
 Function MSI_FindObject(Obj: TMSObject; Action: fnct_ActionOptions): Boolean;
 Var
   TMP: Integer;

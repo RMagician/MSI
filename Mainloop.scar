@@ -311,8 +311,8 @@ begin
     itemCount := CountItems('dtm', MSI_Item[items[i]].DTM, []);
     expCount := Round(exps[i] * itemCount);
 
-    AddToProggy(i, itemCount, ADD_ITEMS); //Adds amount of item
-    AddToProggy(-1, expCount, ADD_EXP);   //Adds exp to skill
+    MSI_AddToProggy(i, itemCount, ADD_ITEMS); //Adds amount of item
+    MSI_AddToProggy(-1, expCount, ADD_EXP);   //Adds exp to skill
 
     MSI_Debug('MSI_CountItems', 'Found ' + IntToStr(itemCount) + ' of item '
               + MSI_Item[items[i]].Name, DEBUG_FUNCTIONS);
@@ -347,7 +347,7 @@ begin
             if (not Result) then
               ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to deposit items'
             else
-              AddToProggy(-1, -1, ADD_LOADS);
+              MSI_AddToProggy(-1, -1, ADD_LOADS);
           end;
 
         else
@@ -426,7 +426,7 @@ begin
   if (setReason) then
     ProgressReportArray[CurrentPlayer].FalseReason := reason;
     
-  ProgressReport;
+  MSI_ProgressReport;
   if (not AllPlayersInactive) then //To avoid infinite loop in NextPlayer
     NextPlayer(False);
 end;
@@ -461,8 +461,7 @@ begin
           if (MSI_TimedOut) then
             Break;
 
-          MSI_UnsetPlayer('MSI_MainLoop', 'Not set', False);
-          Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
+          MSI_UnsetPlayer('MSI_MainLoop', 'Failed to walk to location', False);
           Break;
         end;
 
@@ -484,8 +483,7 @@ begin
           if (MSI_TimedOut) then
             Break;
 
-          MSI_UnsetPlayer('MSI_MainLoop', 'Not set', False);
-          Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
+          MSI_UnsetPlayer('MSI_MainLoop', 'Failed to walk to bank', False);
           Break;
         end;
 
@@ -504,7 +502,7 @@ begin
       IncEx(ProgressReportArray[CurrentPlayer].PlayerTime, TimeFromMark(time));
       IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalTime, TimeFromMark(time));
       
-      ProgressReport;
+      MSI_ProgressReport;
 
       //Count the total loads for the current player - used for breaking
       for i := 0 to High(PlayerSkills[CurrentPlayer]) do
@@ -521,7 +519,7 @@ begin
     if (AllPlayersInactive) then
     begin
       MSI_Debug('MSI_MainLoop', 'All players inactive, terminating script', DEBUG_PLAYER_ACTIONS);
-      ProgressReport;
+      MSI_ProgressReport;
       TerminateScript;
     end;
   until(AllPlayersInactive);

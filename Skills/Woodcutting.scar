@@ -46,7 +46,7 @@ Begin
     For I := 0 To L Do
       FindColorsTolerance(ATPA[I], TreeInfo.Colors[I], B.X1, B.Y1, B.X2, B.Y2, TreeInfo.Tol);
     TPA := MergeATPA(ATPA);
-    WriteLn(Length(TPA));
+    //WriteLn(Length(TPA));
 
     TreeExists := Length(TPA) >= TreeInfo.Accuracy;
     If (TreeExists) Then
@@ -137,6 +137,6 @@ Begin
   Until(InvFull) Or (Not LoggedIn) Or (GetSystemTime > TT);
   MSI_CountItems;
   MSI_ClickItems(WhichLogs, 'rop');
-  AddToProggy(-1, -1, ADD_LOADS);
+  MSI_AddToProggy(-1, -1, ADD_LOADS);
   Result := True; //To satisfy MSI_DoSkill
 End;
