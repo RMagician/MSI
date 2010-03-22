@@ -275,8 +275,7 @@ var
   RockColor, TreeColor, BC: Integer;
   t: LongInt;
 begin
-  WalkIndex := index;
-  case WalkIndex of
+  case index of
     WALK_WC_VE_TREE_1:
       begin
         if countColor(RoadColor, MMx1, MMy1, MMx2, MMy2) <= 5 then
@@ -492,7 +491,7 @@ begin
   end;
 end;
 
-function MSI_CreateWalkFailsafe(index: byte): Boolean;
+function MSI_CreateWalkFailsafe(index: Integer): Boolean;
 begin
   if not MSI_CreateWalkIndex(index) then
   begin
@@ -625,7 +624,8 @@ begin
   begin
     if (not MSI_CreateWalkFailsafe(thePath[i])) then
     begin
-      MSI_Debug('MSI_ColorWalk', 'Failed to walk to point: ' + IntToStr(i), DEBUG_SMALL_DETAILS);
+      MSI_Debug('MSI_ColorWalk', 'Failed to walk to ' + LocToText(startLoc) + ', index: ' + IntToStr(i), DEBUG_SMALL_DETAILS);
+      ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to walk to ' + LocToText(startLoc) + ', index: ' + IntToStr(i);
       Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
       Exit;
     end;
@@ -635,7 +635,7 @@ begin
   
   if (Result) then
   begin
-    MSI_Debug('MSI_ColorWalk', 'Successfully walked to location', DEBUG_SMALL_DETAILS);
+    MSI_Debug('MSI_ColorWalk', 'Successfully walked to ' + LocToText(endLoc), DEBUG_SMALL_DETAILS);
     Players[CurrentPlayer].Integers[P_LOC] := endLoc;
     Wait(RandomRange(750, 1500));
   end;

@@ -226,7 +226,7 @@ begin
           Result := True;
 
         else
-          MSI_Debug('MSI_WalkToLoc', 'Invalid location for woodcutting skill.', DEBUG_FUNCTIONS);
+          MSI_Debug('MSI_WalkToLoc', 'Invalid location for woodcutting skill', DEBUG_FUNCTIONS);
       end;
     else
       MSI_Debug('MSI_WalkToLoc', 'Invalid player skill!', DEBUG_FUNCTIONS);
@@ -438,7 +438,7 @@ end;
 {******************************************************************************}
 procedure MSI_MainLoop;
 var
-  totalLoads, i: Integer;
+  totalLoads, time, i: Integer;
 begin
   repeat
     //Setup player
@@ -450,11 +450,9 @@ begin
       MSI_UnsetPlayer('MSI_MainLoop', 'Failed to setup player', True);
       Continue;
     end;
-    
-    MarkTime(ProgressReportArray[CurrentPlayer].PlayerTime);
 
     repeat
-      MarkTime(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalTime); //Resets everytime called, am I right?
+      MarkTime(time);
     
       if (Players[CurrentPlayer].Booleans[P_BANK]) then
         //Walk to location if not power skilling
@@ -463,7 +461,7 @@ begin
           if (MSI_TimedOut) then
             Break;
 
-          MSI_UnsetPlayer('MSI_MainLoop', 'Failed to walk to location(' + IntToStr(WalkIndex) + ')', True);
+          MSI_UnsetPlayer('MSI_MainLoop', 'Not set', False);
           Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
           Break;
         end;
@@ -486,7 +484,7 @@ begin
           if (MSI_TimedOut) then
             Break;
 
-          MSI_UnsetPlayer('MSI_MainLoop', ' Failed to walk to bank(' + IntToStr(WalkIndex) + ')', True);
+          MSI_UnsetPlayer('MSI_MainLoop', 'Not set', False);
           Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
           Break;
         end;
@@ -503,9 +501,9 @@ begin
       end;
 
       //Set the progress report times
-      ProgressReportArray[CurrentPlayer].PlayerTime := TimeFromMark(ProgressReportArray[CurrentPlayer].PlayerTime);
-      IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalTime,
-            TimeFromMark(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalTime));
+      IncEx(ProgressReportArray[CurrentPlayer].PlayerTime, TimeFromMark(time));
+      IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalTime, TimeFromMark(time));
+      
       ProgressReport;
 
       //Count the total loads for the current player - used for breaking

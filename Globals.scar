@@ -120,9 +120,6 @@ var
   
   BreakAfter, BreakTime: Integer;
   { Used for script setup (assinged to constatns in RunMe.scar) }
-  
-  WalkIndex: Integer;
-  { Used to keep track of the current WalkIndex for debugging }
 
 { Debug constants
   Description: The several debugging levels, so the user receives as much

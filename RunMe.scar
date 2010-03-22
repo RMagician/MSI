@@ -37,10 +37,10 @@ begin
     Active := True;
     Pin    := '';
     PlayerSkills[0]  := [SKILL_WOODCUTTING];
-    PlayerObjects[0] := [[OBJ_TREE_WILLOW]];
+    PlayerObjects[0] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK; //City to auto in
-    Integers[P_LOC]  := LOC_VE_BANK;  //Starting location
-    Booleans[P_BANK] := False;        //True if you want to bank, false if you want to drop
+    Integers[P_LOC]  := LOC_VE_TREES; //Starting location
+    Booleans[P_BANK] := True;         //True if you want to bank, false if you want to drop
   end;
 
   with Players[1] do
@@ -57,12 +57,12 @@ begin
     Booleans[P_BANK] := True;
   end;
 
-  with Players[2] do
+  with Players[2] do //mime
   begin
     Name   := 'cohen gorak';
     Pass   := 'jackaster';
     Nick   := 'ora';
-    Active := True;
+    Active := False;
     Pin    := '';
     PlayerSkills[2]  := [SKILL_WOODCUTTING];
     PlayerObjects[2] := [[OBJ_TREE_NORMAL]];
@@ -81,16 +81,16 @@ begin
     PlayerSkills[3]  := [SKILL_WOODCUTTING];
     PlayerObjects[3] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_VE_BANK;
+    Integers[P_LOC]  := LOC_VE_TREES;
     Booleans[P_BANK] := True;
   end;
 
-  with Players[4] do
+  with Players[4] do //maze
   begin
     Name   := 'broddi cohen';
     Pass   := 'jackaster';
     Nick   := 'rod';
-    Active := True;
+    Active := False;
     Pin    := '';
     PlayerSkills[4]  := [SKILL_WOODCUTTING];
     PlayerObjects[4] := [[OBJ_TREE_NORMAL]];
@@ -137,7 +137,7 @@ begin
     PlayerSkills[7]  := [SKILL_WOODCUTTING];
     PlayerObjects[7] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_VE_BANK;
+    Integers[P_LOC]  := LOC_VE_TREES;
     Booleans[P_BANK] := True;
   end;
 
