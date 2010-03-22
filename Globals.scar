@@ -227,17 +227,19 @@ const
 { const Objects
   Description: Constants representing all the main screen objects used in MSI }
 const
-  OBJ_TREE              = 0;
-  OBJ_OAK               = 1;
-  OBJ_WILLOW            = 2;
-  OBJ_YEW               = 3;
-  
+  OBJ_TREE_NORMAL = 0;
+  OBJ_TREE_OAK    = 1;
+  OBJ_TREE_WILLOW = 2;
+  OBJ_TREE_MAPLE  = 3;
+  OBJ_TREE_YEW    = 4;
+  OBJ_TREE_MAGIC  = 5;
+
 {
-  OBJ_ROCK_CLAY         = 4;
-  OBJ_ROCK_TIN          = 5;
-  OBJ_ROCK_COPPER       = 6;
-  OBJ_ROCK_IRON         = 7;
-  OBJ_ROCK_SILVER       = 8;
+  OBJ_ROCK_CLAY   = 4;
+  OBJ_ROCK_TIN    = 5;
+  OBJ_ROCK_COPPER = 6;
+  OBJ_ROCK_IRON   = 7;
+  OBJ_ROCK_SILVER = 8;
 }
 
-  OBJ_BANK_VE           = 9;
+  OBJ_BANK_VE = 9;

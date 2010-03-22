@@ -16,7 +16,7 @@ Description: Load object info
 Function MSI_GetObject(Which: Integer): TMSObject;
 Begin
   Case Which Of
-    OBJ_TREE:
+    OBJ_TREE_NORMAL:
     With Result Do
     Begin
       Name               := 'Normal tree';
@@ -40,7 +40,7 @@ Begin
       BadColorTolerance  := 10;
     End;
 
-    OBJ_OAK:
+    OBJ_TREE_OAK:
     With Result Do
     Begin
       Name               := 'Oak tree';
@@ -63,7 +63,103 @@ Begin
       BadColors          := [];
       BadColorTolerance  := 10;
     End;
-    
+
+    OBJ_TREE_WILLOW:
+    With Result Do
+    Begin
+      Name               := 'Willow tree';
+      UpText             := 'illow';
+      Option             := 'Chop down';
+      Colors             := [4481105];
+      Exp                := 67.5;
+      Tol                := 14;
+      Hue                := 0.18;
+      Sat                := 0.28;
+      FindAllColors      := False;
+      W                  := 30;
+      H                  := 30;
+      Accuracy           := 10;
+      ExcludeSelf        := True;
+      RightClickOnly     := False;
+      Tries              := 5;
+      Anim               := False;
+      WaitToMove         := True;
+      BadColors          := [];
+      BadColorTolerance  := 10;
+    End;
+
+    OBJ_TREE_MAPLE:
+    With Result Do
+    Begin
+      Name               := 'Maple tree';
+      UpText             := 'aple';
+      Option             := 'Chop down';
+      Colors             := [2440040];
+      Exp                := 100;
+      Tol                := 6;
+      Hue                := 0.04;
+      Sat                := 0.20;
+      FindAllColors      := False;
+      W                  := 25;
+      H                  := 25;
+      Accuracy           := 10;
+      ExcludeSelf        := True;
+      RightClickOnly     := False;
+      Tries              := 5;
+      Anim               := False;
+      WaitToMove         := True;
+      BadColors          := [];
+      BadColorTolerance  := 10;
+    End;
+
+    OBJ_TREE_YEW:
+    With Result Do
+    Begin
+      Name               := 'Yew tree';
+      UpText             := 'ew';
+      Option             := 'Chop down';
+      Colors             := [4162165];
+      Exp                := 175;
+      Tol                := 14;
+      Hue                := 0.01;
+      Sat                := 0.76;
+      FindAllColors      := False;
+      W                  := 35;
+      H                  := 35;
+      Accuracy           := 10;
+      ExcludeSelf        := True;
+      RightClickOnly     := False;
+      Tries              := 5;
+      Anim               := False;
+      WaitToMove         := True;
+      BadColors          := [];
+      BadColorTolerance  := 10;
+    End;
+
+    OBJ_TREE_MAGIC:
+    With Result Do
+    Begin
+      Name               := 'Magic tree';
+      UpText             := 'agic';
+      Option             := 'Chop down';
+      Colors             := [11003627];
+      Exp                := 250;
+      Tol                := 11;
+      Hue                := 0.03;
+      Sat                := 2.39;
+      FindAllColors      := False;
+      W                  := 30;
+      H                  := 30;
+      Accuracy           := 10;
+      ExcludeSelf        := True;
+      RightClickOnly     := False;
+      Tries              := 5;
+      Anim               := False;
+      WaitToMove         := True;
+      BadColors          := [];
+      BadColorTolerance  := 10;
+    End;
+      
     OBJ_BANK_VE:
     With Result Do
     Begin

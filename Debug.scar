@@ -93,11 +93,11 @@ begin
 end;
 
 {******************************************************************************}
-{ procedure GetReportInfo;                                                     }
+{ procedure MSI_GetReportInfo;                                                     }
 { By: Coh3n                                                                    }
 { Description: Gets the necessary proggy info that ISN'T reset during runtime  }
 {******************************************************************************}
-procedure GetReportInfo;
+procedure MSI_GetReportInfo;
 var
   i, level: Integer;
   skills: TVariantArray;
@@ -317,10 +317,10 @@ var
   intItems: TIntegerArray;
 begin
   ClearReport;
-  GetReportInfo;
-  AddToBoxes('{----------------------------------------------------------------}');
+  MSI_GetReportInfo;
+  AddToBoxes('{----------------------------------------------------------------}');                     //64 from '{' to '}'
   AddToBoxes('{                   MSI Extreme Player Report                    }');
-  AddToBoxes('{----------------------------------------------------------------}'); //64 from '{' to '}'
+  AddToBoxes('{----------------------------------------------------------------}');
   AddToBoxes('{     ' + PadR('Time Running: ' + TimeRunning, 59) + '}');
   AddToBoxes('{----------------------------------------------------------------}');
   
@@ -329,17 +329,17 @@ begin
     begin
       AddToBoxes('{                                                                }');
       //          {     Player 0: Player Name                                      }
-      AddToBoxes('{     ' + PadR('Player ' + IntToStr(i) + ': ' + Capitalize(PlayerName), 59) + '}'); //PlayerName
+      AddToBoxes('{     ' + PadR('Player ' + IntToStr(i) + ': ' + Capitalize(PlayerName), 59) + '}');   //PlayerName
       //          {     City: Varrock                                              }
-      AddToBoxes('{     ' + PadR('City: ' + LocToText(PlayerCity), 59) + '}');                        //PlayerCity
+      AddToBoxes('{     ' + PadR('City: ' + LocToText(PlayerCity), 59) + '}');                          //PlayerCity
       //          {     Location: VE_Trees                                         }
-      AddToBoxes('{     ' + PadR('Location: ' + LocToText(PlayerLoc), 59) + '}');                     //PlayerLoc
+      AddToBoxes('{     ' + PadR('Location: ' + LocToText(PlayerLoc), 59) + '}');                       //PlayerLoc
       //          {     Time: 02h, 33m, 45s                                         }
-      AddToBoxes('{     ' + PadR('Time: ' + MsToTime(PlayerTime, Time_Short), 59) + '}');             //TotalTime
+      AddToBoxes('{     ' + PadR('Time: ' + MsToTime(PlayerTime, Time_Short), 59) + '}');               //TotalTime
       //          {     Active: True                                               }
-      AddToBoxes('{     ' + PadR('Active: ' + Capitalize(BoolToStr(PlayerStatus)), 59) + '}');        //PlayerStatus
+      AddToBoxes('{     ' + PadR('Active: ' + Capitalize(BoolToStr(PlayerStatus)), 59) + '}');          //PlayerStatus
       if (not PlayerStatus) then
-        //           {       Reason: Failed to bank items                             }               //FalseReason
+        //           {       Reason: Failed to bank items                             }                 //FalseReason
         AddToBoxes('{       ' + PadR('Reason: ' + FalseReason, 57) + '}');
       AddToBoxes('{                                                                }');
 
@@ -350,16 +350,19 @@ begin
           //          {     Skill: Woodcutting                                         }
           AddToBoxes('{     ' + PadR('Skill: ' + skill[0], 59) + '}');
           //          {       Skill Time: 02h, 45m, 33s                                }
-          AddToBoxes('{       ' + PadR('Skill Time: ' + MsToTime(TotalTime, Time_Short), 57) + '}');     //TotalTime
+          AddToBoxes('{       ' + PadR('Time: ' + MsToTime(TotalTime, Time_Short), 57) + '}');          //TotalTime
           //          {       Loads: 45                                                }
           AddToBoxes('{       ' + PadR('Loads: ' + IntToStr(TotalLoads), 57) + '}');                    //TotalLoads
           //          {       Experience: 38,650                                       }
           AddToBoxes('{       ' + PadR('Experience: ' + GroupDigits(Round(TotalEXP), ','), 57) + '}');  //TotalEXP
           //          {       Level: 91                                                }
-          AddToBoxes('{       ' + PadR('Level: ' + IntToStr(Level), 57) + '}');                         //Level
+          if (Level < 1) then
+            AddToBoxes('{       ' + PadR('Level: Not yet defined', 57) + '}')
+          else
+            AddToBoxes('{       ' + PadR('Level: ' + IntToStr(Level), 57) + '}');                       //Level
 
           intItems := MSI_GetItemList(i, j);
-          for k := 0 to High(intItems) do                                                            //TotalObj
+          for k := 0 to High(intItems) do                                                               //TotalObj
           begin
             item := ObjTextArray(PlayerSkills[CurrentPlayer][j], intItems[k]);
             //          {         Item: Normal logs                                      }
