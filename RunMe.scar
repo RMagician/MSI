@@ -39,7 +39,7 @@ begin
     PlayerSkills[0]  := [SKILL_WOODCUTTING];
     PlayerObjects[0] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK; //City to auto in
-    Integers[P_LOC]  := LOC_VE_BANK;  //Starting location
+    Integers[P_LOC]  := LOC_VE_TREES;  //Starting location
     Booleans[P_BANK] := True;         //True if you want to bank, false if you want to drop
   end;
 
@@ -81,7 +81,7 @@ begin
     PlayerSkills[3]  := [SKILL_WOODCUTTING];
     PlayerObjects[3] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_VE_TREES;
+    Integers[P_LOC]  := LOC_VE_BANK;
     Booleans[P_BANK] := True;
   end;
 
@@ -95,7 +95,7 @@ begin
     PlayerSkills[4]  := [SKILL_WOODCUTTING];
     PlayerObjects[4] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_VE_BANK;
+    Integers[P_LOC]  := LOC_VE_TREES;
     Booleans[P_BANK] := True;
   end;
 
@@ -109,7 +109,7 @@ begin
     PlayerSkills[5]  := [SKILL_WOODCUTTING];
     PlayerObjects[5] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_VE_BANK;
+    Integers[P_LOC]  := LOC_VE_TREES;
     Booleans[P_BANK] := True;
   end;
 
@@ -123,7 +123,7 @@ begin
     PlayerSkills[6]  := [SKILL_WOODCUTTING];
     PlayerObjects[6] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_VE_BANK;
+    Integers[P_LOC]  := LOC_VE_TREES;
     Booleans[P_BANK] := True;
   end;
 
@@ -137,7 +137,7 @@ begin
     PlayerSkills[7]  := [SKILL_WOODCUTTING];
     PlayerObjects[7] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_VE_TREES;
+    Integers[P_LOC]  := LOC_VE_BANK;
     Booleans[P_BANK] := True;
   end;
 
@@ -177,5 +177,4 @@ begin
 
   DeclarePlayers;
   MSI_MainLoop;
-  //ProgressReport;
 end.
