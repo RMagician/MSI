@@ -202,41 +202,17 @@ begin
 end;
 
 {******************************************************************************}
-{ procedure MSI_AddToBoxes(S : String);                                        }
+{ procedure MSI_AddToBoxesAndSave(FileH, S : String);                          }
 { By: Naum                                                                     }
-{ Description: Prints the string in the report and debug box                   }
+{ Description: Prints the string in the report and debug box also saves the    }
+{               report                                                         }
 {******************************************************************************}
-Procedure MSI_AddToBoxes(S : String);
+Procedure MSI_AddToBoxesAndSave(FH : Integer; S : String);
 Begin
   AddToReport(S);
   WriteLn(S);
+  WriteFileString(FH, S+#13+#10);
 End;
-
-{******************************************************************************}
-{ Procedure MSI_SaveReport;                                                    }
-{ By: Naum                                                                     }
-{ Description: Saves the report in the MSI Progress Reports folder             }
-{******************************************************************************}
-Procedure MSI_SaveReport;
-Var FileH : Integer;
-    Path, Debug, FileS : String;
-Begin
-  Path := AppPath+'Includes\SRL\SRL\MSI\MSI Progress Reports\';
-  WriteLn(Path);
-  FileS := Copy(TheTime, 1, Pos('PM', TheTime) - 2);
-  FileS := Replace(FileS, ':', '-');
-  WriteLn(FileS);
-  FileH := ReWriteFile(Path + FileS + ' ' + TheDate(Date_Formal) + '.txt', False);
-  WriteLn(Path + FileS + ' ' + TheDate(Date_Formal));
-  Debug := Copy(GetDebugText, (LastPos('MSI Extreme', GetDebugText) - 88),
-           iAbs((LastPos('}', GetDebugText)+1) - (LastPos('MSI Extreme', GetDebugText) - 88)));
-  FileS := Debug;
-  WriteFileString(FileH, 'Progress Report Saved:'+#13+#10);
-  WriteFileString(FileH, #13+#10+'This proggie was written '+TheTime+' at '+TheDate(Date_Formal)+#13+#10);
-  WriteFileString(FileH, FileS);
-  CloseFile(FileH);
-End;
-
 
 {******************************************************************************}
 { procedure MSI_ProgressReport;                                                }
@@ -246,70 +222,78 @@ End;
 function MSI_GetItemList(whichPlayer, whichSkill: Integer): TIntegerArray; forward;
 procedure MSI_ProgressReport;
 var
-  i, j, k: integer;
+  i, j, k, FileH : integer;
   skill, item: TStringArray;
   intItems: TIntegerArray;
+  Path, FileS : String;
 begin
+  Path := AppPath+'Includes\SRL\SRL\MSI\MSI Progress Reports\';
+  FileS := Copy(TheTime, 1, Pos('PM', TheTime) - 2);
+  FileS := Replace(FileS, ':', '-');
+  FileH := ReWriteFile(Path + FileS + ' ' + TheDate(Date_Formal) + '.txt', False);
+  WriteFileString(FileH, 'Progress Report Saved:'+#13+#10);
+  WriteFileString(FileH, #13+#10+'This proggie was written '+TheTime+' at '+TheDate(Date_Formal)+#13+#10);
+  
   ClearReport;
   MSI_GetReportInfo;
-  MSI_AddToBoxes('{----------------------------------------------------------------}');                   //64 from '{' to '}'
-  MSI_AddToBoxes('{                   MSI Extreme Player Report                    }');
-  MSI_AddToBoxes('{----------------------------------------------------------------}');
-  MSI_AddToBoxes('{     ' + PadR('Time Running: ' + TimeRunning, 59) + '}');
-  MSI_AddToBoxes('{----------------------------------------------------------------}');
+  MSI_AddToBoxesAndSave(FileH, '{----------------------------------------------------------------}');                   //64 from '{' to '}'
+  MSI_AddToBoxesAndSave(FileH, '{                   MSI Extreme Player Report                    }');
+  MSI_AddToBoxesAndSave(FileH, '{----------------------------------------------------------------}');
+  MSI_AddToBoxesAndSave(FileH, '{     ' + PadR('Time Running: ' + TimeRunning, 59) + '}');
+  MSI_AddToBoxesAndSave(FileH, '{----------------------------------------------------------------}');
   
   for i := 0 to (HowManyPlayers - 1) do
     with ProgressReportArray[i] do
     begin
-      MSI_AddToBoxes('{                                                                }');
+      MSI_AddToBoxesAndSave(FileH, '{                                                                }');
       //              {     Player 0: Player Name                                      }
-      MSI_AddToBoxes('{     ' + PadR('Player ' + IntToStr(i) + ': ' + Capitalize(PlayerName), 59) + '}');       //PlayerName
+      MSI_AddToBoxesAndSave(FileH, '{     ' + PadR('Player ' + IntToStr(i) + ': ' + Capitalize(PlayerName), 59) + '}');       //PlayerName
       //              {     City: Varrock                                              }
-      MSI_AddToBoxes('{     ' + PadR('City: ' + MSI_LocToText(PlayerCity), 59) + '}');                          //PlayerCity
+      MSI_AddToBoxesAndSave(FileH, '{     ' + PadR('City: ' + MSI_LocToText(PlayerCity), 59) + '}');                          //PlayerCity
       //              {     Location: VE_Trees                                         }
-      MSI_AddToBoxes('{     ' + PadR('Location: ' + MSI_LocToText(PlayerLoc), 59) + '}');                       //PlayerLoc
+      MSI_AddToBoxesAndSave(FileH, '{     ' + PadR('Location: ' + MSI_LocToText(PlayerLoc), 59) + '}');                       //PlayerLoc
       //              {     Time: 02h, 33m, 45s                                         }
-      MSI_AddToBoxes('{     ' + PadR('Time: ' + MsToTime(PlayerTime, Time_Short), 59) + '}');                   //TotalTime
+      MSI_AddToBoxesAndSave(FileH, '{     ' + PadR('Time: ' + MsToTime(PlayerTime, Time_Short), 59) + '}');                   //TotalTime
       //              {     Active: True                                               }
-      MSI_AddToBoxes('{     ' + PadR('Active: ' + Capitalize(BoolToStr(PlayerStatus)), 59) + '}');              //PlayerStatus
+      MSI_AddToBoxesAndSave(FileH, '{     ' + PadR('Active: ' + Capitalize(BoolToStr(PlayerStatus)), 59) + '}');              //PlayerStatus
       if (not PlayerStatus) then
         //              {       Reason: Failed to bank items                             }                      //FalseReason
-        MSI_AddToBoxes('{       ' + PadR('Reason: ' + FalseReason, 57) + '}');
-      MSI_AddToBoxes('{                                                                }');
+        MSI_AddToBoxesAndSave(FileH, '{       ' + PadR('Reason: ' + FalseReason, 57) + '}');
+      MSI_AddToBoxesAndSave(FileH, '{                                                                }');
 
       for j := 0 to High(SkillInfo) do                                                                          //SkillInfo
         with SkillInfo[j] do
         begin
           skill := MSI_SkillActions(PlayerSkills[CurrentPlayer][j]);
           //              {     Skill: Woodcutting                                         }
-          MSI_AddToBoxes('{     ' + PadR('Skill: ' + skill[0], 59) + '}');
+          MSI_AddToBoxesAndSave(FileH, '{     ' + PadR('Skill: ' + skill[0], 59) + '}');
           //              {       Skill Time: 02h, 45m, 33s                                }
-          MSI_AddToBoxes('{       ' + PadR('Time: ' + MsToTime(TotalTime, Time_Short), 57) + '}');              //TotalTime
+          MSI_AddToBoxesAndSave(FileH, '{       ' + PadR('Time: ' + MsToTime(TotalTime, Time_Short), 57) + '}');              //TotalTime
           //              {       Loads: 45                                                }
-          MSI_AddToBoxes('{       ' + PadR('Loads: ' + IntToStr(TotalLoads), 57) + '}');                        //TotalLoads
+          MSI_AddToBoxesAndSave(FileH, '{       ' + PadR('Loads: ' + IntToStr(TotalLoads), 57) + '}');                        //TotalLoads
           //              {       Experience: 38,650                                       }
-          MSI_AddToBoxes('{       ' + PadR('Experience: ' + MSI_GroupDigits(Round(TotalEXP), ','), 57) + '}');  //TotalEXP
+          MSI_AddToBoxesAndSave(FileH, '{       ' + PadR('Experience: ' + MSI_GroupDigits(Round(TotalEXP), ','), 57) + '}');  //TotalEXP
           //              {       Level: 91                                                }
           if (Level < 1) then
-            MSI_AddToBoxes('{       ' + PadR('Level: Not yet defined', 57) + '}')
+            MSI_AddToBoxesAndSave(FileH, '{       ' + PadR('Level: Not yet defined', 57) + '}')
           else
-            MSI_AddToBoxes('{       ' + PadR('Level: ' + IntToStr(Level), 57) + '}');                           //Level
+            MSI_AddToBoxesAndSave(FileH, '{       ' + PadR('Level: ' + IntToStr(Level), 57) + '}');                           //Level
 
           intItems := MSI_GetItemList(i, j);
           for k := 0 to High(intItems) do                                                                       //TotalObj
           begin
             item := MSI_ObjToText(intItems[k]);
             //              {         Item: Normal logs                                      }
-            MSI_AddToBoxes('{         ' + PadR('Item: ' + item[0], 55) + '}');
+            MSI_AddToBoxesAndSave(FileH, '{         ' + PadR('Item: ' + item[0], 55) + '}');
             //              {         Amount: 1,546                                          }
-            MSI_AddToBoxes('{         ' + PadR('Amount: ' + MSI_GroupDigits(ObjQuants[k], ','), 55) + '}');     //ObjQuants
+            MSI_AddToBoxesAndSave(FileH, '{         ' + PadR('Amount: ' + MSI_GroupDigits(ObjQuants[k], ','), 55) + '}');     //ObjQuants
           end;
           
-          MSI_AddToBoxes('{                                                                }');
-          MSI_AddToBoxes('{----------------------------------------------------------------}');
+          MSI_AddToBoxesAndSave(FileH, '{                                                                }');
+          MSI_AddToBoxesAndSave(FileH, '{----------------------------------------------------------------}');
         end;
     end;
   
-  MSI_AddToBoxes('{----------------------------------------------------------------}');
-  //MSI_SaveReport; //Disabled for now until we can fix. :p
+  MSI_AddToBoxesAndSave(FileH, '{----------------------------------------------------------------}');
+  CloseFile(FileH);
 end;
