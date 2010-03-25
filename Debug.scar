@@ -232,7 +232,7 @@ begin
   FileS := Replace(FileS, ':', '-');
   FileH := ReWriteFile(Path + FileS + ' ' + TheDate(Date_Formal) + '.txt', False);
   WriteFileString(FileH, 'Progress Report Saved:'+#13+#10);
-  WriteFileString(FileH, #13+#10+'This proggie was written '+TheTime+' at '+TheDate(Date_Formal)+#13+#10);
+  WriteFileString(FileH, #13+#10+'This proggie was written '+TheDate(Date_Formal)+' at '+TheTime+#13+#10);
   
   ClearReport;
   MSI_GetReportInfo;
