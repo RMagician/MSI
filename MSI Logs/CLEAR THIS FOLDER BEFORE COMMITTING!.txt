@@ -1,0 +1,12 @@
+Log written 05:31:55 PM at March 25th, 2010
+
+Successfully compiled (3122 ms)
+Line 6: [Hint] (24265:5): Variable 'X' never used in script 
+Line 6: [Hint] (24265:5): Variable 'Y' never used in script 
+Line 6: [Hint] (24265:5): Variable 'I' never used in script 
+Line 7: [Hint] (24266:1): Variable 'TPA' never used in script 
+Line 8: [Hint] (24267:1): Variable 'ATPA' never used in script 
+Line 9: [Hint] (24268:1): Variable 'TP' never used in script 
+Line 10: [Hint] (24269:1): Variable 'TB' never used in script 
+SRL Compiled in 16 msec
+16

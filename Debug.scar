@@ -11,8 +11,8 @@
 | * function MSI_ObjToText(): String;                * by The MSI Team         |
 | * function MSI_LocToText(): String;                * by The MSI Team         |
 | * function MSI_GroupDigits(): String;              * PriSoner and Nava2      |
-| * function MSI_AddToBoxes;                         * by Naum                 |
-| * function MSI_SaveReport;                         * by Naum                 |
+| * function MSI_AddToBoxesAndSave;                  * by Naum                 |
+| * Procedure MSI_SaveLog;                           * by Naum                 |
 | * procedure MSI_ProgressReport();                  * by Coh3n                |
  \_____________________________________________________________________________}
  
@@ -214,6 +214,31 @@ Begin
 End;
 
 {******************************************************************************}
+{ Procedure MSI_SaveLog;                                                       }
+{ By: Naum                                                                     }
+{ Description: Saves a log of the debug and clears the debug box every 10 mins }
+{******************************************************************************}
+Var MT : Integer;   //Needed as global!
+
+Procedure MSI_SaveLog;
+Var FileH: Integer;
+    Path, FileS : String;
+Begin
+  If GetTimeRunning > MT* 600000 Then
+  Begin
+    Path := AppPath+'Includes\SRL\SRL\MSI\MSI Logs\';
+    FileS := Copy(TheTime, 1, Pos('PM', TheTime) - 2);
+    FileS := Replace(FileS, ':', '-');
+    FileH := ReWriteFile(Path + FileS + ' ' + TheDate(Date_Formal) + '.txt', False);
+    WriteFileString(FileH, 'Log written '+TheTime+' on '+TheDate(Date_Formal)+#13+#10);
+    WriteFileString(FileH, #13+#10+GetDebugText);
+    ClearDebug;
+    Inc(MT);
+    CloseFile(FileH);
+  End;
+End;
+
+{******************************************************************************}
 { procedure MSI_ProgressReport;                                                }
 { By: Coh3n                                                                    }
 { Description: Prints the progress report of each player                       }
@@ -294,5 +319,7 @@ begin
     end;
   
   MSI_AddToBoxesAndSave(FileH, '{----------------------------------------------------------------}');
+
   CloseFile(FileH);
+  MSI_SaveLog;
 end;
