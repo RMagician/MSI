@@ -210,7 +210,6 @@ end;
 Procedure MSI_AddToBoxesAndSave(FH : Integer; S : String);
 Begin
   AddToReport(S);
-  WriteLn(S);
   WriteFileString(FH, S+#13+#10);
 End;
 

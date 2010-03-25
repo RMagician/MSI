@@ -6,6 +6,8 @@
 |                                                                              |
  \_____________________________________________________________________________}
 
+const
+  MSI_VERSION_NUMBER = '1.0';
 {
   Abbreviations:
     - FS: Fishing Spot
