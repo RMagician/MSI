@@ -13,12 +13,13 @@
 {******************************************************************************}
 function MSI_IsMoving: boolean;
 begin
-  {$IFDEF REFLECTION}
-  Result := CharacterMoving;
-  {$ELSE}
+  //{$IFDEF REFLECTION}
+  //Result := CharacterMoving;
+  //{$ELSE}
   Result := IsMoving;
-  {$ENDIF}
+  //{$ENDIF}
 end;
+
 
 {******************************************************************************}
 { procedure MSI_Flag(Distance: Integer);                                       }
@@ -266,7 +267,7 @@ begin
   end;
 end;
 
-function MSI_CreateWalkIndex(index: Integer): Boolean;
+function MSI_CreateWalkIndex(index: Integer): TPoint;
 var
   i, Tol: Integer;
   aTPA: t2DPointArray;
@@ -275,6 +276,7 @@ var
   RockColor, TreeColor, BC: Integer;
   t: LongInt;
 begin
+  Result := Point(-1, -1);
   case index of
     WALK_WC_VE_TREE_1:
       begin
@@ -299,17 +301,7 @@ begin
         except
           t := Length(TPA) - 2;
         end;
-        Mouse(TPA[t].x, TPA[t].y, 1, 1, True);
-        t := getSystemTime;
-        while not flagPresent() do
-        begin
-          if getSystemTime-t > randomRange(2000, 2500) then
-            Exit;
-          wait(250+random(500));
-        end;
-        FFlag(Random(5));
-        Result := True;
-        Exit;
+        Result := Point(TPA[t].x, TPA[t].y);
       end;
 
     WALK_WC_VE_TREE_2:
@@ -330,10 +322,7 @@ begin
         end;
         SortTPAFrom(TPA, Point(MMCx, MMCy));
         i := (High(TPA) - RandomRange(1, 5));
-        Mouse(TPA[i].x, TPA[i].y, 1, 1, True);
-        FFlag(4);
-        Result := True;
-        Exit;
+        Result := Point(TPA[i].x, TPA[i].y);
       end;
 
     WALK_WC_VE_TREE_3:
@@ -344,16 +333,7 @@ begin
         for i := 0 to High(TPA) do
         begin
           if TPA[i].y > MMcy then continue;
-          Mouse(TPA[i].x, TPA[i].y, 5, 5, true);
-          t := getSystemTime;
-          while not flagPresent() do
-          begin
-            if getSystemTime-t > randomRange(2000, 2500) then
-              Exit;
-            wait(250+random(500));
-          end;
-          FFlag(random(8));
-          Result := True;
+          Result := Point(TPA[i].x, TPA[i].y);
           Exit;
         end;
       end;
@@ -369,12 +349,7 @@ begin
         SortATPASize(aTPA, true);
         p := MiddleTPA(aTPA[0]);
         if (p.x < MMcx+20) and (p.y < MMcy) then
-        begin
-          Mouse(p.x, p.y, 5, 5, true);
-          Flag();
-          Result := True;
-          Exit;
-        end;
+          Result := Point(p.x, p.y);
       end;
 
     WALK_WC_VE_BANK_1:
@@ -386,16 +361,7 @@ begin
         for i := 0 to High(TPA) do
         begin
           if (TPA[i].y < MMcy-10) then continue;
-          Mouse(TPA[i].x-5, TPA[i].y, Random(8), Random(8), true);
-          t := getSystemTime;
-          while not flagPresent() do
-          begin
-            if getSystemTime-t > randomRange(2000, 2500) then
-              Exit;
-            wait(250+random(500));
-          end;
-          FFlag(RandomRange(5, 10));
-          Result := True;
+          Result := Point(TPA[i].x-5, TPA[i].y);
           Exit;
         end;
       end;
@@ -427,10 +393,7 @@ begin
           Exit;
         end;
 
-        Mouse(TPA[i].x, TPA[i].y, 0, 0, True);
-        FFlag(5);
-        Result := True;
-        Exit;
+        Result := Point(TPA[i].x, TPA[i].y);
       end;
 
     WALK_WC_VE_BANK_3:
@@ -442,16 +405,7 @@ begin
         for i := 0 to High(TPA) do
         begin
           if not RS_onMinimap(TPA[i].x, TPA[i].y) then Continue;
-          Mouse(TPA[i].x, TPA[i].y, 5, 5, true);
-           t := getSystemTime;
-          while not flagPresent() do
-          begin
-            if getSystemTime-t > randomRange(2000, 2500) then
-              Exit;
-            wait(250+random(500));
-          end;
-          FFlag(RandomRange(3, 5));
-          Result := True;
+          Result := Point(TPA[i].x, TPA[i].y);
           Exit;
         end;
       end;
@@ -476,24 +430,32 @@ begin
 
         i := Length(aTPA[0]);
         t := RandomRange(0, i);
-        Mouse(aTPA[0][t].x, aTPA[0][t].y - RandomRange(3, 7), 3, 3, True);
-        t := getSystemTime;
-        while not flagPresent() do
-        begin
-          if getSystemTime-t > randomRange(2000, 2500) then
-            Exit;
-          wait(250+random(500));
-        end;
-
-        FFlag(3);
-        Result := True;
+        Result := Point(aTPA[0][t].x, aTPA[0][t].y - RandomRange(3, 7));
       end;
   end;
 end;
 
+function MSI_WalkToColorIndex(index: Integer): Boolean;
+var
+  thePoint: TPoint;
+begin
+  thePoint := MSI_CreateWalkIndex(index);
+  
+  if (thePoint.x = -1) then
+  begin
+    Result := False;
+    Exit;
+  end;
+  
+  Mouse(thePoint.x, thePoint.y, 3, 3, True);
+  FindNormalRandoms;
+  MSI_Flag(RandomRange(3, 6));
+  Result := True;
+end;
+
 function MSI_CreateWalkFailsafe(index: Integer): Boolean;
 begin
-  if not MSI_CreateWalkIndex(index) then
+  if not MSI_WalkToColorIndex(index) then
   begin
     case index of
       WALK_WC_VE_TREE_1:

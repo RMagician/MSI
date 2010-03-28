@@ -220,7 +220,7 @@ begin
     SKILL_WOODCUTTING:
       case Players[CurrentPlayer].Integers[P_LOC] of
         LOC_VE_BANK:
-          Result := MSI_ColorWalk(LOC_VE_BANK, LOC_VE_TREES);
+          Result := MSI_PerformWalk(LOC_VE_BANK, LOC_VE_TREES);
 
         LOC_VE_TREES:
           Result := True;
@@ -247,7 +247,7 @@ begin
     SKILL_WOODCUTTING:
       case Players[CurrentPlayer].Integers[P_LOC] of
         LOC_VE_TREES:
-          Result := MSI_ColorWalk(LOC_VE_TREES, LOC_VE_BANK);
+          Result := MSI_PerformWalk(LOC_VE_TREES, LOC_VE_BANK);
 
         LOC_VE_BANK:
           Result := True;

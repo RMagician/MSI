@@ -5,19 +5,14 @@
 | For all the walking functions that are reflection based                      |
 |                                                                              |
 | * function MSI_WalkToTile(): Boolean;            * by marpis                 |
+| * function MSI_LoadRefPath(): TIntegerArray;     * by The MSI Team           |
 | * function MSI_RefWalk(): Boolean;               * by marpis                 |
-| * function MSI_CreateRefWalk(): TWalk;           * by marpis                 |
-| * function MSI_LoadRefPath(): TPointArray;       * by The MSI Team           |
-| * function MSI_LoadRefWalk(): TWalk;             * by The MSI Team           |
+| * function MSI_HybridWalk(): Boolean;            * by RM and Coh3n           |
 | * function MSI_FixPosition(): Boolean;           * by marpis                 |
+| * function MSI_PerformWalk(): Boolean;           * by Coh3n                  |
  \_____________________________________________________________________________}
 
 {$IFDEF REFLECTION}
-
-procedure TestReflection;
-begin
-  Writeln('Reflection has been compiled!');
-end;
 
 {******************************************************************************}
 { function MSI_WalkToTile(P: TPoint; Randomness, FlagD: Integer): Boolean;     }
@@ -97,9 +92,48 @@ begin
     MSI_Debug('MSI_RefWalk', 'Walking failed!', DEBUG_SMALL_DETAILS);
 end;
 
+{******************************************************************************}
+{ function MSI_HybridWalk(startLoc, endLoc: Integer): Boolean;                 }
+{ By: RM and Coh3n                                                             }
+{ Description: Will walk the color path if near the reflection point. If not   }
+{              near the point, will walk to the reflection tile                }
+{******************************************************************************}
 function MSI_HybridWalk(startLoc, endLoc: Integer): Boolean;
+var
+  i: Integer;
+  colorPath: TIntegerArray;
+  refPath: TPointArray;
+  colorPoint, refPoint: TPoint;
 begin
-  Result := False;
+  colorPath := MSI_LoadColorPath(startLoc, endLoc);
+  refPath := MSI_LoadRefPath(startLoc, endLoc);
+
+  for i := 0 to High(colorPath) do
+  begin
+    colorPoint := MSI_CreateWalkIndex(colorPath[i]);
+    refPoint := TileToMM(refPath[i]);
+
+    if (Distance(refPoint.x, refPoint.y, colorPoint.x, colorPoint.y) > WALK_TOL) then
+    begin
+      MSI_Debug('MSI_HybridWalk', 'Color index too far off path to ' + MSI_LocToText(endLoc) + ', index ' + IntToStr(i), DEBUG_FUNCTIONS);
+      MSI_Debug('MSI_HybridWalk', 'Using reflection backup!', DEBUG_FUNCTIONS);
+      //do color gathering stuff here
+      Mouse(refPoint.x, refPoint.y, 4, 4, True);
+    end else
+      Mouse(colorPoint.x, colorPoint.y, 4, 4, True);
+
+    FFlag(RandomRange(3, 6));
+    FindNormalRandoms;
+    
+    Result := (i = High(colorPath));
+  end;
+
+  if (Result) then
+  begin
+    MSI_Debug('MSI_HybridWalk', 'Successfully walked to ' + MSI_LocToText(endLoc), DEBUG_SMALL_DETAILS);
+    Players[CurrentPlayer].Integers[P_LOC] := endLoc;
+    Wait(RandomRange(750, 1500));
+  end;
 end;
 
 {******************************************************************************}
@@ -117,6 +151,20 @@ begin
 end;
 
 {$ENDIF}
+
+{******************************************************************************}
+{ function MSI_PerformWalk(startLoc, endLoc: Integer): Boolean;                }
+{ By: Coh3n                                                                    }
+{ Description: Performs the walking routine                                    }
+{******************************************************************************}
+function MSI_PerformWalk(startLoc, endLoc: Integer): Boolean;
+begin
+  {$IFDEF REFLECTION}
+    Result := MSI_HybridWalk(startLoc, endLoc);
+  {$ELSE}
+    Result := MSI_ColorWalk(startLoc, endLoc);
+  {$ENDIF}
+end;
 
 {******************************************************************************}
 { Procedure MSI_AntiBan(HowLong : Integer);                                    }

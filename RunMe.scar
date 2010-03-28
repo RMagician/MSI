@@ -7,7 +7,7 @@
  \_____________________________________________________________________________}
 
 program MSIScript;
-//{$DEFINE REFLECTION} // Comment out if you don't want to use reflection walking
+{$DEFINE REFLECTION} // Comment out if you don't want to use reflection walking
 {.include SRL/SRL/MSI/Setup.scar}
 
 const
@@ -23,7 +23,7 @@ var
 begin
   HowManyPlayers := 8;
   NumberOfPlayers(HowManyPlayers);
-  CurrentPlayer := 1;
+  CurrentPlayer := 0;
   CurrentSkill := 0;
   SetLength(ProgressReportArray, HowManyPlayers);
   SetLength(PlayerSkills, HowManyPlayers);
@@ -39,7 +39,7 @@ begin
     PlayerSkills[0]  := [SKILL_WOODCUTTING];
     PlayerObjects[0] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK; //City to auto in
-    Integers[P_LOC]  := LOC_VE_TREES;  //Starting location
+    Integers[P_LOC]  := LOC_VE_BANK;  //Starting location
     Booleans[P_BANK] := True;         //True if you want to bank, false if you want to drop
   end;
 
@@ -53,7 +53,7 @@ begin
     PlayerSkills[1]  := [SKILL_WOODCUTTING];
     PlayerObjects[1] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_VE_TREES;
+    Integers[P_LOC]  := LOC_VE_BANK;
     Booleans[P_BANK] := True;
   end;
 
@@ -99,12 +99,12 @@ begin
     Booleans[P_BANK] := True;
   end;
 
-  with Players[5] do
+  with Players[5] do //maze
   begin
     Name   := 'cohen abyss';
     Pass   := 'jackaster';
     Nick   := 'bys';
-    Active := True;
+    Active := False;
     Pin    := '';
     PlayerSkills[5]  := [SKILL_WOODCUTTING];
     PlayerObjects[5] := [[OBJ_TREE_NORMAL]];
@@ -113,26 +113,26 @@ begin
     Booleans[P_BANK] := True;
   end;
 
-  with Players[6] do
+  with Players[6] do //quiz
   begin
     Name   := 'pirate cohen';
     Pass   := 'jackaster';
     Nick   := 'ira';
-    Active := True;
+    Active := False;
     Pin    := '';
     PlayerSkills[6]  := [SKILL_WOODCUTTING];
     PlayerObjects[6] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_VE_BANK;
+    Integers[P_LOC]  := LOC_VE_TREES;
     Booleans[P_BANK] := True;
   end;
 
-  with Players[7] do
+  with Players[7] do //arnav
   begin
     Name   := 'run cohen';
     Pass   := 'jackaster';
     Nick   := 'ohe';
-    Active := True;
+    Active := False;
     Pin    := '';
     PlayerSkills[7]  := [SKILL_WOODCUTTING];
     PlayerObjects[7] := [[OBJ_TREE_NORMAL]];

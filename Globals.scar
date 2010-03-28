@@ -134,6 +134,8 @@ const
   DEBUG_SMALL_DETAILS  = 1;   // Debug small details and more important
   DEBUG_EVERYTHING     = 0;   // For Script Users to have everything in debug box.
 
+const
+  WALK_TOL = 8; //the tolerance for a color point compared to a reflection point
   
 { const Players
   Constants representing the different Players array records. }

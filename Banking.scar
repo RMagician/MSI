@@ -21,7 +21,7 @@ const
 { Description: Opens the bank 'which' (refer to bank constants). Will attempt  }
 {              to relocate if bank isn't found after 15 tries.                 }
 {******************************************************************************}
-function MSI_CreateWalkIndex(index: Integer): Boolean; forward;
+function MSI_WalkToColorIndex(index: Integer): Boolean; forward;
 function MSI_OpenBank(which, walkIndex: Integer; tPin: String): Boolean;
 var
   theBank: TMSObject;
@@ -45,7 +45,7 @@ begin
     end;
       
     if (t = 15) then
-      if not (MSI_CreateWalkIndex(walkIndex)) then
+      if not (MSI_WalkToColorIndex(walkIndex)) then
       begin
         SymbolAccuracy := 50;
         if (FindSymbol(x, y, 'bank')) then

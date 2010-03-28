@@ -9,7 +9,7 @@
 //SRL Includes
 {.include srl/srl/misc/smart.scar} // --> disabled for now, not to be a pain in the ass while deving
 {.include srl/srl.scar}
-//{.include srl/srl/reflection/reflection.scar}
+{.include srl/srl/reflection/reflection.scar}
 {.include srl/srl/misc/Reports.scar}
 
 //MSI Script
