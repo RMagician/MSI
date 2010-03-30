@@ -4,6 +4,39 @@
 |==============================================================================|
 | For the script User to just simply press play                                |
 |                                                                              |
+|==============================================================================|
+|                         ** Setup Instructions **                             |
+|==============================================================================|
+|                                                                              |
+| -> Valid arguments for PlayerSkills[i]:                                      |
+|    - [SKILL_WOODCUTTING]                                                     |
+|                                                                              |
+| -> Valid arguments for PlayerObjects[i]:                                     |
+|    - For banking:                                                            |
+|      - [[OBJ_TREE_NORMAL]]                                                   |
+|                                                                              |
+|    - For power skilling (order doesn't matter and it can be in any           |
+|      combination you wish:                                                   |
+|      - [[OBJ_TREE_NORMAL, OBJ_TREE_OAK, OBJ_TREE_WILLOW, OBJ_TREE_MAPLE,     |
+|          OBJ_TREE_YEW, OBJ_TREE_MAGIC]]                                      |
+|                                                                              |
+| -> Valid arguments for Integers[P_CITY]:                                     |
+|    - CITY_VARROCK                                                            |
+|                                                                              |
+| -> Valid arguments for Integers[P_LOC]:                                      |
+|    - For banking:                                                            |
+|      - LOC_VE_BANK                                                           |
+|      - LOC_VE_TREES                                                          |
+|                                                                              |
+|    - For power skilling:                                                     |
+|      - Doesn't matter, just make sure you're standing near the object        |
+|                                                                              |
+| -> Valid arguments for Booleans[P_BANK]:                                     |
+|    - For banking:                                                            |
+|      - True                                                                  |
+|                                                                              |
+|    - For power skilling:                                                     |
+|      - False                                                                 |
  \_____________________________________________________________________________}
 
 program MSIScript;

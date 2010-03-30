@@ -4,16 +4,11 @@
 |==============================================================================|
 | All Banking related routines.                                                |
 |                                                                              |
-|  Function MSI_OpenBank   *By Naum & NCDS                                     |
-|  Function MSI_Deposit    *By Naum                                            |
-|  Function MSI_Withdraw   *By Naum                                            |
+| * function MSI_OpenBank(): Boolean;       * by Coh3n                         |
+| * function MSI_Deposit(): Boolean;        * by Naum                          |
+| * function MSI_Withdraw(): Boolean;       * by Naum                          |
 |                                                                              |
  \_____________________________________________________________________________}
-
-{
-const
-  OBJ_BANK_VE
-}
 
 {******************************************************************************}
 { function MSI_OpenBank(which, walkIndex: Integer; tPin: String): Boolean;     }
@@ -67,12 +62,9 @@ end;
 
 {******************************************************************************}
 { Function MSI_Deposit(Items, Amount : TIntegerArray) : Boolean                }
-{ By: NaumanAkhlaQ                                                             }
-{ Rev: 18                                                                      }
-{ Date: 16 Oct 09                                                              }
+{ By: Naum                                                                     }
 { Description: Deposits an Item using the TItem type                           }
 {******************************************************************************}
-
 Function MSI_Deposit(Items, Amount: TIntegerArray) : Boolean;
 Var ATPA2 : Array Of TPointArray;  //The length is the same as items.colors
     ATPA : T2DPointArray;
@@ -158,12 +150,9 @@ End;
 
 {******************************************************************************}
 { Function MSI_Withdraw(Items, Amount : TIntegerArray) : Boolean               }
-{ By: NaumanAkhlaQ                                                             }
-{ Rev: 18                                                                      }
-{ Date: 16 Oct 09                                                              }
+{ By: Naum                                                                     }
 { Description: Widthraws an Item using the TItem type                          }
 {******************************************************************************}
-
 Function MSI_Withdraw(Items, Amount : TIntegerArray) : Boolean;
 Var ATPA2 : Array Of TPointArray;  //The length is the same as items.colors
     ATPA : T2DPointArray;

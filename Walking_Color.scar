@@ -4,6 +4,21 @@
 |==============================================================================|
 | For all the walking functions that are color based.                          |
 |                                                                              |
+| * function MSI_IsMoving: Boolean;                  * by marpis               |
+| * procedure MSI_Flag();                            * by marpis               |
+| * procedure MSI_SortColors();                      * by Blumblebee           |
+| * function MSI_FindMMLocation(): Boolean;          * by marpis               |
+| * function MSI_AutoColorMM(): Integer;             * by Blumblebee           |
+| * function MSI_FindAutoColor(): Integer;           * by Coh3n                |
+| * function MSI_CreateWalkTPA(): TPointArray        * by Blumblebee           |
+| * function MSI_WalkTPAPoint(): Boolean;            * by Blumblebee           |
+| * function MSI_CreateColorBox(): TBox;             * by Blumblebee           |
+| * function MSI_FindColorInBox(): Boolean;          * by Blumblebee           |
+| * function MSI_CreateWalkIndex(): TPoint;          * by The MSI Team         |
+| * function MSI_WalkToColorIndex(): Boolean;        * by Coh3n                |
+| * function MSI_CreateWalkFailsafe(): Boolean;      * by Blumblebee & NCDS    |
+| * function MSI_LoadColorPath(): TIntegerArray;     * by The MSI Team         |
+| * function MSI_ColorWalk(): Boolean;               * by Coh3n                |
  \_____________________________________________________________________________}
 
 {******************************************************************************}
@@ -14,12 +29,11 @@
 function MSI_IsMoving: boolean;
 begin
   //{$IFDEF REFLECTION}
-  //Result := CharacterMoving;
+  //Result := CharacterMoving; //disabled until reflection is working again
   //{$ELSE}
   Result := IsMoving;
   //{$ENDIF}
 end;
-
 
 {******************************************************************************}
 { procedure MSI_Flag(Distance: Integer);                                       }
@@ -37,6 +51,11 @@ begin
     end;
 end;
 
+{******************************************************************************}
+{ procedure MSI_SortColors(var Colors: tIntegerArray; col: Integer);           }
+{ By: Blumblebee                                                               }
+{ Description: Sorts an array of colors                                        }
+{******************************************************************************}
 procedure MSI_SortColors(var Colors: tIntegerArray; col: Integer);
 var
   tempB: tIntegerArray;
@@ -66,7 +85,7 @@ begin
 end;
 
 {******************************************************************************}
-{ Function FindMMLocation(Var X, Y: Integer; Location: TMMLocation): Boolean;  }
+{ function FindMMLocation(Var X, Y: Integer; Location: TMMLocation): Boolean;  }
 { By: marpis                                                                   }
 { Description: Finds a location in minimap. First tries to find DTM, then      }
 {              colors, and if still not found it will find it by symbol        }
@@ -159,6 +178,11 @@ Begin
     End;
 End;
 
+{******************************************************************************}
+{ function MSI_AutoColorMM(const color: Integer): Integer;                     }
+{ By: Blumblebee                                                               }
+{ Description: Autocolors the color 'color' on the minimap                     }
+{******************************************************************************}
 function MSI_AutoColorMM(const color: Integer): Integer;
 var
   TPA: tPointArray;
@@ -177,14 +201,24 @@ begin
   result := List[0];
 end;
 
-function MSI_FindAutoColor(Which: Integer): Integer;
+{******************************************************************************}
+{ function MSI_FindAutoColor(Which: Integer): Integer;                         }
+{ By: Coh3n                                                                    }
+{ Description: Finds the color 'which' on the minimap                          }
+{******************************************************************************}
+function MSI_FindAutoColor(which: Integer): Integer;
 begin
-  case Which of
+  case which of
     AC_ROAD_VARROCK:
       Result := MSI_AutoColorMM(COLOR_ROAD_VARROCK);
   end;
 end;
 
+{******************************************************************************}
+{ function MSI_CreateWalkTPA( ... ): TPointArray;                              }
+{ By: Blumblebee                                                               }
+{ Description: Creats a TPA of which can be walked to                          }
+{******************************************************************************}
 function MSI_CreateWalkTPA(x, y, color, width, height, tolerance: Integer): TpointArray;
 var
   TPA: tPointArray;
@@ -209,6 +243,11 @@ begin
   if p = 0 then SetArrayLength(Result, 0);
 end;
 
+{******************************************************************************}
+{ function MSI_WalkTPAPoint( ... ): Boolean;                                   }
+{ By: Blumblebee                                                               }
+{ Description: Walks to a point on the minimap                                 }
+{******************************************************************************}
 function MSI_WalkTPAPoint(TPA: tPointArray; sortP: tPoint; flagDist: shortInt): Boolean;
 var
   i: Integer;
@@ -236,6 +275,11 @@ begin
   end;
 end;
 
+{******************************************************************************}
+{ function MSI_CreateColorBox(Color: Integer): TBox;                           }
+{ By: Blumblebee                                                               }
+{ Description: Returns a box around the colors found                           }
+{******************************************************************************}
 function MSI_CreateColorBox(Color: Integer): TBox;
 var
   TPA: tPointArray;
@@ -245,6 +289,11 @@ begin
   Result := GetTPABounds(TPA);
 end;
 
+{******************************************************************************}
+{ function MSI_FindColorInBox(Color: Integer; Box: TBox): Boolean;             }
+{ By: Blumblebee                                                               }
+{ Description: Returns true if the color is found in a box                     }
+{******************************************************************************}
 function MSI_FindColorInBox(Color: Integer; Box: TBox): Boolean;
 var
   TPA: tPointArray;
@@ -267,6 +316,12 @@ begin
   end;
 end;
 
+{******************************************************************************}
+{ function MSI_CreateWalkIndex(index: Integer): TPoint;                        }
+{ By: Blumblebee, Coh3n and NCDS                                               }
+{ Description: Returns a point on the minimap depending on the specified       }
+{              location by 'index'                                             }
+{******************************************************************************}
 function MSI_CreateWalkIndex(index: Integer): TPoint;
 var
   i, Tol: Integer;
@@ -435,6 +490,11 @@ begin
   end;
 end;
 
+{******************************************************************************}
+{ function MSI_WalkToColorIndex(index: Integer): Boolean;                      }
+{ By: Coh3n                                                                    }
+{ Description: Walked to a point specified by 'index' on the minimap           }
+{******************************************************************************}
 function MSI_WalkToColorIndex(index: Integer): Boolean;
 var
   thePoint: TPoint;
@@ -453,6 +513,11 @@ begin
   Result := True;
 end;
 
+{******************************************************************************}
+{ function MSI_CreateWalkFailsafe(index: Integer): Boolean;                    }
+{ By: Blumblebee and NCDS                                                      }
+{ Description: Uses radial walking if MSI_WalkToColorIndex fails               }
+{******************************************************************************}
 function MSI_CreateWalkFailsafe(index: Integer): Boolean;
 begin
   if not MSI_WalkToColorIndex(index) then
@@ -542,22 +607,22 @@ begin
 end;
 
 {******************************************************************************}
-{ function MSI_LoadColorPath(StartLoc, EndLoc: Integer): TIntegerArray;        }
+{ function MSI_LoadColorPath(startLoc, endLoc: Integer): TIntegerArray;        }
 { By: The MSI Team                                                             }
 { Description: Loads the specified color walking path                          }
 {******************************************************************************}
-function MSI_LoadColorPath(StartLoc, EndLoc: Integer): TIntegerArray;
+function MSI_LoadColorPath(startLoc, endLoc: Integer): TIntegerArray;
 begin
-  case StartLoc of
+  case startLoc of
     LOC_VE_BANK:
-      case EndLoc of
+      case endLoc of
         LOC_VE_TREES:
           Result := [ WALK_WC_VE_TREE_1, WALK_WC_VE_TREE_2, WALK_WC_VE_TREE_3,
                       WALK_WC_VE_TREE_4 ];
       end;
 
     LOC_VE_TREES:
-      case EndLoc of
+      case endLoc of
         LOC_VE_BANK:
           Result := [ WALK_WC_VE_BANK_1, WALK_WC_VE_BANK_2, WALK_WC_VE_BANK_3,
                       WALK_WC_VE_BANK_4 ];
@@ -566,7 +631,7 @@ begin
 end;
 
 {******************************************************************************}
-{ function MSI_ColorWalk(startLoc, endLoc, colorIndex: Integer): Boolean;      }
+{ function MSI_ColorWalk(startLoc, endLoc: Integer): Boolean;                  }
 { By: Coh3n                                                                    }
 { Description: Walks from startLoc to endLoc                                   }
 {******************************************************************************}

@@ -9,9 +9,7 @@
 
 // Function header just to be in easy reach.
 {******************************************************************************}
-{ Function SetUpWalk(City, WhereTo: integer): TWalk;                           }
+{ function SetUpWalk(City, WhereTo: integer): TWalk;                           }
 { By: Rasta Magician                                                           }
-{ Rev: 1                                                                       }
-{ Date: 13 Sep 09                                                              }
 { Description: Returns a TWalk, depending on City and desired destination      }
 {******************************************************************************}

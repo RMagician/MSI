@@ -262,7 +262,7 @@ begin
   MSI_GetReportInfo;
   MSI_PrintSave(FileH, '{----------------------------------------------------------------}');                   //64 from '{' to '}'
   MSI_PrintSave(FileH, '{                   MSI Extreme Player Report                    }');
-  MSI_PrintSave(FileH, '{----------------------------------------------------------------}');
+  MSI_PrintSave(FileH, '{------------------------------ ' + MSI_VERSION_NUMBER + '-------------------------------}');
   MSI_PrintSave(FileH, '{     ' + PadR('Time Running: ' + TimeRunning, 59) + '}');
   MSI_PrintSave(FileH, '{----------------------------------------------------------------}');
   

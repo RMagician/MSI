@@ -4,27 +4,20 @@
 |==============================================================================|
 | Used to store and load all information on items and objects                  |
 |                                                                              |
-|  Function MSI_GetItem : Boolean;            *By Coh3n and Naum               |
-|  Procedure MSI_LoadItems;                   *By Naum                         |
-|  Procedure MSI_LoadItemRange;               *By Naum edited by RM            |
-|  Procedure MSI_FreeItemEx;                  *By Naum                         |
-|  Procedure MSI_FreeItemArray;               *By Naum                         |
-|  Procedure MSI_FreeItems;                   *By Naum                         |
-|  Procedure MSI_FreeItemRange;               *By Naum edited by RM            |
+| * function MSI_GetItem(): Boolean;            * by Coh3n and Naum            |
+| * procedure MSI_LoadItems;                    * by Naum                      |
+| * procedure MSI_LoadItemRange;                * by Naum edited by RM         |
+| * procedure MSI_FreeItemEx;                   * by Naum                      |
+| * procedure MSI_FreeItemArray;                * by Naum                      |
+| * procedure MSI_FreeItems;                    * by Naum                      |
+| * procedure MSI_FreeItemRange;                * by Naum edited by RM         |
  \_____________________________________________________________________________}
 
-Const MSI_ITEM_COUNT = 15;  //Change this to the number of items
-
-Var
-  MSI_Item : Array[0..(MSI_ITEM_COUNT - 1)] Of TItem;
-
-{********************************************************************************}
-{ Function MSI_GetItem(ID : Integer) : Boolean;                                  }
-{ By: Coh3n and Naum                                                             }
-{ Rev: 29                                                                        }
-{ Date: 15 Nov 09                                                                }
-{ Description: Gets the TItem record for a certain item defined by 'ID'          }
-{********************************************************************************}
+{******************************************************************************}
+{ Function MSI_GetItem(ID : Integer) : Boolean;                                }
+{ By: Coh3n and Naum                                                           }
+{ Description: Gets the TItem record for a certain item defined by 'ID'        }
+{******************************************************************************}
 
 Function MSI_GetItem(ID : Integer) : Boolean;
 Begin
@@ -297,14 +290,11 @@ Begin
   Result := (Length(MSI_Item[ID].Name) > 0);
 End;
 
-{********************************************************************************}
-{ Procedure MSI_LoadItems(IDs : TIntegerArray);                                  }
-{ By: Naum                                                                       }
-{ Rev: 29                                                                        }
-{ Date: 15 Nov 09                                                                }
-{ Description: Gets the TItem records for all items in the array                 }
-{********************************************************************************}
-
+{******************************************************************************}
+{ Procedure MSI_LoadItems(IDs : TIntegerArray);                                }
+{ By: Naum                                                                     }
+{ Description: Gets the TItem records for all items in the array               }
+{******************************************************************************}
 Procedure MSI_LoadItems(IDs : TIntegerArray);
 Var I : Integer;
 Begin
@@ -312,14 +302,11 @@ Begin
     MSI_GetItem(IDs[I]);
 End;
 
-{********************************************************************************}
-{ Procedure MSI_LoadItemRange(StartID, EndID : Integer);                         }
-{ By: Naum edited by RM                                                          }
-{ Rev: 29                                                                        }
-{ Date: 15 Nov 09                                                                }
-{ Description: Gets the TItem records for all items in the range                 }
-{********************************************************************************}
-
+{******************************************************************************}
+{ Procedure MSI_LoadItemRange(StartID, EndID : Integer);                       }
+{ By: Naum edited by RM                                                        }
+{ Description: Gets the TItem records for all items in the range               }
+{******************************************************************************}
 Procedure MSI_LoadItemRange(StartID, EndID : Integer);
 Var I : Integer;
 Begin
@@ -336,14 +323,11 @@ Begin
     MSI_GetItem(I);
 End;
 
-{********************************************************************************}
-{ Procedure MSI_FreeItemEx(Which : Integer);                                     }
-{ By: Naum                                                                       }
-{ Rev: 29                                                                        }
-{ Date: 15 Nov 09                                                                }
-{ Description: Frees the TItem record for the item 'which'                       }
-{********************************************************************************}
-
+{******************************************************************************}
+{ Procedure MSI_FreeItemEx(Which : Integer);                                   }
+{ By: Naum                                                                     }
+{ Description: Frees the TItem record for the item 'which'                     }
+{******************************************************************************}
 Procedure MSI_FreeItemEx(Which : Integer);
 Begin
   Try
@@ -359,14 +343,11 @@ Begin
   Except End;
 End;
 
-{********************************************************************************}
-{ Procedure MSI_FreeItemArray(TIArray : TIntegerArray);                          }
-{ By: Naum                                                                       }
-{ Rev: 29                                                                        }
-{ Date: 15 Nov 09                                                                }
-{ Description: Frees the TItem records for all items in the array                }
-{********************************************************************************}
-
+{******************************************************************************}
+{ Procedure MSI_FreeItemArray(TIArray : TIntegerArray);                        }
+{ By: Naum                                                                     }
+{ Description: Frees the TItem records for all items in the array              }
+{******************************************************************************}
 Procedure MSI_FreeItemArray(TIArray : TIntegerArray);
 var
   I, Lo, Hi: Integer;
@@ -377,14 +358,11 @@ begin
     MSI_FreeItemEx(I);
 end;
 
-{********************************************************************************}
-{ Procedure MSI_FreeItems;                                                       }
-{ By: Naum                                                                       }
-{ Rev: 29                                                                        }
-{ Date: 15 Nov 09                                                                }
-{ Description: Frees all loaded Items                                            }
-{********************************************************************************}
-
+{******************************************************************************}
+{ Procedure MSI_FreeItems;                                                     }
+{ By: Naum                                                                     }
+{ Description: Frees all loaded Items                                          }
+{******************************************************************************}
 Procedure MSI_FreeItems;
 var i : Integer;
 begin
@@ -392,14 +370,11 @@ begin
     MSI_FreeItemEx(i);
 end;
 
-{********************************************************************************}
-{ Procedure MSI_FreeItemRange(StartID, EndID: Integer);                          }
-{ By: Naum edited by RM                                                          }
-{ Rev: 29                                                                        }
-{ Date: 15 Nov 09                                                                }
-{ Description: Frees the TItem records for all items in the range                }
-{********************************************************************************}
-
+{******************************************************************************}
+{ Procedure MSI_FreeItemRange(StartID, EndID: Integer);                        }
+{ By: Naum edited by RM                                                        }
+{ Description: Frees the TItem records for all items in the range              }
+{******************************************************************************}
 Procedure MSI_FreeItemRange(StartID, EndID: Integer);
 Var
   I : Integer;

@@ -8,6 +8,7 @@
 
 const
   MSI_VERSION_NUMBER = '1.0';
+
 {
   Abbreviations:
     - FS: Fishing Spot
@@ -27,101 +28,6 @@ const
     - EV: EdgeVille
     - BV: Barbarian Village
 }
-    
-{ Type TMSObject
-  Description: To be used for finding on the MS. Stores all necessary
-               information. }
-Type
-  TMSObject = Record
-    X, Y             : Integer;
-    Name             : String;
-    UpText           : String;
-    Option           : String;
-    Exp              : Extended;
-    Colors           : TIntegerArray;
-    FindAllColors    : Boolean; // Result False if not ALL colors are found
-    Tol              : Integer;
-    Hue              : Extended;
-    Sat              : Extended;
-    W, H             : Integer;
-    Accuracy         : Integer; // Min pixels to be found
-    ExcludeSelf      : Boolean; // Exclude pixels in a box, the box might need revamping / making it dynamic
-    RightClickOnly   : Boolean;
-    Tries            : Integer;
-    Anim             : Boolean; // Result False if not animating
-    WaitToMove       : Boolean; // When ClickLeft, wait till we have stopped moving?
-    BadColors        : TIntegerArray;
-    BadColorTolerance: Integer;
-  End;
-  TMSObjectArray = Array of TMSObject;
-  
-{ Type TItem
-  Description: To be used for handling Items in all situations. }
-  TItem = Record
-    Name      : String;
-    UpText    : TStringArray;
-    ItemP     : TPoint;
-    Stackable : Boolean;
-    Colors    : TIntegerArray;
-    Tol       : Integer;
-    DTM       : Integer;
-    BMP       : Integer;
-  End;
-  {Used in Banking.Scar}
-  Type MSI_TItemArray = Array Of TItem;
-
-{ Type TMMLocation
-  Description: Stores all needed colorwalking information. }
-  TMMLocation = Record
-    Symbol     : String;
-    DTM        : Integer;
-    W, H       : Integer;
-    Colors     : TIntegerArray;
-    Tolerances : TIntegerArray;
-    Counts     : TIntegerArray;
-  End;
-
-{ Type TPlayerSkillInfo
-  Description: Stores information for one player for one skill. }
-  TPlayerSkillInfo = record
-    TotalTime  : integer;
-    TotalObj   : integer;
-    TotalLoads : integer;
-    Level      : integer;
-    TotalEXP   : integer;
-    ObjQuants  : array of integer;
-  end;
-
-{ Type TProggy
-  Description: Stores information all progress related information for one
-               player.  }
-  TProggy = record
-    PlayerName  : string;
-    PlayerStatus: boolean;
-    FalseReason : string;
-    PlayerRandom: string;
-    PlayerCity  : integer;
-    PlayerLoc   : integer;
-    PlayerTime  : integer;
-    SkillInfo   : array of TPlayerSkillInfo;
-  end;
-
-var
-  ProgressReportArray: Array of TProggy;
-  { Description: To be used to store information for Players individually }
-  
-  CurrentSkill: Integer;
-  { Used like CurrentPlayer, but for the skills in the player array }
-  
-  Debug_LevelToDebug: integer;
-  { Description: For script user to choose how much to debug. }
-  
-  PlayerSkills: Array of TVariantArray;
-  PlayerObjects: Array of Array of TVariantArray;
-  { Used in the DeclarePlayers arrays for skills and objects }
-  
-  BreakAfter, BreakTime: Integer;
-  { Used for script setup (assinged to constatns in RunMe.scar) }
 
 { Debug constants
   Description: The several debugging levels, so the user receives as much
@@ -134,9 +40,12 @@ const
   DEBUG_SMALL_DETAILS  = 1;   // Debug small details and more important
   DEBUG_EVERYTHING     = 0;   // For Script Users to have everything in debug box.
 
+{ const Other
+  Description: Represents miscellaneous constants }
 const
   WALK_TOL = 8; //the tolerance for a color point compared to a reflection point
-  
+  MSI_ITEM_COUNT = 15;  //change this to the number of items in ItemInfo.scar
+
 { const Players
   Constants representing the different Players array records. }
 const
@@ -146,7 +55,7 @@ const
 
   // Booleans
   P_BANK = 0;
-  
+
 { const Location Constants
   Description: Constants used to represent player locations }
 const
@@ -154,7 +63,7 @@ const
   LOC_VE_TREES  = 1;
   LOC_VE_BANK   = 2;
   LOC_IN_RANDOM = 3;
-  
+
   CITY_VARROCK = 4;
 
 { const AutoColor indexes
@@ -175,7 +84,7 @@ const
   COLOR_ROCK         = 5789528;
   COLOR_SAND         = 0;
   COLOR_TREE         = 1532978;
-  
+
 { const Walking
   Description: Constants representing the color walking points }
 const
@@ -188,7 +97,7 @@ const
   WALK_WC_VE_BANK_2 = 5; // path
   WALK_WC_VE_BANK_3 = 6; // road
   WALK_WC_VE_BANK_4 = 7; // final
-  
+
 { const Hatchet/Pickaze requirements.
   Constants representing the requirements to use each tool }
 const
@@ -244,3 +153,103 @@ const
 }
 
   OBJ_BANK_VE = 9;
+
+
+{ Type TMSObject
+  Description: To be used for finding on the MS. Stores all necessary
+               information. }
+Type
+  TMSObject = Record
+    X, Y             : Integer;
+    Name             : String;
+    UpText           : String;
+    Option           : String;
+    Exp              : Extended;
+    Colors           : TIntegerArray;
+    FindAllColors    : Boolean; // Result False if not ALL colors are found
+    Tol              : Integer;
+    Hue              : Extended;
+    Sat              : Extended;
+    W, H             : Integer;
+    Accuracy         : Integer; // Min pixels to be found
+    ExcludeSelf      : Boolean; // Exclude pixels in a box, the box might need revamping / making it dynamic
+    RightClickOnly   : Boolean;
+    Tries            : Integer;
+    Anim             : Boolean; // Result False if not animating
+    WaitToMove       : Boolean; // When ClickLeft, wait till we have stopped moving?
+    BadColors        : TIntegerArray;
+    BadColorTolerance: Integer;
+  End;
+  TMSObjectArray = Array of TMSObject;
+  
+{ Type TItem
+  Description: To be used for handling Items in all situations. }
+  TItem = Record
+    Name      : String;
+    UpText    : TStringArray;
+    ItemP     : TPoint;
+    Stackable : Boolean;
+    Colors    : TIntegerArray;
+    Tol       : Integer;
+    DTM       : Integer;
+    BMP       : Integer;
+  End;
+  
+  //Used in Banking.Scar
+  Type MSI_TItemArray = Array Of TItem;
+
+{ Type TMMLocation
+  Description: Stores all needed colorwalking information. }
+  TMMLocation = Record
+    Symbol     : String;
+    DTM        : Integer;
+    W, H       : Integer;
+    Colors     : TIntegerArray;
+    Tolerances : TIntegerArray;
+    Counts     : TIntegerArray;
+  End;
+
+{ Type TPlayerSkillInfo
+  Description: Stores information for one player for one skill. }
+  TPlayerSkillInfo = record
+    TotalTime  : integer;
+    TotalObj   : integer;
+    TotalLoads : integer;
+    Level      : integer;
+    TotalEXP   : integer;
+    ObjQuants  : array of integer;
+  end;
+
+{ Type TProggy
+  Description: Stores information all progress related information for one
+               player.  }
+  TProggy = record
+    PlayerName  : string;
+    PlayerStatus: boolean;
+    FalseReason : string;
+    PlayerRandom: string;
+    PlayerCity  : integer;
+    PlayerLoc   : integer;
+    PlayerTime  : integer;
+    SkillInfo   : array of TPlayerSkillInfo;
+  end;
+
+var
+  //Description: To be used to store information for Players individually
+  ProgressReportArray: Array of TProggy;
+  
+  //Used like CurrentPlayer, but for the skills in the player array
+  CurrentSkill: Integer;
+  
+  //Description: For script user to choose how much to debug
+  Debug_LevelToDebug: integer;
+  
+  //Used in the DeclarePlayers arrays for skills and objects
+  PlayerSkills: Array of TVariantArray;
+  PlayerObjects: Array of Array of TVariantArray;
+  
+  //Used for script setup (assinged to constatns in RunMe.scar)
+  BreakAfter, BreakTime: Integer;
+  
+  //Used when loading items for MSI
+  MSI_Item : Array[0..(MSI_ITEM_COUNT - 1)] Of TItem;

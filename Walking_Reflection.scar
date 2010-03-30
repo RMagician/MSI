@@ -166,52 +166,6 @@ begin
   {$ENDIF}
 end;
 
-{******************************************************************************}
-{ Procedure MSI_AntiBan(HowLong : Integer);                                    }
-{ By: Naum, edited by Coh3n                                                    }
-{ Description: The AntiBan procedure to be used throughout the scripts.        }
-{******************************************************************************}
-Procedure MSI_AntiBan(HowLong : Integer);
-Var CurTab, I : Integer;
-Begin
-  Case HowLong Of
-    0..2000 : Case Random(30) Of
-                0 : SleepAndMoveMouse(HowLong + Random(HowLong/10));
-                1 : Begin
-                      CurTab := GetCurrentTab;
-                      GameTab(RandomRange(TAB_Combat, TAB_LogOut));
-                      Wait(HowLong + Random(HowLong/10));
-                      GameTab(CurTab);
-                    End;
-                2 : RandomRClick;
-              End;
-
-    2001..5000 : Case Random(40) Of
-                   0 : HoverSkill('Random', False);
-                   1 : PickUpMouse;
-                   2 : SleepAndMoveMouse(HowLong + Random(HowLong/10));
-                   3 : For I := 0 To Round(HowLong/800) Do
-                         If I Mod 2 = 0 Then
-                           ExamineInv;
-                 End;
-
-    5001..10000 : If Random(20) = 1 Then
-                    RandomMovement
-                  Else
-                  If Random(20) = 10 Then
-                    MSI_AntiBan(Round(HowLong/2) + Random(1000));
-
-    10001..20000 : Case Random(30) Of
-                     0 : MSI_AntiBan(Round(HowLong/2) + Random(1000));
-                     1 : BoredHuman;
-                     2 : RandomAngle(1);
-                   End;
-
-    20001..999999 : If Random(10) = 5 Then
-                      MSI_AntiBan(7000 + Random(200));
-  End;
-End;
-
 {
   Unused paths:
 
