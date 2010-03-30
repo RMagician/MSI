@@ -322,8 +322,6 @@ end;
 {******************************************************************************}
 { function MSI_BankMaterials: Boolean;                                         }
 { By: The MSI Team                                                             }
-{ Rev: 5                                                                       }
-{ Date: 23 Feb 2010                                                            }
 { Description: Banks the specified materials                                   }
 {******************************************************************************}
 function MSI_BankMaterials: Boolean;
@@ -509,11 +507,9 @@ begin
         IncEx(totalLoads, ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalLoads);
 
       if (totalLoads >= (BreakAfter + RandomRange(-2, 2))) then
-      begin
-        totalLoads := 0;
         MSI_HandleBreaking;
-      end;
         
+      totalLoads := 0;
     until(not Players[CurrentPlayer].Active);
     
     if (AllPlayersInactive) then

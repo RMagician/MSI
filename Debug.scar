@@ -11,7 +11,7 @@
 | * function MSI_ObjToText(): String;                * by The MSI Team         |
 | * function MSI_LocToText(): String;                * by The MSI Team         |
 | * function MSI_GroupDigits(): String;              * PriSoner and Nava2      |
-| * function MSI_AddToBoxesAndSave;                  * by Naum                 |
+| * function MSI_PrintSave;                          * by Naum                 |
 | * Procedure MSI_SaveLog;                           * by Naum                 |
 | * procedure MSI_ProgressReport();                  * by Coh3n                |
  \_____________________________________________________________________________}
@@ -118,7 +118,7 @@ var
   skills: TVariantArray;
   theSkill: TStringArray;
 begin
-  { Gets the levels of each skill in the Players array }
+  //Gets the levels of each skill in the Players array
   skills := PlayerSkills[CurrentPlayer];
   for i := 0 to High(skills) do
   begin
@@ -127,9 +127,9 @@ begin
     ProgressReportArray[CurrentPlayer].SkillInfo[i].Level := level;
   end;
   
-  { Gets the player's location }
+  //Gets the player's location
   ProgressReportArray[CurrentPlayer].PlayerLoc := Players[CurrentPlayer].Integers[P_LOC];
-  { Gets teh player's activity }
+  //Gets teh player's activity
   ProgressReportArray[CurrentPlayer].PlayerStatus := Players[CurrentPlayer].Active;
 end;
 
@@ -202,12 +202,12 @@ begin
 end;
 
 {******************************************************************************}
-{ procedure MSI_AddToBoxesAndSave(FileH, S : String);                          }
+{ procedure MSI_PrintSave(FileH, S : String);                                  }
 { By: Naum                                                                     }
 { Description: Prints the string in the report and debug box also saves the    }
 {               report                                                         }
 {******************************************************************************}
-Procedure MSI_AddToBoxesAndSave(FH : Integer; S : String);
+Procedure MSI_PrintSave(FH : Integer; S : String);
 Begin
   AddToReport(S);
   WriteFileString(FH, S+#13+#10);
@@ -260,65 +260,65 @@ begin
   
   ClearReport;
   MSI_GetReportInfo;
-  MSI_AddToBoxesAndSave(FileH, '{----------------------------------------------------------------}');                   //64 from '{' to '}'
-  MSI_AddToBoxesAndSave(FileH, '{                   MSI Extreme Player Report                    }');
-  MSI_AddToBoxesAndSave(FileH, '{----------------------------------------------------------------}');
-  MSI_AddToBoxesAndSave(FileH, '{     ' + PadR('Time Running: ' + TimeRunning, 59) + '}');
-  MSI_AddToBoxesAndSave(FileH, '{----------------------------------------------------------------}');
+  MSI_PrintSave(FileH, '{----------------------------------------------------------------}');                   //64 from '{' to '}'
+  MSI_PrintSave(FileH, '{                   MSI Extreme Player Report                    }');
+  MSI_PrintSave(FileH, '{----------------------------------------------------------------}');
+  MSI_PrintSave(FileH, '{     ' + PadR('Time Running: ' + TimeRunning, 59) + '}');
+  MSI_PrintSave(FileH, '{----------------------------------------------------------------}');
   
   for i := 0 to (HowManyPlayers - 1) do
     with ProgressReportArray[i] do
     begin
-      MSI_AddToBoxesAndSave(FileH, '{                                                                }');
+      MSI_PrintSave(FileH, '{                                                                }');
       //              {     Player 0: Player Name                                      }
-      MSI_AddToBoxesAndSave(FileH, '{     ' + PadR('Player ' + IntToStr(i) + ': ' + Capitalize(PlayerName), 59) + '}');       //PlayerName
+      MSI_PrintSave(FileH, '{     ' + PadR('Player ' + IntToStr(i) + ': ' + Capitalize(PlayerName), 59) + '}');       //PlayerName
       //              {     City: Varrock                                              }
-      MSI_AddToBoxesAndSave(FileH, '{     ' + PadR('City: ' + MSI_LocToText(PlayerCity), 59) + '}');                          //PlayerCity
+      MSI_PrintSave(FileH, '{     ' + PadR('City: ' + MSI_LocToText(PlayerCity), 59) + '}');                          //PlayerCity
       //              {     Location: VE_Trees                                         }
-      MSI_AddToBoxesAndSave(FileH, '{     ' + PadR('Location: ' + MSI_LocToText(PlayerLoc), 59) + '}');                       //PlayerLoc
+      MSI_PrintSave(FileH, '{     ' + PadR('Location: ' + MSI_LocToText(PlayerLoc), 59) + '}');                       //PlayerLoc
       //              {     Time: 02h, 33m, 45s                                         }
-      MSI_AddToBoxesAndSave(FileH, '{     ' + PadR('Time: ' + MsToTime(PlayerTime, Time_Short), 59) + '}');                   //TotalTime
+      MSI_PrintSave(FileH, '{     ' + PadR('Time: ' + MsToTime(PlayerTime, Time_Short), 59) + '}');                   //TotalTime
       //              {     Active: True                                               }
-      MSI_AddToBoxesAndSave(FileH, '{     ' + PadR('Active: ' + Capitalize(BoolToStr(PlayerStatus)), 59) + '}');              //PlayerStatus
+      MSI_PrintSave(FileH, '{     ' + PadR('Active: ' + Capitalize(BoolToStr(PlayerStatus)), 59) + '}');              //PlayerStatus
       if (not PlayerStatus) then
         //              {       Reason: Failed to bank items                             }                      //FalseReason
-        MSI_AddToBoxesAndSave(FileH, '{       ' + PadR('Reason: ' + FalseReason, 57) + '}');
-      MSI_AddToBoxesAndSave(FileH, '{                                                                }');
+        MSI_PrintSave(FileH, '{       ' + PadR('Reason: ' + FalseReason, 57) + '}');
+      MSI_PrintSave(FileH, '{                                                                }');
 
       for j := 0 to High(SkillInfo) do                                                                          //SkillInfo
         with SkillInfo[j] do
         begin
           skill := MSI_SkillActions(PlayerSkills[CurrentPlayer][j]);
           //              {     Skill: Woodcutting                                         }
-          MSI_AddToBoxesAndSave(FileH, '{     ' + PadR('Skill: ' + skill[0], 59) + '}');
+          MSI_PrintSave(FileH, '{     ' + PadR('Skill: ' + skill[0], 59) + '}');
           //              {       Skill Time: 02h, 45m, 33s                                }
-          MSI_AddToBoxesAndSave(FileH, '{       ' + PadR('Time: ' + MsToTime(TotalTime, Time_Short), 57) + '}');              //TotalTime
+          MSI_PrintSave(FileH, '{       ' + PadR('Time: ' + MsToTime(TotalTime, Time_Short), 57) + '}');              //TotalTime
           //              {       Loads: 45                                                }
-          MSI_AddToBoxesAndSave(FileH, '{       ' + PadR('Loads: ' + IntToStr(TotalLoads), 57) + '}');                        //TotalLoads
+          MSI_PrintSave(FileH, '{       ' + PadR('Loads: ' + IntToStr(TotalLoads), 57) + '}');                        //TotalLoads
           //              {       Experience: 38,650                                       }
-          MSI_AddToBoxesAndSave(FileH, '{       ' + PadR('Experience: ' + MSI_GroupDigits(Round(TotalEXP), ','), 57) + '}');  //TotalEXP
+          MSI_PrintSave(FileH, '{       ' + PadR('Experience: ' + MSI_GroupDigits(Round(TotalEXP), ','), 57) + '}');  //TotalEXP
           //              {       Level: 91                                                }
           if (Level < 1) then
-            MSI_AddToBoxesAndSave(FileH, '{       ' + PadR('Level: Not yet defined', 57) + '}')
+            MSI_PrintSave(FileH, '{       ' + PadR('Level: Not yet defined', 57) + '}')
           else
-            MSI_AddToBoxesAndSave(FileH, '{       ' + PadR('Level: ' + IntToStr(Level), 57) + '}');                           //Level
+            MSI_PrintSave(FileH, '{       ' + PadR('Level: ' + IntToStr(Level), 57) + '}');                           //Level
 
           intItems := MSI_GetItemList(i, j);
           for k := 0 to High(intItems) do                                                                       //TotalObj
           begin
             item := MSI_ObjToText(intItems[k]);
             //              {         Item: Normal logs                                      }
-            MSI_AddToBoxesAndSave(FileH, '{         ' + PadR('Item: ' + item[0], 55) + '}');
+            MSI_PrintSave(FileH, '{         ' + PadR('Item: ' + item[0], 55) + '}');
             //              {         Amount: 1,546                                          }
-            MSI_AddToBoxesAndSave(FileH, '{         ' + PadR('Amount: ' + MSI_GroupDigits(ObjQuants[k], ','), 55) + '}');     //ObjQuants
+            MSI_PrintSave(FileH, '{         ' + PadR('Amount: ' + MSI_GroupDigits(ObjQuants[k], ','), 55) + '}');     //ObjQuants
           end;
           
-          MSI_AddToBoxesAndSave(FileH, '{                                                                }');
-          MSI_AddToBoxesAndSave(FileH, '{----------------------------------------------------------------}');
+          MSI_PrintSave(FileH, '{                                                                }');
+          MSI_PrintSave(FileH, '{----------------------------------------------------------------}');
         end;
     end;
   
-  MSI_AddToBoxesAndSave(FileH, '{----------------------------------------------------------------}');
+  MSI_PrintSave(FileH, '{----------------------------------------------------------------}');
 
   CloseFile(FileH);
   MSI_SaveLog;
