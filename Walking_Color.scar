@@ -45,6 +45,7 @@ begin
   if WaitFunc(@MSI_IsMoving, 1, 2500 + random(200)) then
     while (MSI_IsMoving or FlagPresent) do
     begin
+      FindNormalRandoms;
       FFlag(FlagDist);
       if (FlagDistance <= FlagDist) then
         Break;
@@ -508,7 +509,6 @@ begin
   end;
   
   Mouse(thePoint.x, thePoint.y, 3, 3, True);
-  FindNormalRandoms;
   MSI_Flag(RandomRange(3, 6));
   Result := True;
 end;
@@ -642,9 +642,6 @@ var
 begin
   if (not LoggedIn) then
     Exit;
-
-  MakeCompass('n');
-  RunEnergy(20);
   
   thePath := MSI_LoadColorPath(startLoc, endLoc);
   for i := 0 to High(thePath) do

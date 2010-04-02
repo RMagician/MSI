@@ -41,7 +41,7 @@ Begin
 
 
     //Pickaxe's
-    PICKAXE_BRONZE :
+    PICKAXE_BRONZE : //Coh3n
     with MSI_Item[PICKAXE_BRONZE] do
     begin
       Name := 'Bronze Pickaxe';
@@ -59,7 +59,7 @@ Begin
            'hr6yiIm6uDkAMJYQhg==');
     end;
 
-    PICKAXE_IRON :
+    PICKAXE_IRON : //Coh3n
     with MSI_Item[PICKAXE_IRON] do
     begin
       Name := 'Iron Pickaxe';
@@ -77,7 +77,7 @@ Begin
              'WFkBuWHBQbEAKO0ZXg==');
     end;
 
-    PICKAXE_STEEL :
+    PICKAXE_STEEL : //Coh3n
     with MSI_Item[PICKAXE_STEEL] do
     begin
       Name := 'Steel Pickaxe';
@@ -95,7 +95,7 @@ Begin
              'ODpamZsbGRiYm5paAQDj0hYh');
     end;
 
-    PICKAXE_MITHRIL :
+    PICKAXE_MITHRIL : //Coh3n
     with MSI_Item[PICKAXE_MITHRIL] do
     begin
       Name := 'Mithril Pickaxe';
@@ -131,7 +131,7 @@ Begin
              'gnLKctpG2gbmBkYAQW8RIg==');
     end;
 
-    PICKAXE_RUNE :
+    PICKAXE_RUNE : //Coh3n
     with MSI_Item[PICKAXE_RUNE] do
     begin
       Name := 'Rune Pickaxe';
@@ -150,7 +150,7 @@ Begin
     end;
 }
     //Hatchet's (Axes)
-    HATCHET_BRONZE :
+    HATCHET_BRONZE : //Coh3n
     with MSI_Item[HATCHET_BRONZE] do
     begin
       Name := 'Bronze Hatchet';
@@ -167,7 +167,7 @@ Begin
              'SlgSiMEEeCAOIzDUlgFwgicw1UhWFsIEoRJBbX1kEzg4BAL4aC8A=' + '');
     end;
 
-    HATCHET_IRON :
+    HATCHET_IRON : //Coh3n
     with MSI_Item[HATCHET_IRON] do
     begin
       Name := 'Iron Hatchet';
@@ -184,7 +184,7 @@ Begin
              'xsgKiMEEeCAOIrMzNgVwgicw1MTKCsIEoRJDbyMAAzg4BAEz1D2E=' + '');
     end;
 
-    HATCHET_STEEL :
+    HATCHET_STEEL : //Coh3n
     with MSI_Item[HATCHET_STEEL] do
     begin
       Name := 'Steel Hatchet';
@@ -202,7 +202,7 @@ Begin
              '7BAAfpcXBA==');
     end;
 
-    HATCHET_MITHRIL :
+    HATCHET_MITHRIL : //Coh3n
     with MSI_Item[HATCHET_MITHRIL] do
     begin
       Name := 'Mithril Hatchet';
@@ -219,7 +219,7 @@ Begin
              'w8NTTdwsT5AEyIGxdXRcgF0gic7W07CFsIAoR5FZTt4KzQwAvWg6p' + '');
     end;
 
-    HATCHET_ADAMANT :
+    HATCHET_ADAMANT : //Coh3n
     with MSI_Item[HATCHET_ADAMANT] do
     begin
       Name := 'Adamant Hatchet';
@@ -236,7 +236,7 @@ Begin
              'xMQGiMEEeCAOIjKyMgFwgiczVNdGFsIEoRJBb20gbzg4BACsqDo4=' + '');
     end;
 
-    HATCHET_RUNE :
+    HATCHET_RUNE : //Coh3n
     with MSI_Item[HATCHET_RUNE] do
     begin
       Name := 'Rune Hatchet';
@@ -253,7 +253,7 @@ Begin
              '28LV09Q4T5AEyIGxzZ08gF0gic03sXSBsIAoR5DawsoezQwCfzRF3' + '');
     end;
 
-    LOGS_NORMAL:
+    LOGS_NORMAL: //Coh3n
     with MSI_Item[LOGS_NORMAL] do
     begin
       Name := 'Logs';
@@ -271,20 +271,72 @@ Begin
              'WgrIhbOTPLUhbBAXAHeGD5I=');
     end;
     
-    LOGS_OAK:
+    LOGS_OAK: //Coh3n
     with MSI_Item[LOGS_OAK] do
-      begin
-        Name   := 'Oak logs';
-        UpText := ['logs'];
-        ItemP := Point(0, 0);
-        Colors := [4425336];
-        Tol := 5;
-        Stackable := False;
-        DTM    := DTMFromString('78DA63AC676160B06662400629DE3A0CFC409' +
-                    'A11CA67AC05AA714355C3C000E1C3D59402D53813505302546349' +
-                    '404D1D508D1101359D40358604D4F401D5D81150D30154E3885F0' +
-                    'D00C2F8071A');
-      end;
+    begin
+      Name   := 'Oak logs';
+      UpText := ['logs'];
+      ItemP := Point(0, 0);
+      Colors := [4425336];
+      Tol := 5;
+      Stackable := False;
+      DTM    := DTMFromString('78DA63AC676160B06662400629DE3A0CFC409' +
+                  'A11CA67AC05AA714355C3C000E1C3D59402D53813505302546349' +
+                  '404D1D508D1101359D40358604D4F401D5D81150D30154E3885F0' +
+                  'D00C2F8071A');
+      BMP := BitmapFromString(4, 4, 'beNqzlmrOtASiBA+tWDdNCDvU' +
+       'WgrIhbOTPLUhbBAXAHeGD5I=');
+    end;
+
+    LOGS_WILLOW: //Coh3n
+    With MSI_Item[LOGS_WILLOW] Do
+    Begin
+      Name := 'Willow Logs';
+      UpText := ['llow log'];
+      ItemP := Point(0, 0);
+      Colors := [131072, 1060405, 795689, 729638, 663331, 861996];
+      Stackable := False;
+      DTM := DTMFromString('78DA63E4636160086764400606DAFC0CFC401' +
+           'A26CAC80B54E387AA86818109220753C30C54134A400D0B504D3C' +
+           '01358240350904D44803D5C412502305541348408D08508D377E3' +
+           '50092EF03EE');
+
+      BMP := BitmapFromString(7, 7, 'beNqzEHayEsFELjZQBOHaWwjbmgrB2RCulbGguaEgMtt'+
+                'UT8BIh19fi09HnRdIAhGQC0RAcYgshAFEQPVABNSIjCAm2wMAZz8Y0A==');
+    End;
+    
+    LOGS_MAPLE: //Coh3n
+    With MSI_Item[LOGS_MAPLE] Do
+    Begin
+      Name := 'Maple Logs';
+      UpText := ['ple logs'];
+      ItemP := Point(0, 0);
+      Colors := [131072, 2513021, 2380406, 2248304, 667465, 2248818];
+      Stackable := False;
+      DTM := DTMFromString('78DA63CC61626078CA80025C743819F881342' +
+           '394CF9809547387010D3041E4606A1281FC8704D42400F96F09A8' +
+           '2924424D3590FF9C809A32C26E0600900609E8');
+
+      BMP := BitmapFromString(7, 7, 'beNqz4Im0gqJoaxCKteEFIggbjoCy4RYo7BBz7gATbj8'+
+                'jLmS2pz6Xux6nkzanrTqHvSYHkOGiwwkUAYp7G4JkIQygSqD6IFNuoEYICUFAo0AIAFJ2HAA=');
+    End;
+    
+    LOGS_YEW: //Coh3n
+    With MSI_Item[LOGS_YEW] Do
+    Begin
+      Name := 'Yew Logs';
+      UpText := ['ew l'];
+      ItemP := Point(0, 0);
+      Colors := [131072, 466226, 466485, 599876, 533567, 533309];
+      Stackable := False;
+      DTM := DTMFromString('78DA639CC6C4C0F094010598AAB133F003694' +
+           '6289F710A50CD1D0634C0049183A9E906F21F1150D309E4BF21A0' +
+           '0664D707026A1601F9AF09A85940847BE601F937F1AB0100DACA0' +
+           'C77');
+
+      BMP := BitmapFromString(7, 7, 'beNoz5nQ3hiJPUy4g8jYDIQgbmQtXAGG7GHI66XPa6nD'+
+                'A2fZ6HECuuQa7qRq7vhKbkQqIAURAESstkBSQhDCACKgYqAWiEUhCENQlAPucF3U=');
+    End;
   End;
 
   Result := (Length(MSI_Item[ID].Name) > 0);

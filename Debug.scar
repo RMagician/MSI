@@ -146,6 +146,15 @@ begin
       
     LOGS_OAK:
       Result := ['Oak logs'];
+      
+    LOGS_WILLOW:
+      Result := ['Willow logs'];
+      
+    LOGS_MAPLE:
+      Result := ['Maple logs'];
+      
+    LOGS_YEW:
+      Result := ['Yew logs'];
         
     else
       MSI_Debug('MSI_ObjToText', 'Invalid objet!', DEBUG_FUNCTIONS);
@@ -160,6 +169,9 @@ end;
 function MSI_LocToText(Which: Integer): string;
 begin
   case Which of
+    LOC_POWER_SKILL:
+      Result := 'Powerskilling';
+  
     LOC_LOST:
       Result := 'Lost';
       
@@ -215,28 +227,31 @@ End;
 
 {******************************************************************************}
 { Procedure MSI_SaveLog;                                                       }
-{ By: Naum                                                                     }
+{ By: Naum & Coh3n                                                             }
 { Description: Saves a log of the debug and clears the debug box every 10 mins }
 {******************************************************************************}
-Var MT : Integer;   //Needed as global!
+procedure MSI_SaveDebug;
+var
+  theFile: Integer;
+  path: String;
+begin
+  if (GetTimeRunning > (debugCount * 600000)) then
+  begin
+    path := AppPath + 'Includes\SRL\SRL\msi\MSI Logs\';
 
-Procedure MSI_SaveLog;
-Var FileH: Integer;
-    Path, FileS : String;
-Begin
-  If GetTimeRunning > MT* 600000 Then
-  Begin
-    Path := AppPath+'Includes\SRL\SRL\MSI\MSI Logs\';
-    FileS := Copy(TheTime, 1, Pos('PM', TheTime) - 2);
-    FileS := Replace(FileS, ':', '-');
-    FileH := ReWriteFile(Path + FileS + ' ' + TheDate(Date_Formal) + '.txt', False);
-    WriteFileString(FileH, 'Log written '+TheTime+' on '+TheDate(Date_Formal)+#13+#10);
-    WriteFileString(FileH, #13+#10+GetDebugText);
+    if FileExists(path + scriptStart + '.txt') then
+      theFile := OpenFile(path + scriptStart + '.txt', False)
+    else
+      theFile := RewriteFile(path + scriptStart + '.txt', False);
+
+    WriteFileString(theFile, 'Log written ' + TheTime + ' on ' + TheDate(Date_Formal) + #13 + #10);
+    WriteFileString(theFile, #13 + #10 + GetDebugText);
+
     ClearDebug;
-    Inc(MT);
-    CloseFile(FileH);
-  End;
-End;
+    Inc(debugCount);
+    CloseFile(theFile);
+  end;
+end;
 
 {******************************************************************************}
 { procedure MSI_ProgressReport;                                                }
@@ -246,23 +261,21 @@ End;
 function MSI_GetItemList(whichPlayer, whichSkill: Integer): TIntegerArray; forward;
 procedure MSI_ProgressReport;
 var
-  i, j, k, FileH : integer;
+  i, j, k, FileH: Integer;
   skill, item: TStringArray;
   intItems: TIntegerArray;
-  Path, FileS : String;
+  path: String;
 begin
-  Path := AppPath+'Includes\SRL\SRL\MSI\MSI Progress Reports\';
-  FileS := Copy(TheTime, 1, Pos('PM', TheTime) - 2);
-  FileS := Replace(FileS, ':', '-');
-  FileH := ReWriteFile(Path + FileS + ' ' + TheDate(Date_Formal) + '.txt', False);
-  WriteFileString(FileH, 'Progress Report Saved:'+#13+#10);
-  WriteFileString(FileH, #13+#10+'This proggie was written '+TheDate(Date_Formal)+' at '+TheTime+#13+#10);
+  path := AppPath + 'Includes\SRL\SRL\MSI\MSI Progress Reports\';
+  FileH := ReWriteFile(path + scriptStart + '.txt', False);
+  WriteFileString(FileH, 'Progress Report Saved:' + #13 + #10);
+  WriteFileString(fileH, #13 + #10 + 'This proggie was written ' + TheDate(Date_Formal )+ ' at ' + TheTime + #13 + #10);
   
   ClearReport;
   MSI_GetReportInfo;
   MSI_PrintSave(FileH, '{----------------------------------------------------------------}');                   //64 from '{' to '}'
   MSI_PrintSave(FileH, '{                   MSI Extreme Player Report                    }');
-  MSI_PrintSave(FileH, '{------------------------------ ' + MSI_VERSION_NUMBER + '-------------------------------}');
+  MSI_PrintSave(FileH, '{------------------------------ ' + MSI_VERSION_NUMBER + ' -----------------------------}');
   MSI_PrintSave(FileH, '{     ' + PadR('Time Running: ' + TimeRunning, 59) + '}');
   MSI_PrintSave(FileH, '{----------------------------------------------------------------}');
   
@@ -270,46 +283,36 @@ begin
     with ProgressReportArray[i] do
     begin
       MSI_PrintSave(FileH, '{                                                                }');
-      //              {     Player 0: Player Name                                      }
       MSI_PrintSave(FileH, '{     ' + PadR('Player ' + IntToStr(i) + ': ' + Capitalize(PlayerName), 59) + '}');       //PlayerName
-      //              {     City: Varrock                                              }
       MSI_PrintSave(FileH, '{     ' + PadR('City: ' + MSI_LocToText(PlayerCity), 59) + '}');                          //PlayerCity
-      //              {     Location: VE_Trees                                         }
       MSI_PrintSave(FileH, '{     ' + PadR('Location: ' + MSI_LocToText(PlayerLoc), 59) + '}');                       //PlayerLoc
-      //              {     Time: 02h, 33m, 45s                                         }
       MSI_PrintSave(FileH, '{     ' + PadR('Time: ' + MsToTime(PlayerTime, Time_Short), 59) + '}');                   //TotalTime
-      //              {     Active: True                                               }
       MSI_PrintSave(FileH, '{     ' + PadR('Active: ' + Capitalize(BoolToStr(PlayerStatus)), 59) + '}');              //PlayerStatus
-      if (not PlayerStatus) then
-        //              {       Reason: Failed to bank items                             }                      //FalseReason
+      
+      if (not PlayerStatus) then                                                                                      //FalseReason
         MSI_PrintSave(FileH, '{       ' + PadR('Reason: ' + FalseReason, 57) + '}');
+        
       MSI_PrintSave(FileH, '{                                                                }');
 
-      for j := 0 to High(SkillInfo) do                                                                          //SkillInfo
+      for j := 0 to High(SkillInfo) do                                                                                //SkillInfo
         with SkillInfo[j] do
         begin
           skill := MSI_SkillActions(PlayerSkills[CurrentPlayer][j]);
-          //              {     Skill: Woodcutting                                         }
           MSI_PrintSave(FileH, '{     ' + PadR('Skill: ' + skill[0], 59) + '}');
-          //              {       Skill Time: 02h, 45m, 33s                                }
-          MSI_PrintSave(FileH, '{       ' + PadR('Time: ' + MsToTime(TotalTime, Time_Short), 57) + '}');              //TotalTime
-          //              {       Loads: 45                                                }
-          MSI_PrintSave(FileH, '{       ' + PadR('Loads: ' + IntToStr(TotalLoads), 57) + '}');                        //TotalLoads
-          //              {       Experience: 38,650                                       }
+          MSI_PrintSave(FileH, '{       ' + PadR('Time: ' + MsToTime(TotalTime, Time_Short), 57) + '}');              //TotalTime                                           }
+          MSI_PrintSave(FileH, '{       ' + PadR('Loads: ' + IntToStr(TotalLoads), 57) + '}');                        //TotalLoads                                   }
           MSI_PrintSave(FileH, '{       ' + PadR('Experience: ' + MSI_GroupDigits(Round(TotalEXP), ','), 57) + '}');  //TotalEXP
-          //              {       Level: 91                                                }
+
           if (Level < 1) then
             MSI_PrintSave(FileH, '{       ' + PadR('Level: Not yet defined', 57) + '}')
           else
             MSI_PrintSave(FileH, '{       ' + PadR('Level: ' + IntToStr(Level), 57) + '}');                           //Level
 
           intItems := MSI_GetItemList(i, j);
-          for k := 0 to High(intItems) do                                                                       //TotalObj
+          for k := 0 to High(intItems) do                                                                             //TotalObj
           begin
             item := MSI_ObjToText(intItems[k]);
-            //              {         Item: Normal logs                                      }
             MSI_PrintSave(FileH, '{         ' + PadR('Item: ' + item[0], 55) + '}');
-            //              {         Amount: 1,546                                          }
             MSI_PrintSave(FileH, '{         ' + PadR('Amount: ' + MSI_GroupDigits(ObjQuants[k], ','), 55) + '}');     //ObjQuants
           end;
           
@@ -321,5 +324,5 @@ begin
   MSI_PrintSave(FileH, '{----------------------------------------------------------------}');
 
   CloseFile(FileH);
-  MSI_SaveLog;
+  MSI_SaveDebug;
 end;

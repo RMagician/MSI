@@ -184,6 +184,12 @@ begin
     case objects[i] of
       OBJ_TREE_NORMAL: Result[i] := LOGS_NORMAL;
       OBJ_TREE_OAK:  Result[i] := LOGS_OAK;
+      OBJ_TREE_WILLOW: Result[i] := LOGS_WILLOW;
+      OBJ_TREE_MAPLE: Result[i] := LOGS_MAPLE;
+      OBJ_TREE_YEW: Result[i] := LOGS_YEW;
+      
+      else
+        MSI_Debug('MSI_GetItemList', 'Invalid object in DeclarePlayers!', DEBUG_FUNCTIONS);
     end;
 end;
 
@@ -374,12 +380,12 @@ begin
     MSI_Debug('MSI_HandleBreaking', 'Taking a short break', DEBUG_PLAYER_ACTIONS);
     ExitToLobby;
     Wait((BreakTime * 60000) + RandomRange(-300000, 300000));
-    MSI_Debug('MSI_MainLoop', 'Break over, continuing to play', DEBUG_PLAYER_ACTIONS);
+    MSI_Debug('MSI_HandleBreaking', 'Break over, continuing to play', DEBUG_PLAYER_ACTIONS);
     if (LobbyScreen) then
       MouseBox(80, 450, 560, 470, 1);
   end else
   begin
-    MSI_Debug('MSI_MainLoop', 'Switching players', DEBUG_PLAYER_ACTIONS);
+    MSI_Debug('MSI_HandleBreaking', 'Switching players', DEBUG_PLAYER_ACTIONS);
     NextPlayer(True);
   end;
 end;
@@ -438,6 +444,13 @@ procedure MSI_MainLoop;
 var
   totalLoads, time, i: Integer;
 begin
+  scriptStart := TheDate(DATE_DAY) + ' at ' + TheTime;
+  debugCount := 0;
+  
+  //To gain access at the beginning instead of 10 minutes in
+  MSI_SaveDebug;
+  MSI_ProgressReport;
+  
   repeat
     //Setup player
     if (not MSI_SetupPlayer) then

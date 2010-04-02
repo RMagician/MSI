@@ -144,7 +144,8 @@ Begin
       BadColors          := [];
       BadColorTolerance  := 10;
     End;
-
+    
+{
     OBJ_TREE_MAGIC: // Coh3n
     With Result Do
     Begin
@@ -168,6 +169,7 @@ Begin
       BadColors          := [];
       BadColorTolerance  := 10;
     End;
+}
       
     OBJ_BANK_VE: // Coh3n
     With Result Do
@@ -312,12 +314,12 @@ Begin
   For I := 1 To 28 Do
   Begin
     B := InvBox(I);
-    { Bitmap }
-    Found := FindBitmapToleranceIn(MSI_Item[ItemID].BMP, tmp, tmp, B.X1, B.Y1, B.X2, B.Y2, MSI_Item[ItemID].Tol);
-    
     { DTM }
+    Found := FindDTM(MSI_Item[ItemID].DTM, tmp, tmp, B.X1, B.Y1, B.X2, B.Y2);
+    
+    { Bitmap }
     If (Not Found) Then
-      Found := FindDTM(MSI_Item[ItemID].DTM, tmp, tmp, B.X1, B.Y1, B.X2, B.Y2);
+      Found := FindBitmapToleranceIn(MSI_Item[ItemID].BMP, tmp, tmp, B.X1, B.Y1, B.X2, B.Y2, MSI_Item[ItemID].Tol);
       
     { Color }
     If (Not Found) Then
@@ -369,7 +371,6 @@ Begin
       WaitOption(Option, 250 + Random(50));
     End;
   End;
-
 End;
 
 {******************************************************************************}

@@ -159,6 +159,9 @@ end;
 {******************************************************************************}
 function MSI_PerformWalk(startLoc, endLoc: Integer): Boolean;
 begin
+  MakeCompass('n');
+  RunEnergy(20);
+
   {$IFDEF REFLECTION}
     Result := MSI_HybridWalk(startLoc, endLoc);
   {$ELSE}

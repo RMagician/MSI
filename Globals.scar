@@ -44,7 +44,6 @@ const
   Description: Represents miscellaneous constants }
 const
   WALK_TOL = 8; //the tolerance for a color point compared to a reflection point
-  MSI_ITEM_COUNT = 15;  //change this to the number of items in ItemInfo.scar
 
 { const Players
   Constants representing the different Players array records. }
@@ -59,12 +58,13 @@ const
 { const Location Constants
   Description: Constants used to represent player locations }
 const
-  LOC_LOST      = 0;
-  LOC_VE_TREES  = 1;
-  LOC_VE_BANK   = 2;
-  LOC_IN_RANDOM = 3;
+  LOC_POWER_SKILL = 0;
+  LOC_LOST        = 1;
+  LOC_VE_TREES    = 2;
+  LOC_VE_BANK     = 3;
+  LOC_IN_RANDOM   = 4;
 
-  CITY_VARROCK = 4;
+  CITY_VARROCK = 5;
 
 { const AutoColor indexes
   Description: Constants used for the autocolor indexes }
@@ -113,6 +113,7 @@ const
 { const Item Info
   Description: Constants representing all the items used in MSI. }
 const
+  MSI_ITEM_COUNT = 18;  //change this to the number of items in ItemInfo.scar
 {
   CAVADA_BERRIES = 0; //Test
 
@@ -133,6 +134,9 @@ const
 
   LOGS_NORMAL = 13;
   LOGS_OAK    = 14;
+  LOGS_WILLOW = 15;
+  LOGS_MAPLE  = 16;
+  LOGS_YEW    = 17;
 
 { const Objects
   Description: Constants representing all the main screen objects used in MSI }
@@ -253,3 +257,7 @@ var
   
   //Used when loading items for MSI
   MSI_Item : Array[0..(MSI_ITEM_COUNT - 1)] Of TItem;
+  
+  //Used for saving the debug box
+  debugCount: Integer;
+  scriptStart: String;

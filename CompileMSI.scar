@@ -10,5 +10,5 @@
 
 begin
   ClearDebug;
-  MSI_Debug('CompileMSI', 'MSI has compiled :)', Debug_Force);
+  MSI_Debug('CompileMSI', 'MSI has compiled :)', DEBUG_FORCE);
 end.
