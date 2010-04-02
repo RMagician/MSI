@@ -256,7 +256,7 @@ Begin
     LOGS_NORMAL: //Coh3n
     with MSI_Item[LOGS_NORMAL] do
     begin
-      Name := 'Logs';
+      Name := 'Normal logs';
       UpText := ['Logs'];
       ItemP := Point(0, 0);
       Colors := [2704989];
@@ -291,24 +291,24 @@ Begin
     LOGS_WILLOW: //Coh3n
     With MSI_Item[LOGS_WILLOW] Do
     Begin
-      Name := 'Willow Logs';
+      Name := 'Willow logs';
       UpText := ['llow log'];
       ItemP := Point(0, 0);
-      Colors := [131072, 1060405, 795689, 729638, 663331, 861996];
+      Colors := [1391684, 994097, 1325377, 3887961];
       Stackable := False;
       DTM := DTMFromString('78DA63E4636160086764400606DAFC0CFC401' +
            'A26CAC80B54E387AA86818109220753C30C54134A400D0B504D3C' +
            '01358240350904D44803D5C412502305541348408D08508D377E3' +
            '50092EF03EE');
 
-      BMP := BitmapFromString(7, 7, 'beNqzEHayEsFELjZQBOHaWwjbmgrB2RCulbGguaEgMtt'+
-                'UT8BIh19fi09HnRdIAhGQC0RAcYgshAFEQPVABNSIjCAm2wMAZz8Y0A==');
+      BMP := BitmapFromString(3, 3, 'beNrTE3C0FAEie3NhG1' +
+           'MhS2MhcwNBQ21+Ez0BEwBASQRu');
     End;
     
     LOGS_MAPLE: //Coh3n
     With MSI_Item[LOGS_MAPLE] Do
     Begin
-      Name := 'Maple Logs';
+      Name := 'Maple logs';
       UpText := ['ple logs'];
       ItemP := Point(0, 0);
       Colors := [131072, 2513021, 2380406, 2248304, 667465, 2248818];
@@ -324,7 +324,7 @@ Begin
     LOGS_YEW: //Coh3n
     With MSI_Item[LOGS_YEW] Do
     Begin
-      Name := 'Yew Logs';
+      Name := 'Yew logs';
       UpText := ['ew l'];
       ItemP := Point(0, 0);
       Colors := [131072, 466226, 466485, 599876, 533567, 533309];

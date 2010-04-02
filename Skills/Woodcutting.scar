@@ -136,7 +136,7 @@ Begin
       TT := GetSystemTime + 30*60000;
   Until(InvFull) Or (Not LoggedIn) Or (GetSystemTime > TT);
   MSI_CountItems; //Adds the logs/exp to the progress report
-  MSI_ClickItems(WhichLogs, 'rop');
+  MSI_ClickItems(WhichLogs, ['Drop', 'rop', 'op', 'p', 'Dro', 'Dr']);
   MSI_AddToProggy(-1, -1, ADD_LOADS);
   Result := True; //To satisfy MSI_DoSkill
 End;

@@ -309,6 +309,7 @@ Var
   Found: Boolean;
 Begin
   MSI_GetItem(ItemID);
+  Writeln('Item ID: ' + IntToStr(ItemID));
   GameTab(Tab_Inv);
   
   For I := 1 To 28 Do
@@ -345,7 +346,7 @@ End;
 { By: marpis                                                                   }
 { Description: Clicks all items declared in ItemIDs array.                     }
 {******************************************************************************}
-Procedure MSI_ClickItems(ItemIDs: TIntegerArray; Option: String);
+Procedure MSI_ClickItems(ItemIDs: TIntegerArray; Options: TStringArray);
 Var
   I, L, X, Y: Integer;
   Slots: TIntegerArray;
@@ -357,18 +358,22 @@ Begin
   L := High(Slots);
   
   If (L < 0) Then
+  begin
+    MSI_Debug('MSI_ClickItem', 'Length of L < 0, exiting', DEBUG_FUNCTIONS);
     Exit;
-    
+  end;
+
+  MSI_Debug('MSI_ClickItems', 'Found ' + IntToStr(Length(Slots)) + ' slots with item', DEBUG_FUNCTIONS);
   For I := 0 To L Do
   Begin
     MMouseItem(Slots[I]);
     GetMousePos(X, Y);
-    If WaitUpText(Option, 100 + Random(20)) Then
+    If WaitUpTextMulti(Options, 100 + Random(20)) Then
       Mouse(X, Y, 0, 0, True)
     Else
     Begin
       Mouse(X, Y, 0, 0, False);
-      WaitOption(Option, 250 + Random(50));
+      WaitOptionMulti(Options, 250 + Random(50));
     End;
   End;
 End;

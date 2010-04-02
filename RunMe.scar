@@ -74,7 +74,7 @@ begin
     PlayerObjects[0] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
     Integers[P_LOC]  := LOC_VE_BANK;
-    Booleans[P_BANK] := True;
+    Booleans[P_BANK] := False;
   end;
 
   with Players[1] do
