@@ -45,7 +45,7 @@ program MSIScript;
 {.include SRL/SRL/MSI/Setup.scar}
 
 const
-  BREAK_AFTER = 10;  // Loads to break after/switching players after
+  BREAK_AFTER = 5;  // Loads to break after/switching players after
   BREAK_TIME  = 15; // How long to break for in minutes (for single player only, multiplayer will switch players)
 
   WORLD_SMART   = 152;
@@ -74,7 +74,7 @@ begin
     PlayerObjects[0] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
     Integers[P_LOC]  := LOC_VE_BANK;
-    Booleans[P_BANK] := False;
+    Booleans[P_BANK] := True;
   end;
 
   with Players[1] do
@@ -197,8 +197,6 @@ begin
     end;
 end;
 
-var
-  x, y: Integer;
 begin
   Smart_Server := WORLD_SMART;
   Smart_Members := WORLD_MEMBERS;
@@ -212,5 +210,5 @@ begin
   BreakTime := BREAK_TIME;
 
   DeclarePlayers;
-  MSI_MainLoop;
+  MSI_Mainloop;
 end.

@@ -233,19 +233,23 @@ End;
 procedure MSI_SaveDebug;
 var
   theFile: Integer;
-  path: String;
+  path, str: String;
 begin
-  if (GetTimeRunning > (debugCount * 600000)) then
+  if (GetTimeRunning > (debugCount * 5000{600000})) then
   begin
     path := AppPath + 'Includes\SRL\SRL\msi\MSI Logs\';
-
+    
     if FileExists(path + scriptStart + '.txt') then
-      theFile := OpenFile(path + scriptStart + '.txt', False)
-    else
-      theFile := RewriteFile(path + scriptStart + '.txt', False);
+    begin
+      theFile := OpenFile(path + scriptStart + '.txt', False);
+      ReadFileString(theFile, str, FileSize(theFile));
+      CloseFile(theFile);
+    end;
+    theFile := RewriteFile(path + scriptStart + '.txt', False);
 
-    WriteFileString(theFile, 'Log written ' + TheTime + ' on ' + TheDate(Date_Formal) + #13 + #10);
-    WriteFileString(theFile, #13 + #10 + GetDebugText);
+    WriteFileString(theFile, 'Log written ' + TheTime + ' on ' + TheDate(Date_Formal) + #13#10);
+    WriteFileString(theFile, #13#10 + Copy(str, Pos(#13#10, str) + 2, Length(str)) + GetDebugText);
+    Writeln(GetDebugText);
 
     ClearDebug;
     Inc(debugCount);

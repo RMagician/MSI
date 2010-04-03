@@ -295,8 +295,8 @@ Begin
       Name := 'Willow logs';
       UpText := ['llow log'];
       ItemP := Point(0, 0);
-      Colors := [1391684, 994097, 1325377, 3887961];
-      Tol := 5;
+      Colors := [2509137];
+      Tol := 6;
       Stackable := False;
       DTM := DTMFromString('78DA63E4636160086764400606DAFC0CFC401' +
            'A26CAC80B54E387AA86818109220753C30C54134A400D0B504D3C' +
@@ -313,15 +313,14 @@ Begin
       Name := 'Maple logs';
       UpText := ['ple logs'];
       ItemP := Point(0, 0);
-      Colors := [131072, 2513021, 2380406, 2248304, 667465, 2248818];
+      Colors := [800853];
       Tol := 5;
       Stackable := False;
       DTM := DTMFromString('78DA63CC61626078CA80025C743819F881342' +
            '394CF9809547387010D3041E4606A1281FC8704D42400F96F09A8' +
            '2924424D3590FF9C809A32C26E0600900609E8');
 
-      BMP := BitmapFromString(7, 7, 'beNqz4Im0gqJoaxCKteEFIggbjoCy4RYo7BBz7gATbj8'+
-                'jLmS2pz6Xux6nkzanrTqHvSYHkOGiwwkUAYp7G4JkIQygSqD6IFNuoEYICUFAo0AIAFJ2HAA=');
+      BMP := BitmapFromString(4, 1, 'beNoz4Y604g235Aky4wkAA' + 'A8mAmA=');
     End;
     
     LOGS_YEW: //Coh3n
@@ -330,7 +329,7 @@ Begin
       Name := 'Yew logs';
       UpText := ['ew l'];
       ItemP := Point(0, 0);
-      Colors := [131072, 466226, 466485, 599876, 533567, 533309];
+      Colors := [668228];
       Tol := 5;
       Stackable := False;
       DTM := DTMFromString('78DA639CC6C4C0F094010598AAB133F003694' +
@@ -338,8 +337,7 @@ Begin
            '0664D707026A1601F9AF09A85940847BE601F937F1AB0100DACA0' +
            'C77');
 
-      BMP := BitmapFromString(7, 7, 'beNoz5nQ3hiJPUy4g8jYDIQgbmQtXAGG7GHI66XPa6nD'+
-                'A2fZ6HECuuQa7qRq7vhKbkQqIAURAESstkBSQhDCACKgYqAWiEUhCENQlAPucF3U=');
+      BMP := BitmapFromString(4, 1, 'beNqz4PY2ByE/C24/AA4sAj0' + '=');
     End;
   End;
 

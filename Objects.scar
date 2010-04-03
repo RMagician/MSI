@@ -309,22 +309,26 @@ Var
   Found: Boolean;
 Begin
   MSI_GetItem(ItemID);
-  Writeln('Item ID: ' + IntToStr(ItemID));
   GameTab(Tab_Inv);
   
   For I := 1 To 28 Do
   Begin
     B := InvBox(I);
-    { DTM }
-    Found := FindDTM(MSI_Item[ItemID].DTM, tmp, tmp, B.X1, B.Y1, B.X2, B.Y2);
-    
     { Bitmap }
+    Found := FindBitmapToleranceIn(MSI_Item[ItemID].BMP, tmp, tmp, B.X1, B.Y1, B.X2, B.Y2, MSI_Item[ItemID].Tol);
+
+    
+    { DTM }
     If (Not Found) Then
-      Found := FindBitmapToleranceIn(MSI_Item[ItemID].BMP, tmp, tmp, B.X1, B.Y1, B.X2, B.Y2, MSI_Item[ItemID].Tol);
+    begin
+      MSI_Debug('MSI_FindItemSlots', 'Failed to find ' + MSI_Item[ItemID].Name + '.BMP, looking for DTM..', DEBUG_FUNCTIONS);
+      Found := FindDTM(MSI_Item[ItemID].DTM, tmp, tmp, B.X1, B.Y1, B.X2, B.Y2);
+    end;
       
     { Color }
     If (Not Found) Then
     Begin
+      MSI_Debug('MSI_FindItemSlots', 'Failed to find ' + MSI_Item[ItemID].Name + '.DTM, looking for colors..', DEBUG_FUNCTIONS);
       H := High(MSI_Item[ItemID].Colors);
       For II := 0 To H Do
         If (Not FindColorTolerance(tmp, tmp, MSI_Item[ItemID].Colors[II], B.X1, B.Y1, B.X2, B.Y2, MSI_Item[ItemID].Tol)) Then
