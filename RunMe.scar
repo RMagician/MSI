@@ -65,9 +65,9 @@ begin
 
   with Players[0] do
   begin
-    Name   := 'empty cohen';
-    Pass   := 'jackaster';
-    Nick   := 'mpt';
+    Name   := '';
+    Pass   := '';
+    Nick   := '';
     Active := True;
     Pin    := '';
     PlayerSkills[0]  := [SKILL_WOODCUTTING];
@@ -79,13 +79,13 @@ begin
 
   with Players[1] do
   begin
-    Name   := 'troll cohen';
-    Pass   := 'jackaster';
-    Nick   := 'rol';
+    Name   := '';
+    Pass   := '';
+    Nick   := '';
     Active := True;
     Pin    := '';
-    PlayerSkills[1]  := [SKILL_WOODCUTTING];
-    PlayerObjects[1] := [[OBJ_TREE_NORMAL]];
+    PlayerSkills[0]  := [SKILL_WOODCUTTING];
+    PlayerObjects[0] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
     Integers[P_LOC]  := LOC_VE_BANK;
     Booleans[P_BANK] := True;
@@ -93,13 +93,13 @@ begin
 
   with Players[2] do
   begin
-    Name   := 'cohen gorak';
-    Pass   := 'jackaster';
-    Nick   := 'ora';
+    Name   := '';
+    Pass   := '';
+    Nick   := '';
     Active := True;
     Pin    := '';
-    PlayerSkills[2]  := [SKILL_WOODCUTTING];
-    PlayerObjects[2] := [[OBJ_TREE_NORMAL]];
+    PlayerSkills[0]  := [SKILL_WOODCUTTING];
+    PlayerObjects[0] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
     Integers[P_LOC]  := LOC_VE_BANK;
     Booleans[P_BANK] := True;
@@ -107,13 +107,13 @@ begin
 
   with Players[3] do
   begin
-    Name   := 'honour cohen';
-    Pass   := 'jackaster';
-    Nick   := 'ono';
+    Name   := '';
+    Pass   := '';
+    Nick   := '';
     Active := True;
     Pin    := '';
-    PlayerSkills[3]  := [SKILL_WOODCUTTING];
-    PlayerObjects[3] := [[OBJ_TREE_NORMAL]];
+    PlayerSkills[0]  := [SKILL_WOODCUTTING];
+    PlayerObjects[0] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
     Integers[P_LOC]  := LOC_VE_BANK;
     Booleans[P_BANK] := True;
@@ -121,58 +121,58 @@ begin
 
   with Players[4] do //at Willow trees
   begin
-    Name   := 'broddi cohen';
-    Pass   := 'jackaster';
-    Nick   := 'rod';
+    Name   := '';
+    Pass   := '';
+    Nick   := '';
     Active := True;
     Pin    := '';
-    PlayerSkills[4]  := [SKILL_WOODCUTTING];
-    PlayerObjects[4] := [[OBJ_TREE_WILLOW]];
+    PlayerSkills[0]  := [SKILL_WOODCUTTING];
+    PlayerObjects[0] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_POWER_SKILL;
-    Booleans[P_BANK] := False;
+    Integers[P_LOC]  := LOC_VE_BANK;
+    Booleans[P_BANK] := True;
   end;
 
   with Players[5] do //at Willow trees
   begin
-    Name   := 'cohen abyss';
-    Pass   := 'jackaster';
-    Nick   := 'bys';
+    Name   := '';
+    Pass   := '';
+    Nick   := '';
     Active := True;
     Pin    := '';
-    PlayerSkills[5]  := [SKILL_WOODCUTTING];
-    PlayerObjects[5] := [[OBJ_TREE_WILLOW]];
+    PlayerSkills[0]  := [SKILL_WOODCUTTING];
+    PlayerObjects[0] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_POWER_SKILL;
-    Booleans[P_BANK] := False;
+    Integers[P_LOC]  := LOC_VE_BANK;
+    Booleans[P_BANK] := True;
   end;
 
   with Players[6] do //at Willow trees
   begin
-    Name   := 'pirate cohen';
-    Pass   := 'jackaster';
-    Nick   := 'ira';
+    Name   := '';
+    Pass   := '';
+    Nick   := '';
     Active := True;
     Pin    := '';
-    PlayerSkills[6]  := [SKILL_WOODCUTTING];
-    PlayerObjects[6] := [[OBJ_TREE_WILLOW]];
+    PlayerSkills[0]  := [SKILL_WOODCUTTING];
+    PlayerObjects[0] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_POWER_SKILL;
-    Booleans[P_BANK] := False;
+    Integers[P_LOC]  := LOC_VE_BANK;
+    Booleans[P_BANK] := True;
   end;
 
   with Players[7] do //at Willow trees
   begin
-    Name   := 'run cohen';
-    Pass   := 'jackaster';
-    Nick   := 'ohe';
+    Name   := '';
+    Pass   := '';
+    Nick   := '';
     Active := True;
     Pin    := '';
-    PlayerSkills[7]  := [SKILL_WOODCUTTING];
-    PlayerObjects[7] := [[OBJ_TREE_WILLOW]];
+    PlayerSkills[0]  := [SKILL_WOODCUTTING];
+    PlayerObjects[0] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_POWER_SKILL;
-    Booleans[P_BANK] := False;
+    Integers[P_LOC]  := LOC_VE_BANK;
+    Booleans[P_BANK] := True;
   end;
 
   for i := 0 to High(Players) do
