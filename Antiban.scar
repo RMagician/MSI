@@ -4,7 +4,7 @@
 |==============================================================================|
 | For all debugging and progress report routines                               |
 |                                                                              |
-| * procedure MSI_Antiban();                 * by Naum, edited by Coh3n        |
+| * procedure MSI_Antiban(HowLong : Integer);   * by Naum, edited by Coh3n     |
  \_____________________________________________________________________________}
 
 {******************************************************************************}

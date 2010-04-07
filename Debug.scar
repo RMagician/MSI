@@ -235,26 +235,28 @@ var
   theFile: Integer;
   path, str: String;
 begin
-  if (GetTimeRunning > (debugCount * 5000{600000})) then
-  begin
-    path := AppPath + 'Includes\SRL\SRL\msi\MSI Logs\';
-    
-    if FileExists(path + scriptStart + '.txt') then
+  Try
+    if (GetTimeRunning > (debugCount * 5000{600000})) then
     begin
-      theFile := OpenFile(path + scriptStart + '.txt', False);
-      ReadFileString(theFile, str, FileSize(theFile));
+      path := AppPath + 'Includes\SRL\SRL\msi\MSI Logs\';
+
+      if FileExists(path + scriptStart + '.txt') then
+      begin
+        theFile := OpenFile(path + scriptStart + '.txt', False);
+        ReadFileString(theFile, str, FileSize(theFile));
+        CloseFile(theFile);
+      end;
+      theFile := RewriteFile(path + scriptStart + '.txt', False);
+
+      WriteFileString(theFile, 'Log written ' + TheTime + ' on ' + TheDate(Date_Formal) + #13#10);
+      WriteFileString(theFile, #13#10 + Copy(str, Pos(#13#10, str) + 2, Length(str)) + GetDebugText);
+      Writeln(GetDebugText);
+
+      ClearDebug;
+      Inc(debugCount);
       CloseFile(theFile);
     end;
-    theFile := RewriteFile(path + scriptStart + '.txt', False);
-
-    WriteFileString(theFile, 'Log written ' + TheTime + ' on ' + TheDate(Date_Formal) + #13#10);
-    WriteFileString(theFile, #13#10 + Copy(str, Pos(#13#10, str) + 2, Length(str)) + GetDebugText);
-    Writeln(GetDebugText);
-
-    ClearDebug;
-    Inc(debugCount);
-    CloseFile(theFile);
-  end;
+  Except WriteLn('Log saving - error occured'); End;
 end;
 
 {******************************************************************************}
@@ -270,63 +272,65 @@ var
   intItems: TIntegerArray;
   path: String;
 begin
-  path := AppPath + 'Includes\SRL\SRL\MSI\MSI Progress Reports\';
-  FileH := ReWriteFile(path + scriptStart + '.txt', False);
-  WriteFileString(FileH, 'Progress Report Saved:' + #13 + #10);
-  WriteFileString(fileH, #13 + #10 + 'This proggie was written ' + TheDate(Date_Formal )+ ' at ' + TheTime + #13 + #10);
-  
-  ClearReport;
-  MSI_GetReportInfo;
-  MSI_PrintSave(FileH, '{----------------------------------------------------------------}');                   //64 from '{' to '}'
-  MSI_PrintSave(FileH, '{                   MSI Extreme Player Report                    }');
-  MSI_PrintSave(FileH, '{------------------------------ ' + MSI_VERSION_NUMBER + ' -----------------------------}');
-  MSI_PrintSave(FileH, '{     ' + PadR('Time Running: ' + TimeRunning, 59) + '}');
-  MSI_PrintSave(FileH, '{----------------------------------------------------------------}');
-  
-  for i := 0 to (HowManyPlayers - 1) do
-    with ProgressReportArray[i] do
-    begin
-      MSI_PrintSave(FileH, '{                                                                }');
-      MSI_PrintSave(FileH, '{     ' + PadR('Player ' + IntToStr(i) + ': ' + Capitalize(PlayerName), 59) + '}');       //PlayerName
-      MSI_PrintSave(FileH, '{     ' + PadR('City: ' + MSI_LocToText(PlayerCity), 59) + '}');                          //PlayerCity
-      MSI_PrintSave(FileH, '{     ' + PadR('Location: ' + MSI_LocToText(PlayerLoc), 59) + '}');                       //PlayerLoc
-      MSI_PrintSave(FileH, '{     ' + PadR('Time: ' + MsToTime(PlayerTime, Time_Short), 59) + '}');                   //TotalTime
-      MSI_PrintSave(FileH, '{     ' + PadR('Active: ' + Capitalize(BoolToStr(PlayerStatus)), 59) + '}');              //PlayerStatus
-      
-      if (not PlayerStatus) then                                                                                      //FalseReason
-        MSI_PrintSave(FileH, '{       ' + PadR('Reason: ' + FalseReason, 57) + '}');
-        
-      MSI_PrintSave(FileH, '{                                                                }');
+  Try
+    path := AppPath + 'Includes\SRL\SRL\MSI\MSI Progress Reports\';
+    FileH := ReWriteFile(path + scriptStart + '.txt', False);
+    WriteFileString(FileH, 'Progress Report Saved:' + #13 + #10);
+    WriteFileString(fileH, #13 + #10 + 'This proggie was written ' + TheDate(Date_Formal )+ ' at ' + TheTime + #13 + #10);
 
-      for j := 0 to High(SkillInfo) do                                                                                //SkillInfo
-        with SkillInfo[j] do
-        begin
-          skill := MSI_SkillActions(PlayerSkills[CurrentPlayer][j]);
-          MSI_PrintSave(FileH, '{     ' + PadR('Skill: ' + skill[0], 59) + '}');
-          MSI_PrintSave(FileH, '{       ' + PadR('Time: ' + MsToTime(TotalTime, Time_Short), 57) + '}');              //TotalTime                                           }
-          MSI_PrintSave(FileH, '{       ' + PadR('Loads: ' + IntToStr(TotalLoads), 57) + '}');                        //TotalLoads                                   }
-          MSI_PrintSave(FileH, '{       ' + PadR('Experience: ' + MSI_GroupDigits(Round(TotalEXP), ','), 57) + '}');  //TotalEXP
+    ClearReport;
+    MSI_GetReportInfo;
+    MSI_PrintSave(FileH, '{----------------------------------------------------------------}');                   //64 from '{' to '}'
+    MSI_PrintSave(FileH, '{                   MSI Extreme Player Report                    }');
+    MSI_PrintSave(FileH, '{------------------------------ ' + MSI_VERSION_NUMBER + ' -----------------------------}');
+    MSI_PrintSave(FileH, '{     ' + PadR('Time Running: ' + TimeRunning, 59) + '}');
+    MSI_PrintSave(FileH, '{----------------------------------------------------------------}');
 
-          if (Level < 1) then
-            MSI_PrintSave(FileH, '{       ' + PadR('Level: Not yet defined', 57) + '}')
-          else
-            MSI_PrintSave(FileH, '{       ' + PadR('Level: ' + IntToStr(Level), 57) + '}');                           //Level
+    for i := 0 to (HowManyPlayers - 1) do
+      with ProgressReportArray[i] do
+      begin
+        MSI_PrintSave(FileH, '{                                                                }');
+        MSI_PrintSave(FileH, '{     ' + PadR('Player ' + IntToStr(i) + ': ' + Capitalize(PlayerName), 59) + '}');       //PlayerName
+        MSI_PrintSave(FileH, '{     ' + PadR('City: ' + MSI_LocToText(PlayerCity), 59) + '}');                          //PlayerCity
+        MSI_PrintSave(FileH, '{     ' + PadR('Location: ' + MSI_LocToText(PlayerLoc), 59) + '}');                       //PlayerLoc
+        MSI_PrintSave(FileH, '{     ' + PadR('Time: ' + MsToTime(PlayerTime, Time_Short), 59) + '}');                   //TotalTime
+        MSI_PrintSave(FileH, '{     ' + PadR('Active: ' + Capitalize(BoolToStr(PlayerStatus)), 59) + '}');              //PlayerStatus
 
-          intItems := MSI_GetItemList(i, j);
-          for k := 0 to High(intItems) do                                                                             //TotalObj
+        if (not PlayerStatus) then                                                                                      //FalseReason
+          MSI_PrintSave(FileH, '{       ' + PadR('Reason: ' + FalseReason, 57) + '}');
+
+        MSI_PrintSave(FileH, '{                                                                }');
+
+        for j := 0 to High(SkillInfo) do                                                                                //SkillInfo
+          with SkillInfo[j] do
           begin
-            item := MSI_ObjToText(intItems[k]);
-            MSI_PrintSave(FileH, '{         ' + PadR('Item: ' + item[0], 55) + '}');
-            MSI_PrintSave(FileH, '{         ' + PadR('Amount: ' + MSI_GroupDigits(ObjQuants[k], ','), 55) + '}');     //ObjQuants
-          end;
-          
-          MSI_PrintSave(FileH, '{                                                                }');
-          MSI_PrintSave(FileH, '{----------------------------------------------------------------}');
-        end;
-    end;
-  
-  MSI_PrintSave(FileH, '{----------------------------------------------------------------}');
+            skill := MSI_SkillActions(PlayerSkills[CurrentPlayer][j]);
+            MSI_PrintSave(FileH, '{     ' + PadR('Skill: ' + skill[0], 59) + '}');
+            MSI_PrintSave(FileH, '{       ' + PadR('Time: ' + MsToTime(TotalTime, Time_Short), 57) + '}');              //TotalTime                                           }
+            MSI_PrintSave(FileH, '{       ' + PadR('Loads: ' + IntToStr(TotalLoads), 57) + '}');                        //TotalLoads                                   }
+            MSI_PrintSave(FileH, '{       ' + PadR('Experience: ' + MSI_GroupDigits(Round(TotalEXP), ','), 57) + '}');  //TotalEXP
 
-  CloseFile(FileH);
-  MSI_SaveDebug;
+            if (Level < 1) then
+              MSI_PrintSave(FileH, '{       ' + PadR('Level: Not yet defined', 57) + '}')
+            else
+              MSI_PrintSave(FileH, '{       ' + PadR('Level: ' + IntToStr(Level), 57) + '}');                           //Level
+
+            intItems := MSI_GetItemList(i, j);
+            for k := 0 to High(intItems) do                                                                             //TotalObj
+            begin
+              item := MSI_ObjToText(intItems[k]);
+              MSI_PrintSave(FileH, '{         ' + PadR('Item: ' + item[0], 55) + '}');
+              MSI_PrintSave(FileH, '{         ' + PadR('Amount: ' + MSI_GroupDigits(ObjQuants[k], ','), 55) + '}');     //ObjQuants
+            end;
+
+            MSI_PrintSave(FileH, '{                                                                }');
+            MSI_PrintSave(FileH, '{----------------------------------------------------------------}');
+          end;
+      end;
+
+    MSI_PrintSave(FileH, '{----------------------------------------------------------------}');
+
+    CloseFile(FileH);
+    MSI_SaveDebug;
+  Except WriteLn('Proggie saving - error occured'); End;
 end;
