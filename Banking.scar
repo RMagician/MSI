@@ -87,7 +87,7 @@ Begin
     Repeat
       BitmapCheck := FindBitmapToleranceIn(MSI_Item[Items[I]].BMP, BX, BY, MIX1, MIY1, MIX2, MIY2, Tol);
       IncEx(Tol, 5);
-    Until(BitmapCheck) xOr (Tol > 40);
+    Until(BitmapCheck) Or (Tol > 40);
 
     If Not BitmapCheck Then
     Begin
@@ -175,7 +175,7 @@ Begin
     Repeat
       BitmapCheck := FindBitmapToleranceIn(MSI_Item[Items[I]].BMP, BX, BY, MBX1, MBY1, MBX2, MBY2, Tol);
       IncEx(Tol, 5);
-    Until(BitmapCheck) xOr (Tol > 40);
+    Until(BitmapCheck) Or (Tol > 40);
 
     If Not BitmapCheck Then
     Begin

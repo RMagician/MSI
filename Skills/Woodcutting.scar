@@ -51,7 +51,7 @@ Begin
     TreeExists := Length(TPA) >= TreeInfo.Accuracy;
     If (TreeExists) Then
       If (Random(4) <> 0) Then
-        Sleep(200 + Random(50))
+        Wait(200 + Random(50))
       Else
         SleepAndMoveMouse(200 + Random(50));
     FindNormalRandoms;
@@ -135,6 +135,7 @@ Begin
     If MSI_ChopInvFull(WhichTrees) Then
       TT := GetSystemTime + 30*60000;
   Until(InvFull) Or (Not LoggedIn) Or (GetSystemTime > TT);
+  
   MSI_CountItems; //Adds the logs/exp to the progress report
   MSI_ClickItems(WhichLogs, ['Drop', 'rop', 'Dro', 'Dr']);
   MSI_AddToProggy(-1, -1, ADD_LOADS);

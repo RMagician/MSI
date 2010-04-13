@@ -31,9 +31,9 @@ Begin
                    0 : HoverSkill('Random', False);
                    1 : PickUpMouse;
                    2 : SleepAndMoveMouse(HowLong + Random(HowLong/10));
-                   3 : For I := 0 To Round(HowLong/800) Do
-                         If I Mod 2 = 0 Then
-                           ExamineInv;
+                   3 : If Random(4) = 2 Then
+                       For I := 0 To Round(HowLong/800) Do
+                         If I Mod 2 = 0 Then ExamineInv;
                  End;
 
     5001..10000 : If Random(20) = 1 Then

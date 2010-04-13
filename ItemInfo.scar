@@ -385,7 +385,10 @@ End;
 Procedure MSI_FreeItemEx(Which : Integer);
 Begin
   Try
-    With MSI_Item[Which] Do
+    FreeBitmap(MSI_Item[Which].BMP);
+    FreeBitmap(MSI_Item[Which].DTM);
+    
+   With MSI_Item[Which] Do
     Begin
       Name := '';
       UpText := [''];
