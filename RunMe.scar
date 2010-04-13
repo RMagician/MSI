@@ -55,7 +55,7 @@ procedure DeclarePlayers;
 var
   i, j: Integer;
 begin
-  HowManyPlayers := 8;
+  HowManyPlayers := 1;
   NumberOfPlayers(HowManyPlayers);
   CurrentPlayer := 0;
   CurrentSkill := 0;
@@ -71,12 +71,12 @@ begin
     Active := True;
     Pin    := '';
     PlayerSkills[0]  := [SKILL_WOODCUTTING];
-    PlayerObjects[0] := [[OBJ_TREE_WILLOW]];
+    PlayerObjects[0] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_POWER_SKILL;
-    Booleans[P_BANK] := False;
+    Integers[P_LOC]  := LOC_VE_BANK;
+    Booleans[P_BANK] := True;
   end;
-
+{
   with Players[1] do
   begin
     Name   := '';
@@ -174,7 +174,7 @@ begin
     Integers[P_LOC]  := LOC_VE_BANK;
     Booleans[P_BANK] := True;
   end;
-
+}
   for i := 0 to High(Players) do
     with Players[i] do
     begin
