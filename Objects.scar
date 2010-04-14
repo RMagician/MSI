@@ -77,7 +77,7 @@ Begin
       With Result Do
       Begin
         Name               := 'Willow tree';
-        UpText             := 'illow';
+        UpText             := 'llow';
         Option             := 'Chop down';
         Colors             := [4481105];
         Exp                := 67.5;
@@ -286,13 +286,13 @@ begin
     until((Tol >= 20) or FoundBitmap);
 
     if FoundBitmap then
-      MSI_Debug('MSI_FindTool', 'Found Bitmap For Item: ' + MSI_Item[Tool].Name + '.', Debug_Functions);
+      MSI_Debug('MSI_FindTool', 'Found Bitmap For Item: ' + MSI_Item[Tool].Name, Debug_Functions);
   end;
 
  { Returns true if the DTM is found in the box, or if the Bitmap is found. }
   Result := FoundDTM or FoundBitmap;
   if Result then
-    MSI_Debug('MSI_FindTool', 'Successfully Found Tool: ' + MSI_Item[Tool].Name + '.', Debug_Functions);
+    MSI_Debug('MSI_FindTool', 'Successfully Found Tool: ' + MSI_Item[Tool].Name, Debug_Functions);
 
   MSI_FreeItemEx(Tool);
 end;

@@ -85,10 +85,10 @@ begin
     Active := True;
     Pin    := '';
     PlayerSkills[1]  := [SKILL_WOODCUTTING];
-    PlayerObjects[1] := [[OBJ_TREE_WILLOW]];
+    PlayerObjects[1] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_POWER_SKILL;
-    Booleans[P_BANK] := False;
+    Integers[P_LOC]  := LOC_VE_BANK;
+    Booleans[P_BANK] := True;
   end;
 
   with Players[2] do
@@ -99,10 +99,10 @@ begin
     Active := True;
     Pin    := '';
     PlayerSkills[2]  := [SKILL_WOODCUTTING];
-    PlayerObjects[2] := [[OBJ_TREE_WILLOW]];
+    PlayerObjects[2] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_POWER_SKILL;
-    Booleans[P_BANK] := False;
+    Integers[P_LOC]  := LOC_VE_BANK;
+    Booleans[P_BANK] := True;
   end;
 
   with Players[3] do
@@ -113,11 +113,11 @@ begin
     Active := True;
     Pin    := '';
     PlayerSkills[3]  := [SKILL_WOODCUTTING];
-    PlayerObjects[3] := [[OBJ_TREE_WILLOW]];
+    PlayerObjects[3] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_POWER_SKILL;
-    Booleans[P_BANK] := False;
-  end;
+    Integers[P_LOC]  := LOC_VE_BANK;
+    Booleans[P_BANK] := True;
+  end;;
 
   with Players[4] do
   begin

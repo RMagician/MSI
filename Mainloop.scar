@@ -32,10 +32,12 @@ var
 begin
   if (not LoggedIn) then
     Exit;
+    
   { Get the current level of the chosen skill, and then look for the required
     tool, starting with the best one for that player's skill level. }
-  CurrSkill := PlayerSkills[CurrentPlayer][CurrentSkill] {- 1 //Just 4 u coh3n};
-  CurrLevel := GetSkillLevel(CurrSkill);
+  currSkill := PlayerSkills[CurrentPlayer][CurrentSkill] {- 1 //Just 4 u coh3n};
+  currLevel := GetSkillLevel(CurrSkill);
+  MSI_Debug('MSI_BestTool', 'CurrentSkill level: ' + IntToStr(currLevel), DEBUG_FUNCTIONS);
 
   case PlayerSkills[CurrentPlayer][CurrentSkill] of
     SKILL_WOODCUTTING:

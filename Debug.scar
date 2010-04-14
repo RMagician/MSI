@@ -31,7 +31,7 @@ begin
   DebugMSG := TheTime+': ';
 
   try
-    DebugMSG := DebugMSG + Players[CurrentPlayer].Name+': ';
+    DebugMSG := DebugMSG + Capitalize(Players[CurrentPlayer].Name)+': ';
   except end;
   
   case DebugLevel of
