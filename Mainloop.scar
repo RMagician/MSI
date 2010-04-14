@@ -28,27 +28,14 @@
 {******************************************************************************}
 function MSI_BestTool: Integer;
 var
-  skillsArr: TStringArray;
   currSkill, currLevel: Integer;
 begin
   if (not LoggedIn) then
     Exit;
-
-  { In order for this to work properly, the skillsArr indexes must correspond
-    to the skills constants in SRL's Players.scar }
-  skillsArr := [ 'attack', 'strength', 'defence', 'range', 'prayer', 'magic',
-                 'runecrafting', 'hitpoints', 'agility', 'herblore', 'thieving',
-                 'crafting', 'fletching', 'slayer', 'mining', 'smithing',
-                 'fishing', 'cooking', 'firemaking', 'woodcutting', 'farming',
-                 'construction', 'hunting', 'summoning' ];
-
   { Get the current level of the chosen skill, and then look for the required
     tool, starting with the best one for that player's skill level. }
-  currSkill := PlayerSkills[CurrentPlayer][CurrentSkill] - 1;
-  currLevel := GetSkillLevel(skillsArr[currSkill]);
-
-  MSI_Debug('MSI_PlayerSetup', 'Current ' + Capitalize(skillsArr[currSkill])
-            + ' level is ' + IntToStr(currLevel) + '.', DEBUG_FUNCTIONS);
+  CurrSkill := PlayerSkills[CurrentPlayer][CurrentSkill] {- 1 //Just 4 u coh3n};
+  CurrLevel := GetSkillLevel(CurrSkill);
 
   case PlayerSkills[CurrentPlayer][CurrentSkill] of
     SKILL_WOODCUTTING:

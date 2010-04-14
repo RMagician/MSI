@@ -28,11 +28,11 @@
 {******************************************************************************}
 function MSI_IsMoving: boolean;
 begin
-  //{$IFDEF REFLECTION}
-  //Result := CharacterMoving; //disabled until reflection is working again
-  //{$ELSE}
+  {$IFDEF REFLECTION}
+  Result := CharacterMoving; //disabled until reflection is working again
+  {$ELSE}
   Result := IsMoving;
-  //{$ENDIF}
+  {$ENDIF}
 end;
 
 {******************************************************************************}
