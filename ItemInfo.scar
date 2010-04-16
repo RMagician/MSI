@@ -386,7 +386,7 @@ Procedure MSI_FreeItemEx(Which : Integer);
 Begin
   Try
     FreeBitmap(MSI_Item[Which].BMP);
-    FreeBitmap(MSI_Item[Which].DTM);
+    FreeDTM(MSI_Item[Which].DTM);
     
    With MSI_Item[Which] Do
     Begin
