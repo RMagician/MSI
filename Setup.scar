@@ -10,7 +10,9 @@
 //SRL Includes
 {.include srl/srl/misc/smart.scar}
 {.include srl/srl.scar}
+{$IFDEF REFLECTION}
 {.include srl/srl/reflection/reflection.scar}
+{$ENDIF}
 {.include srl/srl/misc/Reports.scar}
 
 //MSI Script

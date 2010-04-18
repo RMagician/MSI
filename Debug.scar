@@ -240,7 +240,11 @@ end;
 {******************************************************************************}
 Procedure MSI_PrintSave(FH : Integer; S : String);
 Begin
-  AddToReport(S);
+  {$IFDEF SIMBA}
+    Writeln(s);
+  {$ELSE}
+    AddToReport(S);
+  {$ENDIF}
   WriteFileString(FH, S+#13+#10);
 End;
 
@@ -263,7 +267,11 @@ begin
     WriteFileString(FileH, 'Progress Report Saved:' + #13 + #10);
     WriteFileString(fileH, #13 + #10 + 'This proggie was written ' + TheDate(Date_Formal )+ ' at ' + TheTime + #13 + #10);
 
-    ClearReport;
+
+    {$IFNDEF SIMBA}
+      ClearReport;
+    {$ENDIF}
+    ClearDebug;
     MSI_GetReportInfo;
     MSI_PrintSave(FileH, '{----------------------------------------------------------------}');                   //64 from '{' to '}'
     MSI_PrintSave(FileH, '{                   MSI Phoenix Player Report                    }');
