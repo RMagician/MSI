@@ -43,7 +43,7 @@ Begin
   Repeat
     If InvFull Then Break;
 
-    MSI_AntiBan(RandomRange(0, 10000));
+    MSI_AntiBan(RandomRange(0, 10000), 20);
 
     { Check if the tree Exists }
     For I := 0 To L Do
