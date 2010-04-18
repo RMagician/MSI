@@ -25,7 +25,8 @@
 {******************************************************************************}
 procedure MSI_Debug(ProcName, TheMessage: string; DebugLevel:integer);
 var
-  DebugMSG: string;
+  DebugMSG, path, str: string;
+  theFile: Integer;
 begin
   if DebugLevel < Debug_LevelToDebug then exit;
   DebugMSG := TheTime+': ';
@@ -44,6 +45,24 @@ begin
   DebugMSG := DebugMSG + ProcName + ': ';
   DebugMSG := DebugMSG + TheMessage;
   writeln(DebugMSG);
+
+  //Save the message to a file
+  try
+    path := AppPath + 'Includes\SRL\SRL\msi\MSI Logs\';
+    if FileExists(path + scriptStart + '.txt') then
+    begin
+      theFile := OpenFile(path + scriptStart + '.txt', False);
+      ReadFileString(theFile, str, FileSize(theFile));
+      CloseFile(theFile);
+    end;
+    
+    theFile := RewriteFile(path + scriptStart + '.txt', False);
+      
+    WriteFileString(theFile, str + #10 + DebugMSG);
+    CloseFile(theFile);
+  except
+    Writeln('Debug saving - error occurred');
+  end;
 end;
 
 {******************************************************************************}
@@ -226,40 +245,6 @@ Begin
 End;
 
 {******************************************************************************}
-{ Procedure MSI_SaveLog;                                                       }
-{ By: Naum & Coh3n                                                             }
-{ Description: Saves a log of the debug and clears the debug box every 10 mins }
-{******************************************************************************}
-procedure MSI_SaveDebug;
-var
-  theFile: Integer;
-  path, str: String;
-begin
-  Try
-    if (GetTimeRunning > (debugCount * 5000{600000})) then
-    begin
-      path := AppPath + 'Includes\SRL\SRL\msi\MSI Logs\';
-
-      if FileExists(path + scriptStart + '.txt') then
-      begin
-        theFile := OpenFile(path + scriptStart + '.txt', False);
-        ReadFileString(theFile, str, FileSize(theFile));
-        CloseFile(theFile);
-      end;
-      theFile := RewriteFile(path + scriptStart + '.txt', False);
-
-      WriteFileString(theFile, 'Log written ' + TheTime + ' on ' + TheDate(Date_Formal) + #13#10);
-      WriteFileString(theFile, #13#10 + Copy(str, Pos(#13#10, str) + 2, Length(str)) + GetDebugText);
-      Writeln(GetDebugText);
-
-      ClearDebug;
-      Inc(debugCount);
-      CloseFile(theFile);
-    end;
-  Except WriteLn('Log saving - error occured'); End;
-end;
-
-{******************************************************************************}
 { procedure MSI_ProgressReport;                                                }
 { By: Coh3n                                                                    }
 { Description: Prints the progress report of each player                       }
@@ -331,6 +316,5 @@ begin
     MSI_PrintSave(FileH, '{----------------------------------------------------------------}');
 
     CloseFile(FileH);
-    MSI_SaveDebug;
   Except WriteLn('Proggie saving - error occured'); End;
 end;

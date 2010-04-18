@@ -433,10 +433,9 @@ var
   totalLoads, time, i: Integer;
 begin
   scriptStart := TheDate(DATE_DAY) + ' at ' + TheTime;
-  debugCount := 0;
   
-  //To gain access at the beginning instead of 10 minutes in
-  MSI_SaveDebug;
+  //To gain access
+  MSI_Debug('MSI_MainLoop', 'Created file', DEBUG_FUNCTIONS);
   MSI_ProgressReport;
   
   repeat

@@ -259,5 +259,4 @@ var
   MSI_Item : Array[0..(MSI_ITEM_COUNT - 1)] Of TItem;
   
   //Used for saving the debug box
-  debugCount: Integer;
   scriptStart: String;
