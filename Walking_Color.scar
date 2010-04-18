@@ -45,10 +45,8 @@ begin
   if WaitFunc(@MSI_IsMoving, 1, 2500 + random(200)) then
     while (MSI_IsMoving or FlagPresent) do
     begin
-      FindNormalRandoms;
+      MSI_AntiBan(1, 10);
       FFlag(FlagDist);
-      if (FlagDistance <= FlagDist) then
-        Break;
     end;
 end;
 
@@ -121,7 +119,7 @@ Begin
 
   { Color search }
   If (Length(Location.Colors) = 0) Then
-    Exit;
+    Exit; // Note: Exit? Symbol search?
 
   H := High(Location.Colors);
   SetLength(ATPA, H + 1);
@@ -501,13 +499,13 @@ var
   thePoint: TPoint;
 begin
   thePoint := MSI_CreateWalkIndex(index);
-  
+
   if (thePoint.x = -1) then
   begin
     Result := False;
     Exit;
   end;
-  
+
   Mouse(thePoint.x, thePoint.y, 3, 3, True);
   MSI_Flag(RandomRange(3, 6));
   Result := True;
@@ -642,7 +640,7 @@ var
 begin
   if (not LoggedIn) then
     Exit;
-  
+
   thePath := MSI_LoadColorPath(startLoc, endLoc);
   for i := 0 to High(thePath) do
   begin
@@ -653,10 +651,10 @@ begin
       Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
       Exit;
     end;
-    
+
     Result := (i = High(thePath));
   end;
-  
+
   if (Result) then
   begin
     MSI_Debug('MSI_ColorWalk', 'Successfully walked to ' + MSI_LocToText(endLoc), DEBUG_SMALL_DETAILS);
