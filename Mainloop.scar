@@ -35,7 +35,7 @@ begin
     
   { Get the current level of the chosen skill, and then look for the required
     tool, starting with the best one for that player's skill level. }
-  currSkill := PlayerSkills[CurrentPlayer][CurrentSkill] {- 1 //Just 4 u coh3n};
+  currSkill := PlayerSkills[CurrentPlayer][CurrentSkill];
   currLevel := GetSkillLevel(CurrSkill);
   MSI_Debug('MSI_BestTool', 'CurrentSkill level: ' + IntToStr(currLevel), DEBUG_FUNCTIONS);
 
@@ -46,10 +46,9 @@ begin
         REQ_ADAMANT..REQ_RUNE: Result := HATCHET_ADAMANT;
         REQ_MITHRIL..REQ_ADAMANT: Result := HATCHET_MITHRIL;
         REQ_STEEL..REQ_MITHRIL: Result := HATCHET_STEEL;
-
-        else
-          Result := HATCHET_IRON;
-      end;
+      else
+        Result := HATCHET_IRON;
+   end;
   end;
 end;
 
@@ -170,7 +169,7 @@ begin
   SetLength(Result, Length(objects));
 
   for i := 0 to High(objects) do
-    case objects[i] of
+    case objects[i] of      { Result[I] := Objects[I] + 13}
       OBJ_TREE_NORMAL: Result[i] := LOGS_NORMAL;
       OBJ_TREE_OAK:  Result[i] := LOGS_OAK;
       OBJ_TREE_WILLOW: Result[i] := LOGS_WILLOW;

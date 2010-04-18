@@ -55,7 +55,7 @@ begin
           Wait(RandomRange(250, 750));
         end;
           
-        SymbolAccuracy := 0.80;
+        SymbolAccuracy := 0.8;
       end;
   until(Result or (t >= 30));
   

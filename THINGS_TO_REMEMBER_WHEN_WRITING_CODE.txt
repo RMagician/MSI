@@ -1,6 +1,6 @@
 Things to remember to add when adding new items to ItemInfo.scar:
 
-- Add the item's record in ItemInfo.scar ~ obviously :p
-- Add a string array to MSI_ObjToText in Debug.scar
-- Add a constant for that item in Globals.scar
-- Add the item to the item list case in MSI_GetItemList in Mainloop.scar
+- Add the item's record in ItemInfo.scar ~ obviously :p.
+- Add a string array to MSI_ObjToText in Debug.scar.
+- Add a constant for that item in Globals.scar.
+- Add the item to the item list case in MSI_GetItemList in Mainloop.scar.

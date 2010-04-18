@@ -1,11 +1,14 @@
-{==============================================================================\
+{==============================================================================
 |                         MSI Group Scripting Include                          |
 |                              WoodCutting.scar                                |
 |==============================================================================|
 | For all woodcutting routines.                                                |
 |                                                                              |
- \_____________________________________________________________________________}
-
+| * procedure MSI_WaitWhileChoppingEx;            * by marpis                  |
+| * function MSI_ChopTree;                        * by marpis                  |
+| * function MSI_ChopInvFull;                     * by marpis                  |
+| * function MSI_PowerChop;                       * by marpis and Coh3n        |
+ _____________________________________________________________________________}
 
 {******************************************************************************}
 { Procedure WaitWhileChoppingEx(TreeX, TreeY: Integer; TreeInfo: TMSObject);   }
