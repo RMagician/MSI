@@ -4,7 +4,8 @@
 |==============================================================================|
 | For all debugging and progress report routines                               |
 |                                                                              |
-| * procedure MSI_Antiban(HowLong : Integer);   * by Naum, edited by Coh3n     |
+| * procedure MSI_Antiban();                    * by Naum, edited by Coh3n     |
+| * procedure MSI_FindRandoms;                  * by Coh3n                     |
  \_____________________________________________________________________________}
 
 {******************************************************************************}
@@ -66,3 +67,20 @@ Begin
       end;
   End;
 End;
+
+{******************************************************************************}
+{ procedure MSI_FindRandoms;                                                   }
+{ By: Coh3n                                                                    }
+{ Description: Checks for random events                                        }
+{******************************************************************************}
+procedure MSI_FindRandoms;
+begin
+  if (FindNormalRandoms) then
+    MSI_Debug('MSI_FindRandoms', 'Found random event!', DEBUG_FUNCTIONS);
+
+  if (LevelUp) then
+    MSI_Debug('MSI_FindRandoms', 'Player has leveled up!', DEBUG_FUNCTIONS);
+
+  Wait(RandomRange(1000, 3000));
+end;
+

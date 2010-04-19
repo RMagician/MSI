@@ -506,7 +506,7 @@ begin
       for i := 0 to High(PlayerSkills[CurrentPlayer]) do
         IncEx(totalLoads, ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalLoads);
 
-      if (totalLoads >= (BreakAfter + RandomRange(-2, 2))) then
+      if (totalLoads >= (totalLoads + BreakAfter + RandomRange(-2, 2))) then
         MSI_HandleBreaking;
         
       totalLoads := 0;

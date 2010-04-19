@@ -43,7 +43,8 @@ const
 { const Other
   Description: Represents miscellaneous constants }
 const
-  WALK_TOL = 8; //the tolerance for a color point compared to a reflection point
+  WALK_TOL        = 8;  //the tolerance for a color point compared to a reflection point
+  ANTI_BAN_CHANCE = 10; //the chance (in %) of antiban
 
 { const Players
   Constants representing the different Players array records. }

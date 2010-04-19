@@ -651,6 +651,7 @@ begin
       Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
       Exit;
     end;
+    MSI_FindRandoms;
 
     Result := (i = High(thePath));
   end;

@@ -13,8 +13,6 @@
 {******************************************************************************}
 { Procedure WaitWhileChoppingEx(TreeX, TreeY: Integer; TreeInfo: TMSObject);   }
 { By: marpis                                                                   }
-{ Rev: 42                                                                      }
-{ Date: 12 Dec 09                                                              }
 { Description: Wait while tree's been cut                                      }
 {******************************************************************************}
 Procedure MSI_WaitWhileChopping(TreeX, TreeY: Integer; TreeInfo: TMSObject);
@@ -43,7 +41,7 @@ Begin
   Repeat
     If InvFull Then Break;
 
-    MSI_AntiBan(RandomRange(0, 10000), 20);
+    MSI_AntiBan(RandomRange(0, 10000), ANTI_BAN_CHANCE);
 
     { Check if the tree Exists }
     For I := 0 To L Do
@@ -57,7 +55,7 @@ Begin
         Wait(200 + Random(50))
       Else
         SleepAndMoveMouse(200 + Random(50));
-    FindNormalRandoms;
+    MSI_FindRandoms;
 
     { InvCount check }
     NewInvCount := InvCount;
