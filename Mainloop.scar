@@ -430,7 +430,7 @@ end;
 {******************************************************************************}
 procedure MSI_MainLoop;
 var
-  totalLoads, time, i: Integer;
+  breakAfterLoads, time: Integer;
 begin
   scriptStart := TheDate(DATE_DAY) + ' at ' + TheTime;
   
@@ -501,15 +501,14 @@ begin
       IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalTime, TimeFromMark(time));
       
       MSI_ProgressReport;
+      Inc(breakAfterLoads);
 
-      //Count the total loads for the current player - used for breaking
-      for i := 0 to High(PlayerSkills[CurrentPlayer]) do
-        IncEx(totalLoads, ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalLoads);
-
-      if (totalLoads >= (totalLoads + BreakAfter + RandomRange(-2, 2))) then
+      if (breakAfterLoads >= (BreakAfter + RandomRange(-2, 2))) then
+      begin
         MSI_HandleBreaking;
-        
-      totalLoads := 0;
+        breakAfterLoads := 0;
+      end;
+
     until(not Players[CurrentPlayer].Active);
     
     if (AllPlayersInactive) then
