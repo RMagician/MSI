@@ -518,14 +518,17 @@ end;
 { Description: Uses radial walking if MSI_WalkToColorIndex fails               }
 {******************************************************************************}
 function MSI_CreateWalkFailsafe(index: Integer): Boolean;
+var
+  RockColor: Integer;
 begin
   if not MSI_WalkToColorIndex(index) then
   begin
+    RockColor := MSI_AutoColorMM(COLOR_ROCK);
     case index of
       WALK_WC_VE_TREE_1:
         begin
           if not RadialWalkTolerance(RoadColor, 45, 90, randomRange(60, 70), random(8), random(8), 10) then
-            if not RadialWalkTolerance(findRockColor, 45, 90, randomRange(60, 70), 3, 3, 10) then
+            if not RadialWalkTolerance(RockColor, 45, 90, randomRange(60, 70), 3, 3, 10) then
             begin
               MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_1', DEBUG_FUNCTIONS);
               Exit;
@@ -544,7 +547,6 @@ begin
 
       WALK_WC_VE_TREE_3:
         begin
-          RockColor := MSI_AutoColorMM(COLOR_ROCK);
           if not RadialWalkTolerance(RoadColor, 0, 35, randomRange(60, 70), 2, 1, 10) then
             if not RadialWalkTolerance(RockColor, 345, 35, 60, 2, 2, 10) then
               if not RadialWalkTolerance(RoadColor, 0, 45, randomRange(60, 70), 5, 5, 10) then
@@ -562,7 +564,7 @@ begin
 
       WALK_WC_VE_BANK_1:
         begin
-          if not RadialWalkTolerance(findRockColor, 350, 50, 65, 5, 5, 10) then
+          if not RadialWalkTolerance(RockColor, 350, 50, 65, 5, 5, 10) then
           begin
             mouseBox(631, 114, 667, 130, 1); // random co-ord clicking
             wait(randomRange(1000, 2000));
