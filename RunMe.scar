@@ -50,6 +50,9 @@ const
 
   WORLD_SMART   = 152;
   WORLD_MEMBERS = False;
+  
+  STATS_ID = '';
+  STATS_PASS = '';
 
 procedure DeclarePlayers;
 var
@@ -71,10 +74,10 @@ begin
     Active := True;
     Pin    := '';
     PlayerSkills[0]  := [SKILL_WOODCUTTING];
-    PlayerObjects[0] := [[OBJ_TREE_WILLOW]];
+    PlayerObjects[0] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_POWER_SKILL;
-    Booleans[P_BANK] := False;
+    Integers[P_LOC]  := LOC_VE_BANK;
+    Booleans[P_BANK] := True;
   end;
 {
   with Players[1] do
@@ -208,6 +211,8 @@ begin
 
   BreakAfter := BREAK_AFTER;
   BreakTime := BREAK_TIME;
+  StatsID := STATS_ID;
+  StatsPass := STATS_PASS;
 
   DeclarePlayers;
   MSI_Mainloop;

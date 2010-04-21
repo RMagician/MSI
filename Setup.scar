@@ -17,6 +17,7 @@
 
 //MSI Script
 {.include srl/srl/msi/Globals.scar}
+{.include srl/srl/msi/Stats.scar}
 {.include srl/srl/msi/Debug.scar}
 {.include srl/srl/msi/Antiban.scar}
 {.include srl/srl/msi/ItemInfo.scar}

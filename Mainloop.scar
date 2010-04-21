@@ -81,6 +81,9 @@ var
 begin
   if (not LoggedIn) then
     LoginPlayer;
+    
+  Inc(Stats_CustomVars[STATS_LOGINS]);
+  MSI_SendStats;
 
   SetAngle(True);
   SetRun(True);
@@ -338,8 +341,11 @@ begin
             Result := MSI_Deposit([LOGS_NORMAL, LOGS_OAK], [28, 28]);
             if (not Result) then
               ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to deposit items'
-            else
+            else begin
               MSI_AddToProggy(-1, -1, ADD_LOADS);
+              Inc(Stats_CustomVars[STATS_BANKS]);
+              MSI_SendStats;
+            end;
           end;
 
         else
@@ -433,6 +439,9 @@ var
   breakAfterLoads, time: Integer;
 begin
   scriptStart := TheDate(DATE_DAY) + ' at ' + TheTime;
+  Stats_ScriptID := '47';
+  Stats_UserID := statsID;
+  Stats_Password := statsPass;
   
   //To gain access
   MSI_Debug('MSI_MainLoop', 'Created file', DEBUG_FUNCTIONS);

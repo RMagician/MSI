@@ -29,7 +29,7 @@
 function MSI_IsMoving: boolean;
 begin
   {$IFDEF REFLECTION}
-  Result := CharacterMoving; //disabled until reflection is working again
+  Result := CharacterMoving;
   {$ELSE}
   Result := IsMoving;
   {$ENDIF}
@@ -43,10 +43,11 @@ end;
 procedure MSI_Flag(FlagDist: integer);
 begin
   if WaitFunc(@MSI_IsMoving, 1, 2500 + random(200)) then
-    while (MSI_IsMoving or FlagPresent) do
+    while (MSI_IsMoving) and (FlagPresent) do
     begin
+      if (FFlag(FlagDist)) then
+        Break;
       MSI_AntiBan(1, 10);
-      FFlag(FlagDist);
     end;
 end;
 
@@ -364,7 +365,7 @@ begin
         for i := 0 to 2 do
         begin
           RoadColor := MSI_AutoColorMM(COLOR_ROAD_VARROCK);
-          FindColorsTolerance(TPA, RoadColor, MMCx + 10, MMy1, MMx2, MMCy, Tol);
+          FindColorsTolerance(TPA, RoadColor, MMCx + 20, MMy1, MMx2, MMCy, Tol);
           if Length(TPA) > 10 then
             Break;
           if i = 2 then

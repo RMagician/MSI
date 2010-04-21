@@ -1,0 +1,245 @@
+{==============================================================================\
+|                         MSI Group Scripting Include                          |
+|                                Stats.scar                                    |
+|==============================================================================|
+| All Banking related routines.                                                |
+|                                                                              |
+| * procedure Stats_CheckOutput();         * by nielsie95                      |
+| * procedure Stats_GetScriptInfo();       * by nielsie95                      |
+| * procedure Stats_SendReport();          * by nielsie95                      |
+| * procedure Stats_SendAccountInfo();     * by nielsie95                      |
+| * procedure Stats_ManageAccounts();      * by nielsie95                      |
+| * procedure MSI_SendStats;               * by Coh3n                          |
+|                                                                              |
+ \_____________________________________________________________________________}
+
+{******************************************************************************}
+{ procedure Stats_CheckOutput(s: string);                                      }
+{ By: nielsie95                                                                }
+{ Description:                                                                 }
+{******************************************************************************}
+procedure Stats_CheckOutput(s: string);
+var
+  i: Integer;
+  sa: TStringArray;
+begin
+  sa := Explode(#10, s);
+  for i := 0 to High(sa) do
+    if (Trim(sa[i]) <> '') then
+      if StartsWith('ERROR(1)', sa[i]) then
+      begin
+        WriteLn('STATS: "' + sa[i] + '"');
+        Stats_UserID := '';
+        Stats_Password := '';
+      end
+      else if StartsWith('ERROR(2)', sa[i]) then
+      begin
+        WriteLn('STATS: "' + sa[i] + '"');
+        Stats_ScriptID := '';
+      end
+      else
+        WriteLn('STATS: "' + sa[i] + '"');
+end;
+
+{******************************************************************************}
+{ procedure Stats_GetScriptInfo( ... );                                        }
+{ By: nielsie95                                                                }
+{ Description:                                                                 }
+{******************************************************************************}
+function Stats_GetScriptInfo(out Version, News, Link: string;
+         out OutDated: Boolean; out LastUpdate_HoursAgo: Integer): Boolean;
+var
+  Client: Integer;
+  s: string;
+  sa: TStringArray;
+begin
+  Result := False;
+  if (Stats_ScriptID = '') then
+    Exit;
+
+  Client := InitializeHTTPClient(False, False);
+  ClearPostData(Client);
+  AddPostVariable(Client, 'do', 'getinfo');
+  AddPostVariable (Client, 'sID', Stats_ScriptID);
+
+  s := PostHTTPPageEx(Client, STATS_LINK);
+  sa := Explode(#10'GLUE'#10, s);
+  if (Length(sa) = 5) then
+  begin
+    Result := True;
+    Version := sa[0];
+    News := sa[1];
+    Link := sa[2];
+    OutDated := sa[3] = '1';
+    LastUpdate_HoursAgo := StrToIntDef(sa[4], -1);
+  end
+  else
+    Stats_CheckOutput(s);
+
+  FreeHTTPClient(Client );
+end;
+
+{******************************************************************************}
+{ procedure Stats_SendReport;                                                  }
+{ By: nielsie95                                                                }
+{ Description:                                                                 }
+{******************************************************************************}
+var
+  Stats_GlobalVars: array[1..24] of Integer;
+
+procedure Stats_SendReport;
+var
+  i, Client, Time: Integer;
+  s: string;
+begin
+  if (Stats_UserID = '') and (Stats_Password = '') and (Stats_ScriptID = '') then
+    Exit;
+
+  Client := InitializeHTTPClient(False, False);
+  ClearPostData(Client);
+  AddPostVariable(Client, 'do', 'submit');
+
+  Time := (GetTimeRunning - Stats_LastTime) div 1000 div 60;
+  if (Time < 5) then
+    Time := 0
+  else
+    Stats_LastTime := GetTimeRunning;
+  AddPostVariable(Client, 'sTime', IntToStr(Time));
+
+  if (Stats_UserID <> '') and (Stats_Password <> '') then
+  begin
+    AddPostVariable(Client, 'uID', Stats_UserID);
+    AddPostVariable(Client, 'uPass', Stats_Password);
+  end
+  else
+  begin
+    AddPostVariable(Client, 'uID', '-1');
+    AddPostVariable(Client, 'uPass', '');
+  end;
+
+  if (Stats_ScriptID <> '') then
+  begin
+    AddPostVariable (Client, 'sID', Stats_ScriptID);
+
+    for i := Low(Stats_CustomVars) to High(Stats_CustomVars) do
+    begin
+      AddPostVariable(Client, 'rndCustom' + IntToStr(i),
+                      IntToStr(Stats_CustomVars[i]));
+      Stats_CustomVars[i] := 0;
+    end;
+  end
+  else
+  begin
+    AddPostVariable (Client, 'sID', '-1');
+  end;
+
+  for i := Low(Stats_GlobalVars) to High(Stats_GlobalVars) do
+  begin
+    case i of
+      1: s := IntToStr(SRL_Logs - Stats_GlobalVars[i]);
+      2: s := IntToStr(Banks - Stats_GlobalVars[i]);
+      3: s := IntToStr(RandSolved[rand_Death] - Stats_GlobalVars[i]);
+      else if ((i - 3) < Length(RandSolved) - 1) then
+        s := IntToStr(RandSolved[i - 3] - Stats_GlobalVars[i]);
+    end;
+    AddPostVariable(Client, 'rndGlobal' + IntToStr(i), s);
+    Stats_GlobalVars[i] := Stats_GlobalVars[i] + StrToInt(s);
+  end;
+
+  s := PostHTTPPageEx(Client, STATS_LINK);
+  Stats_CheckOutput(s);
+  FreeHTTPClient(Client);
+
+  if (SRL_Procs[srl_OnSendStats] <> nil) then
+    SRL_Procs[srl_OnSendStats]();
+end;
+
+{******************************************************************************}
+{ procedure Stats_SendAccountInfo;                                             }
+{ By: nielsie95                                                                }
+{ Description:                                                                 }
+{******************************************************************************}
+procedure Stats_SendAccountInfo;
+var
+  i, Client: Integer;
+  Accounts: TStringArray;
+begin
+  if (Stats_UserID = '') and (Stats_Password = '') then
+    Exit;
+
+  Client := InitializeHTTPClient(False, False);
+  ClearPostData(Client);
+  AddPostVariable(Client, 'do', 'setaccounts');
+  AddPostVariable(Client, 'uID', Stats_UserID);
+  AddPostVariable(Client, 'uPass', Stats_Password);
+  if (Stats_ScriptID <> '') then
+    AddPostVariable (Client, 'sID', Stats_ScriptID)
+  else
+    AddPostVariable (Client, 'sID', '-1');
+
+  SetLength(Accounts, HowManyPlayers);
+  for i := 0 to HowManyPlayers - 1 do
+    Accounts[i] := Implode('.|€stat€|.', [Players[i].Name, Players[i].Loc,
+                   IntToStr(Integer(Players[i].Active))]);
+
+  AddPostVariable(Client, 'accInfo', Implode(#10'ACC'#10, Accounts));
+  Stats_CheckOutput(PostHTTPPageEx(Client, STATS_LINK));
+  FreeHTTPClient(Client);
+end;
+
+{******************************************************************************}
+{ procedure Stats_ManageAccounts;                                              }
+{ By: nielsie95                                                                }
+{ Description:                                                                 }
+{******************************************************************************}
+procedure Stats_ManageAccounts;
+var
+  i, ii, Client: Integer;
+  s: string;
+  Accounts, Stats: TStringArray;
+begin
+  if (Stats_UserID = '') and (Stats_Password = '') then
+    Exit;
+
+  Client := InitializeHTTPClient(False, False);
+  ClearPostData(Client);
+  AddPostVariable(Client, 'do', 'getaccounts');
+  AddPostVariable(Client, 'uPass', Stats_Password);
+  AddPostVariable(Client, 'uID', Stats_UserID);
+
+  s := PostHTTPPageEx(Client, STATS_LINK);
+  Accounts := Explode(#10'ACC'#10, s);
+  for i := 0 to High(Accounts) do
+  begin
+    Stats := Explode('.|€stat€|.', Accounts[i]);
+    if (Length(Stats) = 3) then
+    begin
+      for ii := 0 to HowManyPlayers - 1 do
+        if (LowerCase(Players[ii].Name) = LowerCase(Stats[0])) then
+        begin
+          Players[ii].Loc := Stats[1];
+          Players[ii].Active := Stats[2] = '1';
+          Break;
+        end;
+    end
+    else
+    begin
+      Stats_CheckOutput(s);
+      Break;
+    end;
+  end;
+
+  FreeHTTPClient(Client);
+  stats_SendAccountInfo;
+end;
+
+{******************************************************************************}
+{ procedure MSI_SendStats;                                                     }
+{ By: Coh3n                                                                    }
+{ Description:                                                                 }
+{******************************************************************************}
+procedure MSI_SendStats;
+begin
+  Stats_SendReport;
+  Stats_ManageAccounts;
+end;

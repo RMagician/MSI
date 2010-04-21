@@ -81,10 +81,33 @@ begin
     Exit;
 
   case which of
-    ADD_EXP: IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalEXP, quantity);
-    ADD_ITEMS: IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].ObjQuants[item], quantity);
-    ADD_LOADS: Inc(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalLoads);
+    ADD_EXP:
+      begin
+        IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalEXP, quantity);
+        IncEx(Stats_CustomVars[STATS_EXP], quantity);
+      end;
+      
+    ADD_ITEMS:
+      begin
+        IncEx(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].ObjQuants[item], quantity);
+
+        case PlayerSkills[CurrentPlayer][CurrentSkill] of
+          SKILL_WOODCUTTING:
+            IncEx(Stats_CustomVars[STATS_LOGS], quantity);
+            
+          SKILL_MINING:
+            IncEx(Stats_CustomVars[STATS_ORES], quantity);
+        end;
+      end;
+      
+    ADD_LOADS:
+      begin
+        Inc(ProgressReportArray[CurrentPlayer].SkillInfo[CurrentSkill].TotalLoads);
+        Inc(Stats_CustomVars[STATS_LOADS]);
+      end;
   end;
+  
+  MSI_SendStats;
 end;
 
 {******************************************************************************}

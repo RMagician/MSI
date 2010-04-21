@@ -43,8 +43,21 @@ const
 { const Other
   Description: Represents miscellaneous constants }
 const
+  STATS_LINK      = 'http://scriptmanager.freehostia.com/submit.php'; //for stats
   WALK_TOL        = 8;  //the tolerance for a color point compared to a reflection point
   ANTI_BAN_CHANCE = 10; //the chance (in %) of antiban
+
+{ const Stats
+  Description: Represents all the custom variables to add to the stats }
+const
+  STATS_LOGINS  = 1;
+  STATS_BANKS   = 2;
+  STATS_LOADS   = 3;
+  STATS_RANDOMS = 4;
+  STATS_LEVELS  = 5;
+  STATS_EXP     = 6;
+  STATS_LOGS    = 7;
+  STATS_ORES    = 8;
 
 { const Players
   Constants representing the different Players array records. }
@@ -261,3 +274,9 @@ var
   
   //Used for saving the debug box
   scriptStart: String;
+
+  //Used in the stats system
+  Stats_UserID, Stats_Password, Stats_ScriptID: string;
+  Stats_LastTime: Integer;
+  Stats_CustomVars: array [1..20] of Integer;
+  statsID, statsPass: String; //For compiling issues
