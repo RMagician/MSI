@@ -45,20 +45,20 @@ program MSIScript;
 {.include SRL/SRL/MSI/Setup.scar}
 
 const
-  BREAK_AFTER = 5;  // Loads to break after/switching players after
+  BREAK_AFTER = 3;  // Loads to break after/switching players after
   BREAK_TIME  = 15; // How long to break for in minutes (for single player only, multiplayer will switch players)
 
   WORLD_SMART   = 152;
   WORLD_MEMBERS = False;
   
-  STATS_ID = '';
-  STATS_PASS = '';
+  STATS_ID   = '24';
+  STATS_PASS = '304002';
 
 procedure DeclarePlayers;
 var
   i, j: Integer;
 begin
-  HowManyPlayers := 1;
+  HowManyPlayers := 3;
   NumberOfPlayers(HowManyPlayers);
   CurrentPlayer := 0;
   CurrentSkill := 0;
@@ -76,10 +76,10 @@ begin
     PlayerSkills[0]  := [SKILL_WOODCUTTING];
     PlayerObjects[0] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_VE_BANK;
+    Integers[P_LOC]  := LOC_VE_TREES;
     Booleans[P_BANK] := True;
   end;
-{
+
   with Players[1] do
   begin
     Name   := '';
@@ -88,10 +88,10 @@ begin
     Active := True;
     Pin    := '';
     PlayerSkills[1]  := [SKILL_WOODCUTTING];
-    PlayerObjects[1] := [[OBJ_TREE_WILLOW]];
+    PlayerObjects[1] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_POWER_SKILL;
-    Booleans[P_BANK] := False;
+    Integers[P_LOC]  := LOC_VE_BANK;
+    Booleans[P_BANK] := True;
   end;
 
   with Players[2] do
@@ -102,12 +102,12 @@ begin
     Active := True;
     Pin    := '';
     PlayerSkills[2]  := [SKILL_WOODCUTTING];
-    PlayerObjects[2] := [[OBJ_TREE_WILLOW]];
+    PlayerObjects[2] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_POWER_SKILL;
-    Booleans[P_BANK] := False;
+    Integers[P_LOC]  := LOC_VE_BANK;
+    Booleans[P_BANK] := True;
   end;
-
+{
   with Players[3] do
   begin
     Name   := '';

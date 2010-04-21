@@ -382,6 +382,9 @@ begin
     MSI_Debug('MSI_HandleBreaking', 'Switching players', DEBUG_PLAYER_ACTIONS);
     NextPlayer(True);
   end;
+  
+  Inc(Stats_CustomVars[STATS_LOGINS]);
+  MSI_SendStats;
 end;
 
 {******************************************************************************}
@@ -426,7 +429,11 @@ begin
     
   MSI_ProgressReport;
   if (not AllPlayersInactive) then //To avoid infinite loop in NextPlayer
+  begin
     NextPlayer(False);
+    Inc(Stats_CustomVars[STATS_LOGINS]);
+    MSI_SendStats;
+  end;
 end;
 
 {******************************************************************************}
