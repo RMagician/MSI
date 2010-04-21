@@ -523,83 +523,85 @@ begin
   begin
     case index of
       WALK_WC_VE_TREE_1:
-      begin
-        if not RadialWalkTolerance(RoadColor, 45, 90, randomRange(60, 70), random(8), random(8), 10) then
-          if not RadialWalkTolerance(findRockColor, 45, 90, randomRange(60, 70), 3, 3, 10) then
-          begin
-            MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_1', DEBUG_FUNCTIONS);
-            Exit;
-          end;
-      end;
-
-      WALK_WC_VE_TREE_2:
-      begin
-        if not RadialWalkTolerance(RoadColor, 75, 105, randomRange(60, 70), random(5), random(5), 10) then
-          if not RadialWalkTolerance(RoadColor, 65, 115, randomRange(60, 70), random(5), random(5), 10) then
-          begin
-            MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_2', DEBUG_FUNCTIONS);
-            Exit;
-          end;
-      end;
-
-      WALK_WC_VE_TREE_3:
-      begin
-        if not RadialWalkTolerance(RoadColor, 0, 35, randomRange(60, 70), 10, 10, 10) then
-          if not RadialWalkTolerance(findRockColor, 345, 35, 60, 2, 2, 10) then
-            if not RadialWalkTolerance(RoadColor, 0, 45, randomRange(60, 70), 5, 5, 10) then
+        begin
+          if not RadialWalkTolerance(RoadColor, 45, 90, randomRange(60, 70), random(8), random(8), 10) then
+            if not RadialWalkTolerance(findRockColor, 45, 90, randomRange(60, 70), 3, 3, 10) then
             begin
-              MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_3', DEBUG_FUNCTIONS);
+              MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_1', DEBUG_FUNCTIONS);
               Exit;
             end;
-      end;
+        end;
+
+      WALK_WC_VE_TREE_2:
+        begin
+          if not RadialWalkTolerance(RoadColor, 75, 105, randomRange(60, 70), random(5), random(5), 10) then
+            if not RadialWalkTolerance(RoadColor, 65, 115, randomRange(60, 70), random(5), random(5), 10) then
+            begin
+              MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_2', DEBUG_FUNCTIONS);
+              Exit;
+            end;
+        end;
+
+      WALK_WC_VE_TREE_3:
+        begin
+          RockColor := MSI_AutoColorMM(COLOR_ROCK);
+          if not RadialWalkTolerance(RoadColor, 0, 35, randomRange(60, 70), 2, 1, 10) then
+            if not RadialWalkTolerance(RockColor, 345, 35, 60, 2, 2, 10) then
+              if not RadialWalkTolerance(RoadColor, 0, 45, randomRange(60, 70), 5, 5, 10) then
+                if not RadialWalkTolerance(RoadColor, 60, 95, randomRange(60, 70), 5, 5, 10) then
+                begin
+                  MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_3', DEBUG_FUNCTIONS);
+                  Exit;
+                end;
+        end;
 
       WALK_WC_VE_TREE_4:
-      begin
-        Exit; // Not sure of any other failsafe for this. A (D)DTM perhaps?
-      end;
+        begin
+          Exit; // Not sure of any other failsafe for this. A (D)DTM perhaps?
+        end;
 
       WALK_WC_VE_BANK_1:
-      begin
-        if not RadialWalkTolerance(findRockColor, 350, 50, 65, 5, 5, 10) then
         begin
-          mouseBox(631, 114, 667, 130, 1); // random co-ord clicking
-          wait(randomRange(1000, 2000));
-          if FlagPresent then
+          if not RadialWalkTolerance(findRockColor, 350, 50, 65, 5, 5, 10) then
           begin
-            result := true;
-            FFlag(randomRange(8, 14));
+            mouseBox(631, 114, 667, 130, 1); // random co-ord clicking
+            wait(randomRange(1000, 2000));
+            if FlagPresent then
+            begin
+              result := true;
+              FFlag(randomRange(8, 14));
+            end;
+          end else
+          begin
+            MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_1', DEBUG_FUNCTIONS);
+            Exit;
           end;
-        end else
-        begin
-          MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_1', DEBUG_FUNCTIONS);
-          Exit;
         end;
-      end;
 
       WALK_WC_VE_BANK_2:
-      begin
-        if not RadialWalkTolerance(RoadColor, 180, 200, randomRange(60, 70), random(5), random(5), 10) then
-          if not RadialWalkTolerance(RoadColor, 170, 220, randomRange(60, 70), 3, 3, 10) then
-          begin
-            MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_2', DEBUG_FUNCTIONS);
-            Exit;
-          end;
-      end;
+        begin
+          if not RadialWalkTolerance(RoadColor, 180, 200, randomRange(60, 70), random(5), random(5), 10) then
+            if not RadialWalkTolerance(RoadColor, 170, 220, randomRange(60, 70), 3, 3, 10) then
+            begin
+              MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_2', DEBUG_FUNCTIONS);
+              Exit;
+            end;
+        end;
 
       WALK_WC_VE_BANK_3:
-      begin
-        if not RadialWalkTolerance(RoadColor, 255, 280, randomRange(60, 70), random(8), random(8), 10) then
-          if not RadialWalkTolerance(RoadColor, 245, 290, randomRange(60, 70), 5, 5, 10) then
-          begin
-            MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_3', DEBUG_FUNCTIONS);
-            Exit;
-          end;
-      end;
+        begin
+          if not RadialWalkTolerance(RoadColor, 255, 280, randomRange(60, 70), random(8), random(8), 10) then
+            if not RadialWalkTolerance(RoadColor, 245, 290, randomRange(60, 70), 5, 5, 10) then
+            begin
+              MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_3', DEBUG_FUNCTIONS);
+              Exit;
+            end;
+        end;
 
       WALK_WC_VE_BANK_4:
-      begin
-        Exit; // add a DTM of Bankers here.
-      end;
+        begin
+          Exit; // add a DTM of Bankers here.
+        end;
     end;
   end;
   result := true;
