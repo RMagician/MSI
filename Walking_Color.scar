@@ -365,7 +365,7 @@ begin
         for i := 0 to 2 do
         begin
           RoadColor := MSI_AutoColorMM(COLOR_ROAD_VARROCK);
-          FindColorsTolerance(TPA, RoadColor, MMCx + 20, MMy1, MMx2, MMCy, Tol);
+          FindColorsTolerance(TPA, RoadColor, MMCx + 30, MMy1, MMx2, MMCy, Tol);
           if Length(TPA) > 10 then
             Break;
           if i = 2 then
