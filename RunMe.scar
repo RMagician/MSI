@@ -51,8 +51,8 @@ const
   WORLD_SMART   = 152;
   WORLD_MEMBERS = False;
   
-  STATS_ID   = '24';
-  STATS_PASS = '304002';
+  STATS_ID   = '';
+  STATS_PASS = '';
 
 procedure DeclarePlayers;
 var
@@ -76,7 +76,7 @@ begin
     PlayerSkills[0]  := [SKILL_WOODCUTTING];
     PlayerObjects[0] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_VE_TREES;
+    Integers[P_LOC]  := LOC_VE_BANK;
     Booleans[P_BANK] := True;
   end;
 

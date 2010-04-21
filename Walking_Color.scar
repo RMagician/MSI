@@ -365,12 +365,12 @@ begin
         for i := 0 to 2 do
         begin
           RoadColor := MSI_AutoColorMM(COLOR_ROAD_VARROCK);
-          FindColorsTolerance(TPA, RoadColor, MMCx + 30, MMy1, MMx2, MMCy, Tol);
+          FindColorsTolerance(TPA, RoadColor, MMCx + 40, MMy1, MMx2, MMCy + 15, Tol);
           if Length(TPA) > 10 then
             Break;
           if i = 2 then
           begin
-            MSI_Debug('WALK_WC_VE_TREE_2', 'Failed to find the road.', DEBUG_SMALL_DETAILS);
+            MSI_Debug('WALK_WC_VE_TREE_2', 'Failed to locate road.', DEBUG_SMALL_DETAILS);
             Exit;
           end;
           Tol := i * 2;
