@@ -36,17 +36,16 @@ begin
 end;
 
 {******************************************************************************}
-{ procedure MSI_Flag(Distance: Integer);                                       }
+{ procedure MSI_Flag;                                                          }
 { By: marpis                                                                   }
 { Description: Flag wait                                                       }
 {******************************************************************************}
-procedure MSI_Flag(FlagDist: integer);
+procedure MSI_Flag;
 begin
   if WaitFunc(@MSI_IsMoving, 1, 2500 + random(200)) then
-    while (MSI_IsMoving) and (FlagPresent) do
+    while (MSI_IsMoving) do //edited to not use Flag incase it's off the minimap if the player has to walk aroung an obstacle
     begin
-      if (FFlag(FlagDist)) then
-        Break;
+      Wait(RandomRange(50, 100));
       MSI_AntiBan(1, 10);
     end;
 end;
@@ -497,29 +496,31 @@ end;
 {******************************************************************************}
 function MSI_WalkToColorIndex(index: Integer): Boolean;
 var
-  thePoint: TPoint;
+  p: TPoint;
 begin
-  thePoint := MSI_CreateWalkIndex(index);
+  p := MSI_CreateWalkIndex(index);
 
-  if (thePoint.x = -1) then
-  begin
-    Result := False;
+  if (p.x = -1) then
     Exit;
-  end;
-
-  Mouse(thePoint.x, thePoint.y, 3, 3, True);
-  MSI_Flag(RandomRange(3, 6));
-  Result := True;
+  
+  if (rs_OnMinimap(p.x, p.y)) then
+  begin
+    Mouse(p.x, p.y, 3, 3, True);
+    MSI_Flag;
+    Result := True;
+  end else
+    MSI_Debug('MSI_WalkToColorIndex', 'Failed to walk to ' + MSI_LocToText(index) +
+              ', index: ' + IntToStr(index) + ' is not on the minimap', DEBUG_SMALL_DETAILS);
 end;
 
 {******************************************************************************}
 { function MSI_CreateWalkFailsafe(index: Integer): Boolean;                    }
-{ By: Blumblebee and NCDS                                                      }
+{ By: Blumblebee, NCDS & Coh3n                                                 }
 { Description: Uses radial walking if MSI_WalkToColorIndex fails               }
 {******************************************************************************}
 function MSI_CreateWalkFailsafe(index: Integer): Boolean;
 var
-  RockColor: Integer;
+  RockColor, TreeColor: Integer;
 begin
   if not MSI_WalkToColorIndex(index) then
   begin
@@ -559,7 +560,13 @@ begin
 
       WALK_WC_VE_TREE_4:
         begin
-          Exit; // Not sure of any other failsafe for this. A (D)DTM perhaps?
+          TreeColor := MSI_AutoColorMM(COLOR_TREE);
+          if not RadialWalkTolerance(TreeColor, 310, 350, 6, 2, 1, 10) then
+            if not RadialWalkTolerance(TreeColor, 60, 100, 60, 2, 1, 10) then //for if the player ends up in the museum
+            begin
+              MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_3', DEBUG_FUNCTIONS);
+              Exit;
+            end;
         end;
 
       WALK_WC_VE_BANK_1:
@@ -651,8 +658,8 @@ begin
   begin
     if (not MSI_CreateWalkFailsafe(thePath[i])) then
     begin
-      MSI_Debug('MSI_ColorWalk', 'Failed to walk to ' + MSI_LocToText(endLoc) + ', index: ' + IntToStr(i), DEBUG_SMALL_DETAILS);
-      ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to walk to ' + MSI_LocToText(endLoc) + ', index: ' + IntToStr(i);
+      MSI_Debug('MSI_ColorWalk', 'Failed to walk to ' + MSI_LocToText(endLoc) + ', index: ' + IntToStr(thePath[i]), DEBUG_SMALL_DETAILS);
+      ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to walk to ' + MSI_LocToText(endLoc) + ', index: ' + IntToStr(thePath[i]);
       Players[CurrentPlayer].Integers[P_LOC] := LOC_LOST;
       Exit;
     end;

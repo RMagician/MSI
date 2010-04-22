@@ -58,7 +58,7 @@ procedure DeclarePlayers;
 var
   i, j: Integer;
 begin
-  HowManyPlayers := 3;
+  HowManyPlayers := 1;
   NumberOfPlayers(HowManyPlayers);
   CurrentPlayer := 0;
   CurrentSkill := 0;
@@ -79,7 +79,7 @@ begin
     Integers[P_LOC]  := LOC_VE_BANK;
     Booleans[P_BANK] := True;
   end;
-
+{
   with Players[1] do
   begin
     Name   := '';
@@ -107,7 +107,7 @@ begin
     Integers[P_LOC]  := LOC_VE_BANK;
     Booleans[P_BANK] := True;
   end;
-{
+
   with Players[3] do
   begin
     Name   := '';
