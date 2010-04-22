@@ -352,9 +352,9 @@ begin
         end;
         SortTPAFrom(TPA, Point(MMCx, MMCy));
         try
-          t := RandomRange(Length(TPA) - 5, Length(TPA));
+          t := RandomRange(Length(TPA) - 10, Length(TPA) - 5);
         except
-          t := Length(TPA) - 2;
+          t := Length(TPA) - 7;
         end;
         Result := Point(TPA[t].x, TPA[t].y);
       end;
@@ -365,7 +365,7 @@ begin
         for i := 0 to 2 do
         begin
           RoadColor := MSI_AutoColorMM(COLOR_ROAD_VARROCK);
-          FindColorsTolerance(TPA, RoadColor, MMCx + 40, MMy1, MMx2, MMCy + 15, Tol);
+          FindColorsTolerance(TPA, RoadColor, MMCx + 40, MMCY - 40, MMx2, MMCy + 15, Tol);
           if Length(TPA) > 10 then
             Break;
           if i = 2 then
@@ -550,7 +550,7 @@ begin
           if not RadialWalkTolerance(RoadColor, 0, 35, randomRange(60, 70), 2, 1, 10) then
             if not RadialWalkTolerance(RockColor, 345, 35, 60, 2, 2, 10) then
               if not RadialWalkTolerance(RoadColor, 0, 45, randomRange(60, 70), 5, 5, 10) then
-                if not RadialWalkTolerance(RoadColor, 60, 95, randomRange(60, 70), 5, 5, 10) then
+                if not RadialWalkTolerance(RoadColor, 60, 110, 80, 5, 5, 10) then
                 begin
                   MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_3', DEBUG_FUNCTIONS);
                   Exit;
