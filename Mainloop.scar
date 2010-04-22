@@ -526,12 +526,13 @@ begin
       end;
 
     until(not Players[CurrentPlayer].Active);
-    
-    if (AllPlayersInactive) then
-    begin
-      MSI_Debug('MSI_MainLoop', 'All players inactive, terminating script', DEBUG_PLAYER_ACTIONS);
-      MSI_ProgressReport;
-      TerminateScript;
-    end;
   until(AllPlayersInactive);
+  
+  if (AllPlayersInactive) then
+  begin
+    MSI_Debug('MSI_MainLoop', 'All players inactive, terminating script', DEBUG_PLAYER_ACTIONS);
+    Logout; //to be sure the last player is logged out
+    MSI_ProgressReport;
+    TerminateScript;
+  end;
 end;
