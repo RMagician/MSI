@@ -495,8 +495,8 @@ begin
     MSI_Flag;
     Result := True;
   end else
-    MSI_Debug('MSI_WalkToColorIndex', 'Failed to walk to ' + MSI_LocToText(index) +
-              ', index: ' + IntToStr(index) + ' is not on the minimap', DEBUG_SMALL_DETAILS);
+    MSI_Debug('MSI_WalkToColorIndex', 'Failed to walk to, index: ' +
+              IntToStr(index) + ' is not on the minimap', DEBUG_SMALL_DETAILS);
 end;
 
 {******************************************************************************}
