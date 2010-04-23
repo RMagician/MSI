@@ -68,7 +68,8 @@ end;
 {******************************************************************************}
 { Function MSI_Deposit(Items, Amount : TIntegerArray) : Boolean                }
 { By: Naum                                                                     }
-{ Description: Deposits an Item using the TItem type                           }
+{ Description: Deposits an Item using the TItem type. Set Amount to [] to      }
+{              deposit all of every item                                       }
 {******************************************************************************}
 Function MSI_Deposit(Items, Amount: TIntegerArray) : Boolean;
 Var ATPA2 : Array Of TPointArray;  //The length is the same as items.colors
@@ -81,11 +82,20 @@ Begin
   if (not LoggedIn) then
     Exit;
     
-  SetArrayLength(Items, Length(Amount));
+  if (Length(Amount) <= 0) then
+  begin
+    SetLength(Amount, Length(Items));
+    for i := 0 to High(Amount) do
+      Amount[i] := 28;
+  end;
+
   MSI_LoadItems(Items);
   If Not WaitFunc(@BankScreen, 70, 1300) Then  //Just in case
-    Exit
-  Else
+  begin
+    MSI_FreeItemArray(Items);
+    Exit;
+  end Else
+
   For I := 0 To High(Items) Do
   Begin
     Tol := 0;

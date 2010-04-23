@@ -338,7 +338,7 @@ begin
               Exit;
             end;
 
-            Result := MSI_Deposit(MSI_GetItemList(CurrentPlayer, CurrentSkill), [28, 28]);
+            Result := MSI_Deposit(MSI_GetItemList(CurrentPlayer, CurrentSkill), []);
             if (not Result) then
               ProgressReportArray[CurrentPlayer].FalseReason := 'Failed to deposit items'
             else begin
