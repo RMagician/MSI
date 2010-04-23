@@ -143,13 +143,14 @@ Begin
              Result := True;
         End;
 
-        If Result Then Exit;
-
-       MSI_Debug('MSI_Deposit', 'Deposited Amount '+IntToStr(Amount[I])+
-                 ' Of Item : ''' +MSI_Item[Items[I]].Name+'''', DEBUG_SMALL_DETAILS);
+        If Result Then
+          MSI_Debug('MSI_Deposit', 'Deposited Amount '+IntToStr(Amount[I])+
+                    ' Of Item : ''' +MSI_Item[Items[I]].Name+'''', DEBUG_SMALL_DETAILS);
       End;
     End;
   End;
+  
+  MSI_FreeItemArray(Items);
 End;
 
 
@@ -223,4 +224,6 @@ Begin
       End;
     End;
   End;
+  
+  MSI_FreeItemArray(Items);
 End;

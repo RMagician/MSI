@@ -80,11 +80,6 @@ const
 
   CITY_VARROCK = 5;
 
-{ const AutoColor indexes
-  Description: Constants used for the autocolor indexes }
-const
-  AC_ROAD_VARROCK = 0;
-
 { const AutoColor
   Description: Constants used for autocoloring the minimap }
 const

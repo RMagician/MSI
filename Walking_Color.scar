@@ -9,7 +9,6 @@
 | * procedure MSI_SortColors();                      * by Blumblebee           |
 | * function MSI_FindMMLocation(): Boolean;          * by marpis               |
 | * function MSI_AutoColorMM(): Integer;             * by Blumblebee           |
-| * function MSI_FindAutoColor(): Integer;           * by Coh3n                |
 | * function MSI_CreateWalkTPA(): TPointArray        * by Blumblebee           |
 | * function MSI_WalkTPAPoint(): Boolean;            * by Blumblebee           |
 | * function MSI_CreateColorBox(): TBox;             * by Blumblebee           |
@@ -198,19 +197,6 @@ begin
   MSI_SortColors(List, color);
   if Length(List) <= 0 then Exit;
   result := List[0];
-end;
-
-{******************************************************************************}
-{ function MSI_FindAutoColor(Which: Integer): Integer;                         }
-{ By: Coh3n                                                                    }
-{ Description: Finds the color 'which' on the minimap                          }
-{******************************************************************************}
-function MSI_FindAutoColor(which: Integer): Integer;
-begin
-  case which of
-    AC_ROAD_VARROCK:
-      Result := MSI_AutoColorMM(COLOR_ROAD_VARROCK);
-  end;
 end;
 
 {******************************************************************************}
@@ -422,7 +408,7 @@ begin
 
     WALK_WC_VE_BANK_2:
       begin
-        RoadColor := MSI_FindAutoColor(AC_ROAD_VARROCK);
+        RoadColor := MSI_AutoColorMM(COLOR_ROAD_VARROCK);
         FindColorsTolerance(TPA, RoadColor, MMx1, MMCy + 15, MMx2 - 20, MMy2, 4);
         if Length(TPA) <= 0 then
           Exit;
