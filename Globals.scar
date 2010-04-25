@@ -106,6 +106,14 @@ const
   WALK_WC_VE_BANK_2 = 5; // path
   WALK_WC_VE_BANK_3 = 6; // road
   WALK_WC_VE_BANK_4 = 7; // final
+  
+{ const Banking
+  Description: Constants used in bank procedures }
+  
+Const
+  BankSymbolAccuracy = 0.45;   // The symbol accuracy of the bank
+  IncTol = 5; // How much to increase the tolerance by
+  MaxTol = 40; // The max tolerance reached before the object cannot be found.
 
 { const Hatchet/Pickaze requirements.
   Constants representing the requirements to use each tool }

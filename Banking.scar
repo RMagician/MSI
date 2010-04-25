@@ -10,10 +10,6 @@
 |                                                                              |
  \_____________________________________________________________________________}
 
-Const
-  BankSymbolAccuracy = 0.45;   // The symbol accuracy of the bank
-  IncTol = 5; // How much to increase the tolerance by
-  MaxTol = 40; // The max tolerance reached before the object cannot be found.
   
 {******************************************************************************}
 { function MSI_OpenBank(which, walkIndex: Integer; tPin: String): Boolean;     }
