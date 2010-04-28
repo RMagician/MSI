@@ -43,7 +43,7 @@ begin
     if (t = 15) then
       if not (MSI_WalkToColorIndex(walkIndex)) then
       begin
-        SymbolAccuracy := BankSymbolAccuracy;
+        SymbolAccuracy := BANK_SYMBOL_ACCURACY;
         if (FindSymbol(x, y, 'bank')) then
         begin
           Mouse(x, y, 5, 5, True);
@@ -85,78 +85,76 @@ Begin
       Amount[i] := 28;
   end;
 
-  MSI_LoadItems(Items);
   If Not WaitFunc(@BankScreen, 70, 1300) Then  //Just in case
-  begin
-    MSI_FreeItemArray(Items);
-    Exit;
-  end Else
-
-  For I := 0 To High(Items) Do
-  Begin
-    Tol := 0;
-    Repeat
-      BitmapCheck := FindBitmapToleranceIn(MSI_Item[Items[I]].BMP, BX, BY, MIX1, MIY1, MIX2, MIY2, Tol);
-      IncEx(Tol, IncTol);
-    Until(BitmapCheck) Or (Tol >= MaxTol);
-
-    If Not BitmapCheck Then
+    Exit
+  Else begin
+    MSI_LoadItems(Items);
+    For I := 0 To High(Items) Do
     Begin
-      SetArrayLength(ATPA2, High(MSI_Item[Items[I]].Colors)+1)
+      Tol := 0;
+      Repeat
+        BitmapCheck := FindBitmapToleranceIn(MSI_Item[Items[I]].BMP, BX, BY, MIX1, MIY1, MIX2, MIY2, Tol);
+        IncEx(Tol, INC_TOL);
+      Until(BitmapCheck) Or (Tol >= MAX_TOL);
 
-      For II := 0 To High(MSI_Item[Items[I]].Colors) Do
-        FindColorsTolerance(ATPA2[II], MSI_Item[Items[I]].Colors[II], MIX1, MIY1, MIX2, MIY2, 15);
-
-      ATPA2[0] := MergeATPA(ATPA2);
-      ATPA := SplitTPA(ATPA2[0], 5);
-
-      For II := 0 To High(ATPA) Do
+      If Not BitmapCheck Then
       Begin
-        TB := IntToBox(ATPA[II][0].x - 50, ATPA[II][0].y - 50,
-              ATPA[II][0].x + 43, ATPA[II][0].y + 44);
+        SetArrayLength(ATPA2, High(MSI_Item[Items[I]].Colors)+1)
 
-        DTMCheck := DTMRotated(MSI_Item[Items[I]].DTM, DX, DY, TB.x1, TB.y1, TB.x2, TB.y2);
-        MMouse(DX, DY, 2, 3);
-        TextCheck := WaitUpTextMulti(MSI_Item[Items[I]].UpText, 150+Random(30));
-        If TextCheck Then Break;
-      End;
-    End;
+        For II := 0 To High(MSI_Item[Items[I]].Colors) Do
+          FindColorsTolerance(ATPA2[II], MSI_Item[Items[I]].Colors[II], MIX1, MIY1, MIX2, MIY2, 15);
 
-    If BitmapCheck Or TextCheck Then
-    Begin
-      If BX + BY > 0 Then
-        MMouse(BX, BY, 2, 3);
+        ATPA2[0] := MergeATPA(ATPA2);
+        ATPA := SplitTPA(ATPA2[0], 5);
 
-      TextCheck := WaitUpTextMulti(MSI_Item[Items[I]].UpText, 1200);
-      GetMousePos(XX, YY);
-      Result := TextCheck;
-
-      If Result Then
-      Begin
-        Mouse(XX, YY, 0, 0, False);
-
-        If Amount[I] >= 28 Then
-          Result := WaitOption('-All', 1200);
-
-        If InIntArray([1, 5, 10], Amount[I]) Then
-          Result := WaitOption('-'+IntToStr(Amount[I]), 1200)
-        Else
+        For II := 0 To High(ATPA) Do
         Begin
-          If WaitOption('-X', 900) Then
-           If WaitColor(254, 401, ClBlack, 0, 1200) Then
-             TypeSend(IntToStr(Amount[I]));
+          TB := IntToBox(ATPA[II][0].x - 50, ATPA[II][0].y - 50,
+                ATPA[II][0].x + 43, ATPA[II][0].y + 44);
 
-             Result := True;
+          DTMCheck := DTMRotated(MSI_Item[Items[I]].DTM, DX, DY, TB.x1, TB.y1, TB.x2, TB.y2);
+          MMouse(DX, DY, 2, 3);
+          TextCheck := WaitUpTextMulti(MSI_Item[Items[I]].UpText, 150+Random(30));
+          If TextCheck Then Break;
         End;
+      End;
+
+      If BitmapCheck Or TextCheck Then
+      Begin
+        If BX + BY > 0 Then
+          MMouse(BX, BY, 2, 3);
+
+        TextCheck := WaitUpTextMulti(MSI_Item[Items[I]].UpText, 1200);
+        GetMousePos(XX, YY);
+        Result := TextCheck;
 
         If Result Then
-          MSI_Debug('MSI_Deposit', 'Deposited Amount '+IntToStr(Amount[I])+
-                    ' Of Item : ''' +MSI_Item[Items[I]].Name+'''', DEBUG_SMALL_DETAILS);
+        Begin
+          Mouse(XX, YY, 0, 0, False);
+
+          If Amount[I] >= 28 Then
+            Result := WaitOption('-All', 1200);
+
+          If InIntArray([1, 5, 10], Amount[I]) Then
+            Result := WaitOption('-'+IntToStr(Amount[I]), 1200)
+          Else
+          Begin
+            If WaitOption('-X', 900) Then
+             If WaitColor(254, 401, ClBlack, 0, 1200) Then
+               TypeSend(IntToStr(Amount[I]));
+
+               Result := True;
+          End;
+
+          If Result Then
+            MSI_Debug('MSI_Deposit', 'Deposited Amount '+IntToStr(Amount[I])+
+                      ' Of Item : ''' +MSI_Item[Items[I]].Name+'''', DEBUG_SMALL_DETAILS);
+        End;
       End;
     End;
-  End;
-  
-  MSI_FreeItemArray(Items);
+
+    MSI_FreeItemArray(Items);
+  end;
 End;
 
 
@@ -176,60 +174,61 @@ Var ATPA2 : Array Of TPointArray;  //The length is the same as items.colors
 Begin
   if (not LoggedIn) then
     Exit;
-    
-  MSI_LoadItems(Items);
+
   If Not WaitFunc(@BankScreen, 70, 1300) Then  //Just in case
     Exit
-  Else
-  For I := 0 To High(Items) Do
-  Begin
-    Tol := 0;
-    Repeat
-      BitmapCheck := FindBitmapToleranceIn(MSI_Item[Items[I]].BMP, BX, BY, MBX1, MBY1, MBX2, MBY2, Tol);
-      IncEx(Tol, IncTol);
-    Until(BitmapCheck) Or (Tol >= MaxTol);
-
-    If Not BitmapCheck Then
+  Else begin
+    MSI_LoadItems(Items);
+    For I := 0 To High(Items) Do
     Begin
-      SetArrayLength(ATPA2, High(MSI_Item[Items[I]].Colors)+1)
+      Tol := 0;
+      Repeat
+        BitmapCheck := FindBitmapToleranceIn(MSI_Item[Items[I]].BMP, BX, BY, MBX1, MBY1, MBX2, MBY2, Tol);
+        IncEx(Tol, INC_TOL);
+      Until(BitmapCheck) Or (Tol >= MAX_TOL);
 
-      For II := 0 To High(MSI_Item[Items[I]].Colors) Do
-        FindColorsTolerance(ATPA2[II], MSI_Item[Items[I]].Colors[II], MBX1, MBY1, MBX2, MBY2, 15);
-
-      ATPA2[0] := MergeATPA(ATPA2);
-      ATPA := SplitTPA(ATPA2[0], 5);
-
-      For II := 0 To High(ATPA) Do
+      If Not BitmapCheck Then
       Begin
-        TB := IntToBox(ATPA[II][0].x - 50, ATPA[II][0].y - 50,
-              ATPA[II][0].x + 50, ATPA[II][0].y + 50);
+        SetArrayLength(ATPA2, High(MSI_Item[Items[I]].Colors)+1)
 
-        DTMCheck := DTMRotated(MSI_Item[Items[I]].DTM, DX, DY, TB.x1, TB.y1, TB.x2, TB.y2);
-        MMouse(DX, DY, 2, 3);
-        TextCheck := WaitUpTextMulti(MSI_Item[Items[I]].UpText, 150+Random(30));
-        If TextCheck Then Break;
+        For II := 0 To High(MSI_Item[Items[I]].Colors) Do
+          FindColorsTolerance(ATPA2[II], MSI_Item[Items[I]].Colors[II], MBX1, MBY1, MBX2, MBY2, 15);
+
+        ATPA2[0] := MergeATPA(ATPA2);
+        ATPA := SplitTPA(ATPA2[0], 5);
+
+        For II := 0 To High(ATPA) Do
+        Begin
+          TB := IntToBox(ATPA[II][0].x - 50, ATPA[II][0].y - 50,
+                ATPA[II][0].x + 50, ATPA[II][0].y + 50);
+
+          DTMCheck := DTMRotated(MSI_Item[Items[I]].DTM, DX, DY, TB.x1, TB.y1, TB.x2, TB.y2);
+          MMouse(DX, DY, 2, 3);
+          TextCheck := WaitUpTextMulti(MSI_Item[Items[I]].UpText, 150+Random(30));
+          If TextCheck Then Break;
+        End;
+      End;
+
+      If BitmapCheck Or TextCheck Then
+      Begin
+        If BX + BY > 0 Then
+          MMouse(BX, BY, 2, 3);
+
+        TextCheck := WaitUpTextMulti(MSI_Item[Items[I]].UpText, 1200);
+        GetMousePos(XX, YY);
+        Result := TextCheck;
+
+        If Result Then
+        Begin
+          MSI_Item[Items[I]].ItemP := Point(XX, YY);
+          WithDrawP := MSTPointToBankPoint(Point(XX, YY));
+          Withdraw(WithDrawP.X, WithDrawP.Y, Amount[I]);
+          MSI_Debug('MSI_Withdraw', 'Withdrew Amount '+IntToStr(Amount[I])+
+                   ' Of Item : ''' +MSI_Item[Items[I]].Name+'''', DEBUG_SMALL_DETAILS);
+        End;
       End;
     End;
 
-    If BitmapCheck Or TextCheck Then
-    Begin
-      If BX + BY > 0 Then
-        MMouse(BX, BY, 2, 3);
-
-      TextCheck := WaitUpTextMulti(MSI_Item[Items[I]].UpText, 1200);
-      GetMousePos(XX, YY);
-      Result := TextCheck;
-
-      If Result Then
-      Begin
-        MSI_Item[Items[I]].ItemP := Point(XX, YY);
-        WithDrawP := MSTPointToBankPoint(Point(XX, YY));
-        Withdraw(WithDrawP.X, WithDrawP.Y, Amount[I]);
-        MSI_Debug('MSI_Withdraw', 'Withdrew Amount '+IntToStr(Amount[I])+
-                 ' Of Item : ''' +MSI_Item[Items[I]].Name+'''', DEBUG_SMALL_DETAILS);
-      End;
-    End;
-  End;
-  
-  MSI_FreeItemArray(Items);
+    MSI_FreeItemArray(Items);
+  end;
 End;

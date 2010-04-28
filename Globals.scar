@@ -109,11 +109,25 @@ const
   
 { const Banking
   Description: Constants used in bank procedures }
-  
-Const
-  BankSymbolAccuracy = 0.45;   // The symbol accuracy of the bank
-  IncTol = 5; // How much to increase the tolerance by
-  MaxTol = 40; // The max tolerance reached before the object cannot be found.
+const
+  BANK_SYMBOL_ACCURACY = 0.45;   // The symbol accuracy of the bank
+  INC_TOL = 5; // How much to increase the tolerance by
+  MAX_TOL = 40; // The max tolerance reached before the object cannot be found.
+
+{ const DDTM
+  Description: Constants representing the DDTM points }
+const
+  DTM_TOLERANCE = 12;
+  DTM_X1     = 0;
+  DTM_Y1     = 1;
+  DTM_X2     = 2;
+  DTM_Y2     = 3;
+  DTM_X3     = 4;
+  DTM_Y3     = 5;
+  DTM_X4     = 6;
+  DTM_Y4     = 7;
+  DTM_X5     = 8;
+  DTM_Y5     = 9;
 
 { const Hatchet/Pickaze requirements.
   Constants representing the requirements to use each tool }
@@ -141,7 +155,6 @@ const
   PICKAXE_ADAMANT = 5;
   PICKAXE_RUNE    = 6;
 }
-
   HATCHET_BRONZE  = 7;
   HATCHET_IRON    = 8;
   HATCHET_STEEL   = 9;
@@ -256,13 +269,13 @@ Type
   end;
 
 var
-  //Description: To be used to store information for Players individually
+  //To be used to store information for Players individually
   ProgressReportArray: Array of TProggy;
   
   //Used like CurrentPlayer, but for the skills in the player array
   CurrentSkill: Integer;
   
-  //Description: For script user to choose how much to debug
+  //For script user to choose how much to debug
   Debug_LevelToDebug: integer;
   
   //Used in the DeclarePlayers arrays for skills and objects
