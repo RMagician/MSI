@@ -176,9 +176,9 @@ begin
 end;
 
 {******************************************************************************}
-{ function MSI_ObjToText(Skill, WhatItem: variant): TStringArray;              }
+{ function MSI_ObjToText(which: Integer): TStringArray;                        }
 { By: The MSI Team                                                             }
-{ Description: Gets the necessary proggy info that ISN'T reset during runtime  }
+{ Description: Converts an object constant to string for proggys               }
 {******************************************************************************}
 function MSI_ObjToText(which: Integer): TStringArray;
 begin
@@ -259,7 +259,7 @@ end;
 { procedure MSI_PrintSave(FileH, S : String);                                  }
 { By: Naum                                                                     }
 { Description: Prints the string in the report and debug box also saves the    }
-{               report                                                         }
+{              report                                                          }
 {******************************************************************************}
 Procedure MSI_PrintSave(FH : Integer; S : String);
 Begin

@@ -35,6 +35,32 @@ begin
 end;
 
 {******************************************************************************}
+{ function MSI_GetItemColor(which: Integer): Integer;                          }
+{ By: The MSI Team                                                             }
+{ Description: Loads the item's (which) color - used for DTMs                  }
+{******************************************************************************}
+function MSI_GetItemColor(which: Integer): Integer;
+begin
+  case which of
+    HATCHET_BRONZE:  Result := 1649466;
+    HATCHET_IRON:    Result := 3618618;
+    HATCHET_STEEL:   Result := 5855581;
+    HATCHET_MITHRIL: Result := 4599598;
+    HATCHET_ADAMANT: Result := 3291698;
+    HATCHET_RUNE:    Result := 4932921;
+
+    LOGS_NORMAL: Result := 2704989;
+    LOGS_OAK:    Result := 3760771;
+    LOGS_WILLOW: Result := 1325634;
+    LOGS_MAPLE:  Result := 800853;
+    LOGS_YEW:    Result := 668228;
+
+    else
+      MSI_Debug('MSI_LoadItemColor', 'Invalid item constant!', DEBUG_FUNCTIONS);
+  end;
+end;
+
+{******************************************************************************}
 { function MSI_LoadDTM(which: Integer): Integer;                               }
 { By: Coh3n and Ejjman1                                                        }
 { Description: Loads the DTM specified by 'which'                              }
@@ -48,20 +74,7 @@ var
   clr, i: Integer;
 begin
   pts := MSI_GetDTMInfo(which);
-  case which of
-    HATCHET_BRONZE:  clr := 1649466;
-    HATCHET_IRON:    clr := 3618618;
-    HATCHET_STEEL:   clr := 5855581;
-    HATCHET_MITHRIL: clr := 4599598;
-    HATCHET_ADAMANT: clr := 3291698;
-    HATCHET_RUNE:    clr := 4932921;
-
-    LOGS_NORMAL: clr := 2704989;
-    LOGS_OAK:    clr := 3760771;
-    LOGS_WILLOW: clr := 1325634;
-    LOGS_MAPLE:  clr := 800853;
-    LOGS_YEW:    clr := 668228;
-  end;
+  clr := MSI_GetItemColor(which);
 
   with dtmMainPoint do
   begin
