@@ -5,6 +5,7 @@
 | Used to store and load all information on items and objects                  |
 |                                                                              |
 | * function MSI_GetDTMInfo(): TIntegerArray;   * by Coh3n                     |
+| * function MSI_GetItemColor(): Integer;       * by The MSI Team              |
 | * function MSI_LoadDTM(): Integer;            * by Coh3n                     |
 | * function MSI_GetItem(): Boolean;            * by Coh3n and Naum            |
 | * procedure MSI_LoadItems;                    * by Naum                      |
