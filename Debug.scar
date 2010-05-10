@@ -47,22 +47,23 @@ begin
   writeln(DebugMSG);
 
   //Save the message to a file
-  try
-    path := AppPath + 'Includes\SRL\SRL\msi\MSI Logs\';
-    if FileExists(path + scriptStart + '.txt') then
-    begin
-      theFile := OpenFile(path + scriptStart + '.txt', False);
-      ReadFileString(theFile, str, FileSize(theFile));
+  if (saveDebug) then
+    try
+      path := AppPath + 'Includes\SRL\SRL\msi\MSI Logs\';
+      if FileExists(path + scriptStart + '.txt') then
+      begin
+        theFile := OpenFile(path + scriptStart + '.txt', False);
+        ReadFileString(theFile, str, FileSize(theFile));
+        CloseFile(theFile);
+      end;
+
+      theFile := RewriteFile(path + scriptStart + '.txt', False);
+
+      WriteFileString(theFile, str + #10 + DebugMSG);
       CloseFile(theFile);
+    except
+      Writeln('Debug saving - error occurred');
     end;
-    
-    theFile := RewriteFile(path + scriptStart + '.txt', False);
-      
-    WriteFileString(theFile, str + #10 + DebugMSG);
-    CloseFile(theFile);
-  except
-    Writeln('Debug saving - error occurred');
-  end;
 end;
 
 {******************************************************************************}
@@ -268,7 +269,9 @@ Begin
   {$ELSE}
     AddToReport(S);
   {$ENDIF}
-  WriteFileString(FH, S+#13+#10);
+
+  if (saveDebug) then
+    WriteFileString(FH, S+#13+#10);
 End;
 
 {******************************************************************************}
@@ -284,7 +287,7 @@ var
   intItems: TIntegerArray;
   path: String;
 begin
-  Try
+  try
     path := AppPath + 'Includes\SRL\SRL\MSI\MSI Progress Reports\';
     FileH := ReWriteFile(path + scriptStart + '.txt', False);
     WriteFileString(FileH, 'Progress Report Saved:' + #13 + #10);
@@ -347,5 +350,7 @@ begin
     MSI_PrintSave(FileH, '{----------------------------------------------------------------}');
 
     CloseFile(FileH);
-  Except WriteLn('Proggie saving - error occured'); End;
+  except
+    WriteLn('Proggie saving - error occured');
+  end;
 end;

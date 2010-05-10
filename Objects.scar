@@ -567,7 +567,6 @@ End;
 { By: marpis                                                                   }
 { Description: Finds objects in mainscreen                                     }
 {******************************************************************************}
-function MSI_IsMoving: boolean; Forward;
 Function MSI_FindObjectsIn(Objs: TMSObjectArray; Var IndexFound: Integer; X1, Y1, X2, Y2: Integer; Action: fnct_ActionOptions): Boolean;
 Var
   TPA: TPointArray;
@@ -642,8 +641,8 @@ Begin
           End;
 
           If Objs[II].WaitToMove Then
-            If WaitFunc(@MSI_IsMoving, 15, 2000 + Random(200)) Then
-              While MSI_IsMoving Do
+            If WaitFunc(@IsMoving, 15, 2000 + Random(200)) Then
+              While IsMoving Do
                 Wait(10 + Random(5));
 
           Exit;

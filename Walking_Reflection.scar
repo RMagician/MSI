@@ -4,6 +4,8 @@
 |==============================================================================|
 | For all the walking functions that are reflection based                      |
 |                                                                              |
+| * function MSI_GetMyPos: TPoint;                 * by BenLand100             |
+| * function MSI_TileToMM(): TPoint;               * by BenLand100             |
 | * function MSI_WalkToTile(): Boolean;            * by marpis                 |
 | * function MSI_LoadRefPath(): TIntegerArray;     * by The MSI Team           |
 | * function MSI_RefWalk(): Boolean;               * by marpis                 |
@@ -15,6 +17,44 @@
 {$IFDEF REFLECTION}
 
 {******************************************************************************}
+{ function MSI_GetMyPos: TPoint;                                               }
+{ By: BenLand100                                                               }
+{ Description: Calculates the player's tile position                           }
+{******************************************************************************}
+function MSI_GetMyPos: TPoint;
+var
+  me: Integer;
+begin
+  me := SmartGetFieldObject(0, HOOK_PLAYER);
+
+  Result.x := SmartGetFieldInt(0, HOOK_BASE_X) + SmartGetFieldInt(me, HOOK_LOCAL_X) shr 7;
+  Result.y := SmartGetFieldInt(0, HOOK_BASE_Y) + SmartGetFieldInt(me, HOOK_LOCAL_Y) shr 7;
+
+  SmartFreeObject(me);
+end;
+
+{******************************************************************************}
+{ function MSI_TileToMM(Tile: TPoint): TPoint;                                 }
+{ By: BenLand100                                                               }
+{ Description: Converts the tile position to a minimap location                }
+{******************************************************************************}
+function MSI_TileToMM(tile: TPoint): TPoint;
+var
+  angle: Extended;
+  tX, tY: Integer;
+  tP: TPoint;
+begin
+  angle:= rs_GetCompassAngleRadians;
+
+  tP := MSI_GetMyPos;
+  tX:= (tile.x - tP.x) * 4 - 2;
+  tY:= (tP.y - tile.y) * 4 - 2;
+
+  Result.x:= round(tX * cos(angle) - tY * sin(angle)) + 629;
+  Result.y:= round(tX * sin(angle) + tY * cos(angle)) + 85;
+end;
+
+{******************************************************************************}
 { function MSI_WalkToTile(P: TPoint; Randomness, FlagD: Integer): Boolean;     }
 { By: marpis                                                                   }
 { Description: Walks to tile                                                   }
@@ -23,13 +63,13 @@ function MSI_WalkToTile(P: TPoint; Randomness, FlagD: Integer): Boolean;
 var
   MP: TPoint;
 begin
-  MP := TileToMM(P);
+  MP := MSI_TileToMM(P);
   if (InCircle(MP.X, MP.Y, MMCX, MMCY, 76)) then
   begin
     MSI_Debug('MSI_WalkToTile', 'Tile on MM', DEBUG_SMALL_DETAILS);
     Result := True;
     Mouse(MP.X, MP.Y, Randomness, Randomness, True);
-    MSI_Flag(FlagD);
+    MSI_Flag;
   end else
     MSI_Debug('MSI_WalkToTile', 'Tile not on MM!', DEBUG_SMALL_DETAILS);
 end;
@@ -74,7 +114,7 @@ begin
   repeat
     for I := High(ThePath) downto 0 do
     begin
-      if TileOnMM(ThePath[I]) then
+      if rs_OnMinimap(ThePath[I].x, ThePath[I].y) then
         if (not MSI_WalkToTile(ThePath[I], 4, 10)) then
         begin
           MSI_Debug('MSI_RefWalk', 'Failed to walk to tile: ' + IntToStr(i), DEBUG_SMALL_DETAILS);
@@ -111,7 +151,7 @@ begin
   for i := 0 to High(colorPath) do
   begin
     colorPoint := MSI_CreateWalkIndex(colorPath[i]);
-    refPoint := TileToMM(refPath[i]);
+    refPoint := MSI_TileToMM(refPath[i]);
 
     if (Distance(refPoint.x, refPoint.y, colorPoint.x, colorPoint.y) > WALK_TOL) then
     begin

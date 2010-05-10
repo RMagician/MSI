@@ -29,7 +29,17 @@ const
     - BV: Barbarian Village
 }
 
-{ Debug constants
+{ const Hooks
+  Description: Constants representing all the reflection hooks used for the MSI
+               walking }
+const
+  HOOK_BASE_X  = 'ut.a';
+  HOOK_BASE_Y  = 'dq.N';
+  HOOK_PLAYER  = 'cn.n';
+  HOOK_LOCAL_X = 'm';
+  HOOK_LOCAL_Y = 'q';
+
+{ const Debug
   Description: The several debugging levels, so the user receives as much
                detail as he wishes to receive. }
 const
@@ -286,10 +296,11 @@ var
   BreakAfter, BreakTime: Integer;
   
   //Used when loading items for MSI
-  MSI_Item : Array[0..(MSI_ITEM_COUNT - 1)] Of TItem;
+  MSI_Item: Array[0..(MSI_ITEM_COUNT - 1)] Of TItem;
   
   //Used for saving the debug box
   scriptStart: String;
+  saveDebug: Boolean;
 
   //Used in the stats system
   Stats_UserID, Stats_Password, Stats_ScriptID: string;

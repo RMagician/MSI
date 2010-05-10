@@ -4,7 +4,6 @@
 |==============================================================================|
 | For all the walking functions that are color based.                          |
 |                                                                              |
-| * function MSI_IsMoving: Boolean;                  * by marpis               |
 | * procedure MSI_Flag();                            * by marpis               |
 | * procedure MSI_SortColors();                      * by Blumblebee           |
 | * function MSI_FindMMLocation(): Boolean;          * by marpis               |
@@ -21,28 +20,14 @@
  \_____________________________________________________________________________}
 
 {******************************************************************************}
-{ function MSI_IsMoving: boolean;                                              }
-{ By: marpis                                                                   }
-{ Description: Returns True if moving                                          }
-{******************************************************************************}
-function MSI_IsMoving: boolean;
-begin
-  {$IFDEF REFLECTION}
-  Result := CharacterMoving;
-  {$ELSE}
-  Result := IsMoving;
-  {$ENDIF}
-end;
-
-{******************************************************************************}
 { procedure MSI_Flag;                                                          }
 { By: marpis                                                                   }
 { Description: Flag wait                                                       }
 {******************************************************************************}
 procedure MSI_Flag;
 begin
-  if WaitFunc(@MSI_IsMoving, 1, 2500 + random(200)) then
-    while (MSI_IsMoving) do //edited to not use Flag incase it's off the minimap if the player has to walk aroung an obstacle
+  if WaitFunc(@IsMoving, 1, 2500 + random(200)) then
+    while (IsMoving) do //edited to not use Flag incase it's off the minimap if the player has to walk aroung an obstacle
     begin
       MSI_Antiban(RandomRange(1000, 2000), 10);
       Wait(RandomRange(50, 100));
