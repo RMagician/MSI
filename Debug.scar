@@ -288,11 +288,13 @@ var
   path: String;
 begin
   try
-    path := AppPath + 'Includes\SRL\SRL\MSI\MSI Progress Reports\';
-    FileH := ReWriteFile(path + scriptStart + '.txt', False);
-    WriteFileString(FileH, 'Progress Report Saved:' + #13 + #10);
-    WriteFileString(fileH, #13 + #10 + 'This proggie was written ' + TheDate(Date_Formal )+ ' at ' + TheTime + #13 + #10);
-
+    if (saveDebug) then
+    begin
+      path := AppPath + 'Includes\SRL\SRL\MSI\MSI Progress Reports\';
+      FileH := ReWriteFile(path + scriptStart + '.txt', False);
+      WriteFileString(FileH, 'Progress Report Saved:' + #13 + #10);
+      WriteFileString(fileH, #13 + #10 + 'This proggie was written ' + TheDate(Date_Formal )+ ' at ' + TheTime + #13 + #10);
+    end;
 
     {$IFNDEF SIMBA}
       ClearReport;
@@ -349,7 +351,8 @@ begin
 
     MSI_PrintSave(FileH, '{----------------------------------------------------------------}');
 
-    CloseFile(FileH);
+    if (saveDebug) then
+      CloseFile(FileH);
   except
     WriteLn('Proggie saving - error occured');
   end;

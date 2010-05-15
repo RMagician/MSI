@@ -41,7 +41,7 @@
  \_____________________________________________________________________________}
 
 program MSIScript;
-{$DEFINE REFLECTION} // Comment out if you don't want to use reflection walking
+//{$DEFINE REFLECTION} // Comment out if you don't want to use reflection walking
 {.include SRL/SRL/MSI/Setup.scar}
 
 const
