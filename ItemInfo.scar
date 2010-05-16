@@ -4,7 +4,7 @@
 |==============================================================================|
 | Used to store and load all information on items and objects                  |
 |                                                                              |
-| * function MSI_GetDTMInfo(): TIntegerArray;   * by Coh3n                     |
+| * function MSI_GetDTMInfo(): TIntegerArray;   * by The MSI Team              |
 | * function MSI_GetItemColor(): Integer;       * by The MSI Team              |
 | * function MSI_LoadDTM(): Integer;            * by Coh3n                     |
 | * function MSI_GetItem(): Boolean;            * by Coh3n and Naum            |
@@ -18,7 +18,7 @@
 
 {******************************************************************************}
 { function MSI_GetDTMInfo(which: Integer): TIntegerArray;                      }
-{ By: Coh3n                                                                    }
+{ By: The MSI Team                                                             }
 { Description: Gets the coodinates for the DTM points                          }
 {******************************************************************************}
 function MSI_GetDTMInfo(which: Integer): TIntegerArray;
@@ -131,24 +131,7 @@ end;
 Function MSI_GetItem(ID : Integer) : Boolean;
 Begin
   Case ID Of
-    //Test item xP
 {
-    CAVADA_BERRIES :
-      With MSI_Item[CAVADA_BERRIES] Do
-      Begin
-        Name := 'Cadava Berries';
-        UpText := ['dava ber'];
-        ItemP := Point(0, 0);
-        Colors := [10033858, 8984493, 7804054, 6558079, 12001255, 9705915];
-        Stackable := True;
-        DTM := DTMFromString('78DA63CC616260E0606440066EBA9C0C22401A26CA980554C386A6C6'+
-               'C118554D0EA61A902C86391C04D4E401D570A1AA392A3D07D32E2EFC6E0600B439067C');
-
-        BMP := BitmapFromString(7, 7, 'beNoTrfVwMPGwM3G2NmRgYHTT5XTRASE3B2MIAgraa3A'+
-                  'ASYggUDGEbaTABmEASSAyV2YH6oWwgYxpIuUdQjlAtoc+F5B8pbDzkfzmWsHkqSJlEAXXZFcdlZ6zVbI/lz8Mogto1G7JKWvFO+cCACNQHR0=');
-      End;
-
-
     //Pickaxe's
     PICKAXE_BRONZE : //Coh3n
       with MSI_Item[PICKAXE_BRONZE] do
@@ -471,7 +454,7 @@ Begin
     FreeBitmap(MSI_Item[Which].BMP);
     FreeDTM(MSI_Item[Which].DTM);
     
-   With MSI_Item[Which] Do
+    With MSI_Item[Which] Do
     Begin
       Name := '';
       UpText := [''];

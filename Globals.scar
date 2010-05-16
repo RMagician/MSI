@@ -154,29 +154,27 @@ const
 { const Item Info
   Description: Constants representing all the items used in MSI. }
 const
-  MSI_ITEM_COUNT = 18;  //change this to the number of items in ItemInfo.scar
+  MSI_ITEM_COUNT = 17;  //change this to the number of items in ItemInfo.scar
 {
-  CAVADA_BERRIES = 0; //Test
-
-  PICKAXE_BRONZE  = 1;
-  PICKAXE_IRON    = 2;
-  PICKAXE_STEEL   = 3;
-  PICKAXE_MITHRIL = 4;
-  PICKAXE_ADAMANT = 5;
-  PICKAXE_RUNE    = 6;
+  PICKAXE_BRONZE  = 0;
+  PICKAXE_IRON    = 1;
+  PICKAXE_STEEL   = 2;
+  PICKAXE_MITHRIL = 3;
+  PICKAXE_ADAMANT = 4;
+  PICKAXE_RUNE    = 5;
 }
-  HATCHET_BRONZE  = 7;
-  HATCHET_IRON    = 8;
-  HATCHET_STEEL   = 9;
-  HATCHET_MITHRIL = 10;
-  HATCHET_ADAMANT = 11;
-  HATCHET_RUNE    = 12;
+  HATCHET_BRONZE  = 6;
+  HATCHET_IRON    = 7;
+  HATCHET_STEEL   = 8;
+  HATCHET_MITHRIL = 9;
+  HATCHET_ADAMANT = 10;
+  HATCHET_RUNE    = 11;
 
-  LOGS_NORMAL = 13;
-  LOGS_OAK    = 14;
-  LOGS_WILLOW = 15;
-  LOGS_MAPLE  = 16;
-  LOGS_YEW    = 17;
+  LOGS_NORMAL = 12;
+  LOGS_OAK    = 13;
+  LOGS_WILLOW = 14;
+  LOGS_MAPLE  = 15;
+  LOGS_YEW    = 16;
 
 { const Objects
   Description: Constants representing all the main screen objects used in MSI }

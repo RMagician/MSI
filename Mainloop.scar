@@ -451,8 +451,11 @@ begin
   Stats_Password := statsPass;
   
   //To gain access
-  MSI_Debug('MSI_MainLoop', 'Created file', DEBUG_FUNCTIONS);
-  MSI_ProgressReport;
+  if (saveDebug) then
+  begin
+    MSI_Debug('MSI_MainLoop', 'Created file', DEBUG_FUNCTIONS);
+    MSI_ProgressReport;
+  end;
   
   repeat
     //Setup player
@@ -533,6 +536,7 @@ begin
     MSI_Debug('MSI_MainLoop', 'All players inactive, terminating script', DEBUG_PLAYER_ACTIONS);
     Logout; //to be sure the last player is logged out
     MSI_ProgressReport;
+    FreeSRL;
     TerminateScript;
   end;
 end;

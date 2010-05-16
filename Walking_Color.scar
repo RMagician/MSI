@@ -29,7 +29,6 @@ begin
   if WaitFunc(@IsMoving, 1, 2500 + random(200)) then
     while (IsMoving) do //edited to not use Flag incase it's off the minimap if the player has to walk aroung an obstacle
     begin
-      MSI_Antiban(RandomRange(1000, 2000), 10);
       Wait(RandomRange(50, 100));
       MSI_AntiBan(1, 10);
     end;
