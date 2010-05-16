@@ -130,6 +130,11 @@ end;
 {******************************************************************************}
 Function MSI_GetItem(ID : Integer) : Boolean;
 Begin
+  if (IsItemLoaded[ID]) then
+    Exit
+  else
+    IsItemLoaded[ID] := True;
+
   Case ID Of
 {
     //Pickaxe's
@@ -450,9 +455,13 @@ End;
 {******************************************************************************}
 Procedure MSI_FreeItemEx(Which : Integer);
 Begin
+  if (not IsItemLoaded[which]) then
+    Exit;
+
   Try
     FreeBitmap(MSI_Item[Which].BMP);
     FreeDTM(MSI_Item[Which].DTM);
+    IsItemLoaded[which] := False;
     
     With MSI_Item[Which] Do
     Begin

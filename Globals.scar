@@ -295,6 +295,7 @@ var
   
   //Used when loading items for MSI
   MSI_Item: Array[0..(MSI_ITEM_COUNT - 1)] Of TItem;
+  IsItemLoaded: Array[0..(MSI_ITEM_COUNT - 1)] of Boolean;
   
   //Used for saving the debug box
   scriptStart: String;

@@ -152,8 +152,6 @@ Begin
         End;
       End;
     End;
-
-    MSI_FreeItemArray(Items);
   end;
 End;
 
@@ -228,7 +226,5 @@ Begin
         End;
       End;
     End;
-
-    MSI_FreeItemArray(Items);
   end;
 End;

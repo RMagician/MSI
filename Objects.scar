@@ -293,8 +293,6 @@ begin
   Result := FoundDTM or FoundBitmap;
   if Result then
     MSI_Debug('MSI_FindTool', 'Successfully Found Tool: ' + MSI_Item[Tool].Name, Debug_Functions);
-
-  MSI_FreeItemEx(Tool);
 end;
 
 {******************************************************************************}
@@ -343,8 +341,6 @@ Begin
       Result[H] :=I;
     End;
   End;
-  
-  MSI_FreeItemEx(ItemID);
 End;
 
 {******************************************************************************}

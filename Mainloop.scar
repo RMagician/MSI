@@ -540,3 +540,9 @@ begin
     TerminateScript;
   end;
 end;
+
+procedure ScriptTerminate;
+begin
+  Writeln('Thank-you for using MSI Phoenix scripts!');
+  MSI_FreeItems;
+end;
