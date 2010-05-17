@@ -41,13 +41,13 @@
  \_____________________________________________________________________________}
 
 program MSIScript;
-//{$DEFINE REFLECTION} // Comment out if you don't want to use reflection walking
+{$DEFINE REFLECTION} // Comment out if you don't want to use reflection walking
 {.include SRL/SRL/MSI/Setup.scar}
 
 const
-  BREAK_AFTER = 10;   // Loads to break after/switching players after
+  BREAK_AFTER = 15;   // Loads to break after/switching players after
   BREAK_TIME  = 15;   // How long to break for in minutes (for single player only, multiplayer will switch players)
-  SAVE_DEBUG  = False; // Do you want the script to save files of the debug box and progress reports?
+  SAVE_DEBUG  = True; // Do you want the script to save files of the debug box and progress reports?
 
   WORLD_SMART   = 152;
   WORLD_MEMBERS = False;
@@ -95,12 +95,12 @@ begin
     Booleans[P_BANK] := True;
   end;
 
-  with Players[2] do //mime
+  with Players[2] do
   begin
     Name   := '';
     Pass   := '';
     Nick   := '';
-    Active := False;
+    Active := True;
     Pin    := '';
     PlayerSkills[2]  := [SKILL_WOODCUTTING];
     PlayerObjects[2] := [[OBJ_TREE_NORMAL]];
@@ -117,10 +117,10 @@ begin
     Active := True;
     Pin    := '';
     PlayerSkills[3]  := [SKILL_WOODCUTTING];
-    PlayerObjects[3] := [[OBJ_TREE_WILLOW]];
+    PlayerObjects[3] := [[OBJ_TREE_NORMAL]];
     Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_POWER_SKILL;
-    Booleans[P_BANK] := False;
+    Integers[P_LOC]  := LOC_VE_BANK;
+    Booleans[P_BANK] := True;
   end;
 
   with Players[4] do //maze

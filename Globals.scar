@@ -33,11 +33,11 @@ const
   Description: Constants representing all the reflection hooks used for the MSI
                walking }
 const
-  HOOK_BASE_X  = 'ut.a';
-  HOOK_BASE_Y  = 'dq.N';
-  HOOK_PLAYER  = 'cn.n';
-  HOOK_LOCAL_X = 'm';
-  HOOK_LOCAL_Y = 'q';
+  HOOK_BASE_X  = 'jv.ic';
+  HOOK_BASE_Y  = 'pi.c';
+  HOOK_PLAYER  = 'lb.m';
+  HOOK_LOCAL_X = 'k';
+  HOOK_LOCAL_Y = 'j';
 
 { const Debug
   Description: The several debugging levels, so the user receives as much
