@@ -25,10 +25,10 @@ function MSI_GetDTMInfo(which: Integer): TIntegerArray;
 begin
   case which of
     HATCHET_BRONZE..HATCHET_RUNE:
-      Result := [ 921, 515, 909, 534, 908, 525, 915, 512, 925, 519 ];
+      Result := [ 586, 243, 587, 249, 574, 261, 575, 248, 587, 240 ];
 
     LOGS_NORMAL..LOGS_YEW:
-      Result := [ 1155, 290, 1164, 281, 1164, 290, 1147, 294, 1143, 280 ];
+      Result := [ 623, 291, 624, 279, 635, 296, 614, 299, 609, 289 ];
 
     else
       MSI_Debug('MSI_GetDTMInfo', 'Invalid item constant!', DEBUG_FUNCTIONS);
@@ -95,7 +95,7 @@ begin
 
       if (i > 0) then
       begin
-        Color := SRL_OUTLINE_BLACK
+        Color := SRL_OUTLINE_BLACK;
         Tolerance := 0;
       end else begin
         Color := clr;

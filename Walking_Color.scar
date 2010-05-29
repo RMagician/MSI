@@ -8,10 +8,12 @@
 | * procedure MSI_SortColors();                      * by Blumblebee           |
 | * function MSI_FindMMLocation(): Boolean;          * by marpis               |
 | * function MSI_AutoColorMM(): Integer;             * by Blumblebee           |
+| * function MSI_AutoColor(): Integer;               * by Coh3n                |
 | * function MSI_CreateWalkTPA(): TPointArray        * by Blumblebee           |
 | * function MSI_WalkTPAPoint(): Boolean;            * by Blumblebee           |
 | * function MSI_CreateColorBox(): TBox;             * by Blumblebee           |
 | * function MSI_FindColorInBox(): Boolean;          * by Blumblebee           |
+| * function MSI_WC_VEPoints(): TPoint;              * by The MSI Team         |
 | * function MSI_CreateWalkIndex(): TPoint;          * by The MSI Team         |
 | * function MSI_WalkToColorIndex(): Boolean;        * by Coh3n                |
 | * function MSI_CreateWalkFailsafe(): Boolean;      * by Blumblebee & NCDS    |
@@ -43,16 +45,12 @@ procedure MSI_SortColors(var Colors: tIntegerArray; col: Integer);
 var
   tempB: tIntegerArray;
   Tol: ShortInt;
-  I: Integer;
-  timer, L: LongInt;
+  I: Integer;L: LongInt;
 begin
-  timer := getsystemtime;
   tempB := Colors;
   SetArrayLength(Colors, 0);
   Tol := 0;
-  while Length(Colors) < (Length(tempB)/2 or 5) do
-  begin
-    if Getsystemtime-timer > 100 then Break;
+  while Length(Colors) < (Length(tempB)/2) do
     for i := 0 to High(tempB) do
     begin
       if SimilarColors(tempB[i], col, Tol) then
@@ -64,7 +62,6 @@ begin
       if Tol > 10 then Break;
       Inc(Tol);
     end;
-  end;
 end;
 
 {******************************************************************************}
@@ -185,6 +182,23 @@ begin
 end;
 
 {******************************************************************************}
+{ function MSI_AutoColor(constSRL, constMSI: Integer): Integer;                }
+{ By: Coh3n                                                                    }
+{ Description: Returns the correct color on the minimap.  the parameters are   }
+{              for the different constants pertaining to SRL and MSI.          }
+{              ex. MSI_AutoColor(srl_VarrockRoadCOlor, COLOR_ROAD_VARROCK);    }
+{******************************************************************************}
+function MSI_AutoColor(constSRL, constMSI: Integer): Integer;
+var
+  acRecord: TAutoColorInfo;
+begin
+  if (not LoadAutoColor(constSRL, acRecord)) then
+    result := MSI_AutoColorMM(constMSI)
+  else
+    result := acRecord.color;
+end;
+
+{******************************************************************************}
 { function MSI_CreateWalkTPA( ... ): TPointArray;                              }
 { By: Blumblebee                                                               }
 { Description: Creats a TPA of which can be walked to                          }
@@ -287,12 +301,12 @@ begin
 end;
 
 {******************************************************************************}
-{ function MSI_CreateWalkIndex(index: Integer): TPoint;                        }
-{ By: Blumblebee, Coh3n and NCDS                                               }
+{ function MSI_WC_VEPoints(index: integer): TPoint;                            }
+{ By: The MSI Team                                                             }
 { Description: Returns a point on the minimap depending on the specified       }
 {              location by 'index'                                             }
 {******************************************************************************}
-function MSI_CreateWalkIndex(index: Integer): TPoint;
+function MSI_WC_VEPoints(index: integer): TPoint;
 var
   i, Tol: Integer;
   aTPA: t2DPointArray;
@@ -303,10 +317,11 @@ var
 begin
   Result := Point(-1, -1);
   case index of
+    //road
     WALK_WC_VE_TREE_1:
       begin
         if countColor(RoadColor, MMx1, MMy1, MMx2, MMy2) <= 5 then
-          RoadColor := MSI_AutoColorMM(COLOR_ROAD_VARROCK);
+          RoadColor := MSI_AutoColor(srl_VarrockRoadColor, COLOR_ROAD_VARROCK);
         Tol := 2;
         for i := 0 to 2 do
         begin
@@ -320,21 +335,22 @@ begin
           end;
           Tol := i * 2;
         end;
-        SortTPAFrom(TPA, Point(MMCx, MMCy));
+        SortTPAFrom(TPA, Point(MMX2, MMY1));
         try
-          t := RandomRange(Length(TPA) - 10, Length(TPA) - 5);
+          t := High(TPA) - randomRange(3, 6);
         except
-          t := Length(TPA) - 7;
+          t := High(TPA);
         end;
         Result := Point(TPA[t].x, TPA[t].y);
       end;
 
+    //road
     WALK_WC_VE_TREE_2:
       begin
         Tol := 2;
         for i := 0 to 2 do
         begin
-          RoadColor := MSI_AutoColorMM(COLOR_ROAD_VARROCK);
+          RoadColor := MSI_AutoColor(srl_VarrockRoadColor, COLOR_ROAD_VARROCK);
           FindColorsTolerance(TPA, RoadColor, MMCx + 40, MMCY - 40, MMx2, MMCy + 15, Tol);
           if Length(TPA) > 10 then
             Break;
@@ -350,6 +366,7 @@ begin
         Result := Point(TPA[i].x, TPA[i].y);
       end;
 
+    //rock
     WALK_WC_VE_TREE_3:
       begin
         RockColor := MSI_AutoColorMM(COLOR_ROCK);
@@ -363,9 +380,10 @@ begin
         end;
       end;
 
+    //final
     WALK_WC_VE_TREE_4:
       begin
-        TreeColor := MSI_AutoColorMM(COLOR_TREE);
+        TreeColor := MSI_AutoColor(srl_TreeColor, COLOR_TREE);
         writeLn('Tree AutoColor = '+IntToStr(TreeColor));
         FindColorsTolerance(TPA, TreeColor, MMx1, MMy1, MMx2, MMy2, 8);
         if Length(TPA) <= 0 then Exit;
@@ -377,23 +395,26 @@ begin
           Result := Point(p.x, p.y);
       end;
 
+    //rock
     WALK_WC_VE_BANK_1:
       begin
         RockColor := MSI_AutoColorMM(COLOR_ROCK);
-        TPA := MSI_CreateWalkTPA(MMcx, MMy2, RockColor, 2, 2, randomRange(5, 10));
+        TPA := MSI_CreateWalkTPA(MMcx, MMy2, RockColor, 2, 2, 10);
         if Length(TPA) <= 0 then Exit;
         SortTPAFrom(TPA, point(700, 150));
         for i := 0 to High(TPA) do
         begin
-          if (TPA[i].y < MMcy-10) then continue;
+          if (TPA[i].y < MMcy+ 20) or (TPA[i].x < MMCX) then
+            continue;
           Result := Point(TPA[i].x-5, TPA[i].y);
           Exit;
         end;
       end;
 
+    //path
     WALK_WC_VE_BANK_2:
       begin
-        RoadColor := MSI_AutoColorMM(COLOR_ROAD_VARROCK);
+        RoadColor := MSI_AutoColor(srl_VarrockRoadColor, COLOR_ROAD_VARROCK);
         FindColorsTolerance(TPA, RoadColor, MMx1, MMCy + 15, MMx2 - 20, MMy2, 4);
         if Length(TPA) <= 0 then
           Exit;
@@ -421,8 +442,10 @@ begin
         Result := Point(TPA[i].x, TPA[i].y);
       end;
 
+    //road
     WALK_WC_VE_BANK_3:
       begin
+        RoadColor := MSI_AutoColor(srl_VarrockRoadColor, COLOR_ROAD_VARROCK);
         TPA := MSI_CreateWalkTPA(MMx1, MMcy, RoadColor, 3, 3, 8);
         if Length(TPA) <= 0 then
           Exit;
@@ -435,6 +458,7 @@ begin
         end;
       end;
 
+    //final
     WALK_WC_VE_BANK_4:
       begin
         for i := 0 to 2 do
@@ -457,6 +481,20 @@ begin
         t := RandomRange(0, i);
         Result := Point(aTPA[0][t].x, aTPA[0][t].y - RandomRange(3, 7));
       end;
+  end;
+end;
+
+{******************************************************************************}
+{ function MSI_CreateWalkIndex(index: Integer): TPoint;                        }
+{ By: RM                                                                       }
+{ Description: Returns a point on the minimap depending on the specified       }
+{              location by 'index'                                             }
+{******************************************************************************}
+function MSI_CreateWalkIndex(index: Integer): TPoint;
+begin
+  case index of
+    WALK_WC_VE_TREE_1..WALK_WC_VE_BANK_4:
+      Result := MSI_WC_VEPoints(index);
   end;
 end;
 
@@ -495,10 +533,11 @@ var
 begin
   if not MSI_WalkToColorIndex(index) then
   begin
-    RockColor := MSI_AutoColorMM(COLOR_ROCK);
     case index of
       WALK_WC_VE_TREE_1:
         begin
+          RoadColor := MSI_AutoColor(srl_VarrockRoadColor, COLOR_ROAD_VARROCK);
+          RockColor := MSI_AutoColorMM(COLOR_ROCK);
           if not RadialWalkTolerance(RoadColor, 45, 90, randomRange(60, 70), random(8), random(8), 10) then
             if not RadialWalkTolerance(RockColor, 45, 90, randomRange(60, 70), 3, 3, 10) then
             begin
@@ -509,6 +548,7 @@ begin
 
       WALK_WC_VE_TREE_2:
         begin
+          RoadColor := MSI_AutoColor(srl_VarrockRoadColor, COLOR_ROAD_VARROCK);
           if not RadialWalkTolerance(RoadColor, 75, 105, randomRange(60, 70), random(5), random(5), 10) then
             if not RadialWalkTolerance(RoadColor, 65, 115, randomRange(60, 70), random(5), random(5), 10) then
             begin
@@ -519,6 +559,8 @@ begin
 
       WALK_WC_VE_TREE_3:
         begin
+          RoadColor := MSI_AutoColor(srl_VarrockRoadColor, COLOR_ROAD_VARROCK);
+          RockColor := MSI_AutoColorMM(COLOR_ROCK);
           if not RadialWalkTolerance(RoadColor, 0, 35, randomRange(60, 70), 2, 1, 10) then
             if not RadialWalkTolerance(RockColor, 345, 35, 60, 2, 2, 10) then
               if not RadialWalkTolerance(RoadColor, 0, 45, randomRange(60, 70), 5, 5, 10) then
@@ -531,7 +573,7 @@ begin
 
       WALK_WC_VE_TREE_4:
         begin
-          TreeColor := MSI_AutoColorMM(COLOR_TREE);
+          TreeColor := MSI_AutoColor(srl_TreeColor, COLOR_TREE);
           if not RadialWalkTolerance(TreeColor, 310, 350, 6, 2, 1, 10) then
             if not RadialWalkTolerance(TreeColor, 60, 100, 60, 2, 1, 10) then //for if the player ends up in the museum
             begin
@@ -542,6 +584,7 @@ begin
 
       WALK_WC_VE_BANK_1:
         begin
+          RockColor := MSI_AutoColorMM(COLOR_ROCK);
           if not RadialWalkTolerance(RockColor, 350, 50, 65, 5, 5, 10) then
           begin
             mouseBox(631, 114, 667, 130, 1); // random co-ord clicking
@@ -560,6 +603,7 @@ begin
 
       WALK_WC_VE_BANK_2:
         begin
+          RoadColor := MSI_AutoColor(srl_VarrockRoadColor, COLOR_ROAD_VARROCK);
           if not RadialWalkTolerance(RoadColor, 180, 200, randomRange(60, 70), random(5), random(5), 10) then
             if not RadialWalkTolerance(RoadColor, 170, 220, randomRange(60, 70), 3, 3, 10) then
             begin
@@ -570,6 +614,7 @@ begin
 
       WALK_WC_VE_BANK_3:
         begin
+          RoadColor := MSI_AutoColor(srl_VarrockRoadColor, COLOR_ROAD_VARROCK);
           if not RadialWalkTolerance(RoadColor, 255, 280, randomRange(60, 70), random(8), random(8), 10) then
             if not RadialWalkTolerance(RoadColor, 245, 290, randomRange(60, 70), 5, 5, 10) then
             begin
