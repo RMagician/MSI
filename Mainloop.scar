@@ -106,6 +106,12 @@ begin
     withdraw the proper tool. }
   if (not Result) then
   begin
+    if (not Players[CurrentPlayer].Booleans[P_BANK]) then
+    begin
+      MSI_Debug('MSI_SetupPlayer', 'Failed to find required tool', DEBUG_FUNCTIONS);
+      Exit;
+    end;
+
     case (Players[CurrentPlayer].Integers[P_LOC]) of
       LOC_VE_BANK:
         bankCheck := MSI_OpenBank(OBJ_BANK_VE, WALK_WC_VE_BANK_4, Players[CurrentPlayer].Pin);
@@ -120,9 +126,7 @@ begin
         Result := MSI_Withdraw([k], [1]);
         if (Result) then
           Break
-        else
-
-        begin
+        else begin
           CloseBank;
           MSI_Debug('MSI_PlayerSetup', 'Couldn''t Withdraw Tool.', DEBUG_FUNCTIONS);
         end;
