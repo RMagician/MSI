@@ -99,53 +99,53 @@ Begin
     End;
 
   { Color search }
-  If (Length(Location.Colors) = 0) Then
-    Exit; // Note: Exit? Symbol search?
-
-  H := High(Location.Colors);
-  SetLength(ATPA, H + 1);
-
-  For I := 0 To H Do
+  If (Length(Location.Colors) <> 0) Then
   Begin
-    FindColorsSpiralTolerance(MMCX, MMCY, ATPA[I], Location.Colors[I], MMX1, MMY1, MMX2, MMY2, Location.Tolerances[I]);
-    FilterPointsPie(ATPA[I], 0.0, 360.0, 0.0, 76.0, MMCX, MMCY);
-  End;
+    H := High(Location.Colors);
+    SetLength(ATPA, H + 1);
 
-  { Go through every TPA that contains one color. }
-  For I := 0 To H Do
-  Begin
-    HH := High(ATPA[I]);
-
-    { Go through every 10th point in ATPA[I] to avoid lag. }
-    For II := 0 To HH Do
+    For I := 0 To H Do
     Begin
-      If ((II Mod Step) <> 0) Then
-        Continue;
+      FindColorsSpiralTolerance(MMCX, MMCY, ATPA[I], Location.Colors[I], MMX1, MMY1, MMX2, MMY2, Location.Tolerances[I]);
+      FilterPointsPie(ATPA[I], 0.0, 360.0, 0.0, 76.0, MMCX, MMCY);
+    End;
 
-      Score := 0;
+    { Go through every TPA that contains one color. }
+    For I := 0 To H Do
+    Begin
+      HH := High(ATPA[I]);
 
-      X1 := ATPA[I][II].X - (Location.W / 2);
-      Y1 := ATPA[I][II].Y - (Location.H / 2);
-      X2 := ATPA[I][II].X + (Location.W / 2);
-      Y2 := ATPA[I][II].Y + (Location.H / 2);
-
-      { Go through every TPA again, calculating surrounding color counts. }
-      For III := 0 To H Do
+      { Go through every 10th point in ATPA[I] to avoid lag. }
+      For II := 0 To HH Do
       Begin
-        tmp_TPA := MSI_ReturnPointsInBox(ATPA[III], IntToBox(X1, Y1, X2, Y2));
-        If (Length(tmp_TPA) >= Location.Counts[III]) Then
-          Inc(Score);
-      End;
+        If ((II Mod Step) <> 0) Then
+          Continue;
 
-      { If there are enough points of all colors, the location has been found. }
-      If (Score = H) Then
-      Begin
-        Result := True;
-        X := (X1 + X2) shr 1;
-        Y := (Y1 + Y2) shr 1;
-        Exit;
-      End;
+        Score := 0;
 
+        X1 := ATPA[I][II].X - (Location.W / 2);
+        Y1 := ATPA[I][II].Y - (Location.H / 2);
+        X2 := ATPA[I][II].X + (Location.W / 2);
+        Y2 := ATPA[I][II].Y + (Location.H / 2);
+
+        { Go through every TPA again, calculating surrounding color counts. }
+        For III := 0 To H Do
+        Begin
+          tmp_TPA := MSI_ReturnPointsInBox(ATPA[III], IntToBox(X1, Y1, X2, Y2));
+          If (Length(tmp_TPA) >= Location.Counts[III]) Then
+            Inc(Score);
+        End;
+
+        { If there are enough points of all colors, the location has been found. }
+        If (Score = H) Then
+        Begin
+          Result := True;
+          X := (X1 + X2) shr 1;
+          Y := (Y1 + Y2) shr 1;
+          Exit;
+        End;
+
+      End;
     End;
   End;
 
