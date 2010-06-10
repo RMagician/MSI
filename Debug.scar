@@ -8,7 +8,6 @@
 | * procedure MSI_AddToProggy();                     * by The MSI Team         |
 | * function MSI_SkillActions(): TStringArray;       * by The MSI Team         |
 | * procedure MSI_GetReportInfo();                   * by Coh3n                |
-| * function MSI_ObjToText(): String;                * by The MSI Team         |
 | * function MSI_LocToText(): String;                * by The MSI Team         |
 | * function MSI_GroupDigits(): String;              * PriSoner and Nava2      |
 | * function MSI_PrintSave;                          * by Naum                 |
@@ -20,6 +19,7 @@
 {******************************************************************************}
 { procedure MSI_Debug(ProcName, TheMessage: string; DebugLevel:integer);       }
 { By: Rasta Magician                                                           }
+{ Date: 10 June 2010                                                           }
 { Description: Used for Debugging. Will debug to DebugBox if                   }
 {              DebugLevel >= Debug_LevelToDebug                                }
 {******************************************************************************}
@@ -69,6 +69,7 @@ end;
 {******************************************************************************}
 { procedure MSI_AddToProggy(item, quantity, which: Integer);                   }
 { By: The MSI Team                                                             }
+{ Date: 10 June 2010                                                           }
 { Description: Adds specified element to the progress report - if parameter    }
 {              is unused, set to -1                                            }
 {******************************************************************************}
@@ -114,6 +115,7 @@ end;
 {******************************************************************************}
 { function MSI_SkillActions(what: variant): TStringArray;                      }
 { By: The MSI Team                                                             }
+{ Date: 10 June 2010                                                           }
 { Description: Gets an array of skill actions                                  }
 {******************************************************************************}
 function MSI_SkillActions(what: variant): TStringArray;
@@ -153,6 +155,7 @@ end;
 {******************************************************************************}
 { procedure MSI_GetReportInfo;                                                 }
 { By: Coh3n                                                                    }
+{ Date: 10 June 2010                                                           }
 { Description: Gets the necessary proggy info that ISN'T reset during runtime  }
 {******************************************************************************}
 procedure MSI_GetReportInfo;
@@ -177,36 +180,9 @@ begin
 end;
 
 {******************************************************************************}
-{ function MSI_ObjToText(which: Integer): TStringArray;                        }
-{ By: The MSI Team                                                             }
-{ Description: Converts an object constant to string for proggys               }
-{******************************************************************************}
-function MSI_ObjToText(which: Integer): TStringArray;
-begin
-  case which of
-    LOGS_NORMAL:
-      Result := ['Normal logs'];
-      
-    LOGS_OAK:
-      Result := ['Oak logs'];
-      
-    LOGS_WILLOW:
-      Result := ['Willow logs'];
-      
-    LOGS_MAPLE:
-      Result := ['Maple logs'];
-      
-    LOGS_YEW:
-      Result := ['Yew logs'];
-        
-    else
-      MSI_Debug('MSI_ObjToText', 'Invalid objet!', DEBUG_FUNCTIONS);
-  end;
-end;
-
-{******************************************************************************}
 { function MSI_LocToText(Which: Integer): string;                              }
 { By: The MSI Team                                                             }
+{ Date: 10 June 2010                                                           }
 { Description: Converts the location constant to a string                      }
 {******************************************************************************}
 function MSI_LocToText(Which: Integer): string;
@@ -239,6 +215,7 @@ end;
 {******************************************************************************}
 { function MSI_GroupDigits(n: integer; token: String): String;                 }
 { By: PriSoner and Nava2                                                       }
+{ Date: 10 June 2010                                                           }
 { Description: Formats an integer into groups of 3 seperated by `token' and    }
 {              returns a formatted string (i.e 1234567 would become 1,234,567) }
 {******************************************************************************}
@@ -259,6 +236,7 @@ end;
 {******************************************************************************}
 { procedure MSI_PrintSave(FileH, S : String);                                  }
 { By: Naum                                                                     }
+{ Date: 10 June 2010                                                           }
 { Description: Prints the string in the report and debug box also saves the    }
 {              report                                                          }
 {******************************************************************************}
@@ -277,13 +255,14 @@ End;
 {******************************************************************************}
 { procedure MSI_ProgressReport;                                                }
 { By: Coh3n                                                                    }
+{ Date: 10 June 2010                                                           }
 { Description: Prints the progress report of each player                       }
 {******************************************************************************}
 function MSI_GetItemList(whichPlayer, whichSkill: Integer): TIntegerArray; forward;
 procedure MSI_ProgressReport;
 var
   i, j, k, FileH: Integer;
-  skill, item: TStringArray;
+  skill: TStringArray;
   intItems: TIntegerArray;
   path: String;
 begin
@@ -339,8 +318,7 @@ begin
             intItems := MSI_GetItemList(i, j);
             for k := 0 to High(intItems) do                                                                             //TotalObj
             begin
-              item := MSI_ObjToText(intItems[k]);
-              MSI_PrintSave(FileH, '{         ' + PadR('Item: ' + item[0], 55) + '}');
+              MSI_PrintSave(FileH, '{         ' + PadR('Item: ' + MSI_Item[intItems[k]].Name, 55) + '}');
               MSI_PrintSave(FileH, '{         ' + PadR('Amount: ' + MSI_GroupDigits(ObjQuants[k], ','), 55) + '}');     //ObjQuants
             end;
 

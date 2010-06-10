@@ -19,6 +19,7 @@
 {******************************************************************************}
 { function MSI_GetMyPos: TPoint;                                               }
 { By: BenLand100                                                               }
+{ Date: 10 June 2010                                                           }
 { Description: Calculates the player's tile position                           }
 {******************************************************************************}
 function MSI_GetMyPos: TPoint;
@@ -36,6 +37,7 @@ end;
 {******************************************************************************}
 { function MSI_TileToMM(Tile: TPoint): TPoint;                                 }
 { By: BenLand100                                                               }
+{ Date: 10 June 2010                                                           }
 { Description: Converts the tile position to a minimap location                }
 {******************************************************************************}
 function MSI_TileToMM(tile: TPoint): TPoint;
@@ -57,6 +59,7 @@ end;
 {******************************************************************************}
 { function MSI_WalkToTile(P: TPoint; Randomness, FlagD: Integer): Boolean;     }
 { By: marpis                                                                   }
+{ Date: 10 June 2010                                                           }
 { Description: Walks to tile                                                   }
 {******************************************************************************}
 function MSI_WalkToTile(P: TPoint; Randomness, FlagD: Integer): Boolean;
@@ -77,6 +80,7 @@ end;
 {******************************************************************************}
 { function MSI_LoadRefPath(StartLoc, EndLoc: Integer): TPointArray;            }
 { By: The MSI Team                                                             }
+{ Date: 10 June 2010                                                           }
 { Description: Loads tiles from A to B                                         }
 {******************************************************************************}
 function MSI_LoadRefPath(StartLoc, EndLoc: Integer): TPointArray;
@@ -101,6 +105,7 @@ end;
 {******************************************************************************}
 { function MSI_RefWalk(StartLoc, EndLoc: Integer): Boolean;                    }
 { By: marpis, edited by Coh3n                                                  }
+{ Date: 10 June 2010                                                           }
 { Description: Walks from A to B                                               }
 {******************************************************************************}
 function MSI_RefWalk(StartLoc, EndLoc: Integer): Boolean;
@@ -135,6 +140,7 @@ end;
 {******************************************************************************}
 { function MSI_HybridWalk(startLoc, endLoc: Integer): Boolean;                 }
 { By: RM and Coh3n                                                             }
+{ Date: 10 June 2010                                                           }
 { Description: Will walk the color path if near the reflection point. If not   }
 {              near the point, will walk to the reflection tile                }
 {******************************************************************************}
@@ -179,6 +185,7 @@ end;
 {******************************************************************************}
 { function FixPosition(Location: Integer): Boolean;                            }
 { By: marpis                                                                   }
+{ Date: 10 June 2010                                                           }
 { Description: Fix position if lost                                            }
 {******************************************************************************}
 function MSI_FixPosition(Location: Integer): Boolean;
@@ -195,6 +202,7 @@ end;
 {******************************************************************************}
 { function MSI_PerformWalk(startLoc, endLoc: Integer): Boolean;                }
 { By: Coh3n                                                                    }
+{ Date: 10 June 2010                                                           }
 { Description: Performs the walking routine                                    }
 {******************************************************************************}
 function MSI_PerformWalk(startLoc, endLoc: Integer): Boolean;

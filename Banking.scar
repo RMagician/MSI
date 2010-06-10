@@ -14,6 +14,7 @@
 {******************************************************************************}
 { function MSI_OpenBank(which, walkIndex: Integer; tPin: String): Boolean;     }
 { By: Coh3n                                                                    }
+{ Date: 10 June 2010                                                           }
 { Description: Opens the bank 'which' (refer to bank constants). Will attempt  }
 {              to relocate if bank isn't found after 15 tries.                 }
 {******************************************************************************}
@@ -64,6 +65,7 @@ end;
 {******************************************************************************}
 { Function MSI_Deposit(Items, Amount : TIntegerArray) : Boolean                }
 { By: Naum                                                                     }
+{ Date: 10 June 2010                                                           }
 { Description: Deposits an Item using the TItem type. Set Amount to [] to      }
 {              deposit all of every item                                       }
 {******************************************************************************}
@@ -159,6 +161,7 @@ End;
 {******************************************************************************}
 { Function MSI_Withdraw(Items, Amount : TIntegerArray) : Boolean               }
 { By: Naum                                                                     }
+{ Date: 10 June 2010                                                           }
 { Description: Widthraws an Item using the TItem type                          }
 {******************************************************************************}
 Function MSI_Withdraw(Items, Amount : TIntegerArray) : Boolean;

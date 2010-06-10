@@ -24,6 +24,7 @@
 {******************************************************************************}
 { function MSI_BestTool: Integer;                                              }
 { By: Coh3n                                                                    }
+{ Date: 10 June 2010                                                           }
 { Description: Determines the best tool for the job at hand.                   }
 {******************************************************************************}
 function MSI_BestTool: Integer;
@@ -55,6 +56,7 @@ end;
 {******************************************************************************}
 { function MSI_WorstTool: Integer;                                             }
 { By: Coh3n                                                                    }
+{ Date: 10 June 2010                                                           }
 { Description: Determines the worst tool for the job at hand.                  }
 {******************************************************************************}
 function MSI_WorstTool: Integer;
@@ -71,6 +73,7 @@ end;
 {******************************************************************************}
 { function MSI_SetupPlayer: Boolean;                                           }
 { By: Coh3n                                                                    }
+{ Date: 10 June 2010                                                           }
 { Description: Sets up the player for autoing.                                 }
 {******************************************************************************}
 function MSI_SetupPlayer: Boolean;
@@ -139,6 +142,7 @@ end;
 {******************************************************************************}
 { function MSI_GetObjectList: TIntegerArray;                                   }
 { By: Coh3n                                                                    }
+{ Date: 10 June 2010                                                           }
 { Description: Converts the variant array to an integer array                  }
 {******************************************************************************}
 function MSI_GetObjectList(whichPlayer, whichSkill: Integer): TIntegerArray;
@@ -165,6 +169,7 @@ end;
 {******************************************************************************}
 { function MSI_GetItemList: TIntegerArray;                                     }
 { By: Coh3n                                                                    }
+{ Date: 10 June 2010                                                           }
 { Description: Gets the materials required depending on the object autoed      }
 {******************************************************************************}
 function MSI_GetItemList(whichPlayer, whichSkill: Integer): TIntegerArray;
@@ -191,6 +196,7 @@ end;
 {******************************************************************************}
 { function MSI_GetExpList: TIntegerArray;                                      }
 { By: Coh3n                                                                    }
+{ Date: 10 June 2010                                                           }
 { Description: Gets the experience gained by obtaining items in the item list  }
 {******************************************************************************}
 function MSI_GetExpList: TExtendedArray;
@@ -210,6 +216,7 @@ end;
 {******************************************************************************}
 { function MSI_WalkToLoc: Boolean;                                             }
 { By: The MSI Team                                                             }
+{ Date: 10 June 2010                                                           }
 { Description: Walks to the proper location depending on skill/location        }
 {******************************************************************************}
 function MSI_WalkToLoc: Boolean;
@@ -237,6 +244,7 @@ end;
 {******************************************************************************}
 { function MSI_WalkToBank: Boolean;                                            }
 { By: The MSI Team                                                             }
+{ Date: 10 June 2010                                                           }
 { Description: Walks to the bank depending on skill/location                   }
 {******************************************************************************}
 function MSI_WalkToBank: Boolean;
@@ -264,6 +272,7 @@ end;
 {******************************************************************************}
 { function MSI_DoSkill: Boolean;                                               }
 { By: The MSI Team                                                             }
+{ Date: 10 June 2010                                                           }
 { Description: Performs the specified skill                                    }
 {******************************************************************************}
 function MSI_DoSkill: Boolean;
@@ -291,6 +300,7 @@ end;
 {******************************************************************************}
 { procedure MSI_CountItems;                                                    }
 { By: Coh3n                                                                    }
+{ Date: 10 June 2010                                                           }
 { Description: Counts the materials and calculates the experience gained       }
 {              from items in the inventory                                     }
 {******************************************************************************}
@@ -323,6 +333,7 @@ end;
 {******************************************************************************}
 { function MSI_BankMaterials: Boolean;                                         }
 { By: The MSI Team                                                             }
+{ Date: 10 June 2010                                                           }
 { Description: Banks the specified materials                                   }
 {******************************************************************************}
 function MSI_BankMaterials: Boolean;
@@ -363,6 +374,7 @@ end;
 {******************************************************************************}
 { procedure MSI_HandleBreaking;                                                }
 { By: Coh3n                                                                    }
+{ Date: 10 June 2010                                                           }
 { Description: Simple procedure for breaking                                   }
 {******************************************************************************}
 procedure MSI_HandleBreaking;
@@ -394,6 +406,7 @@ end;
 {******************************************************************************}
 { function MSI_TimedOut: Boolean;                                              }
 { By: Coh3n                                                                    }
+{ Date: 10 June 2010                                                           }
 { Description: Handles connection losses                                       }
 {******************************************************************************}
 function MSI_TimedOut: Boolean;
@@ -421,6 +434,7 @@ end;
 {******************************************************************************}
 { procedure MSI_UnsetPlayer(func, reason: String; setReason: Boolean);         }
 { By: RM and Coh3n                                                             }
+{ Date: 10 June 2010                                                           }
 { Description: Sets the player to false if something fails                     }
 {******************************************************************************}
 procedure MSI_UnsetPlayer(func, reason: String; setReason: Boolean);
@@ -443,6 +457,7 @@ end;
 {******************************************************************************}
 { procedure MSI_MainLoop;                                                      }
 { By: Coh3n                                                                    }
+{ Date: 10 June 2010                                                           }
 { Description: The MainLoop - performs all actions of the script               }
 {******************************************************************************}
 procedure MSI_MainLoop;

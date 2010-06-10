@@ -17,18 +17,31 @@
  \_____________________________________________________________________________}
 
 {******************************************************************************}
-{ function MSI_GetDTMInfo(which: Integer): TIntegerArray;                      }
+{ function MSI_GetDTMPoints(which: Integer): TPointArray;                      }
 { By: The MSI Team                                                             }
+{ Date: 10 June 2010                                                           }
 { Description: Gets the coodinates for the DTM points                          }
 {******************************************************************************}
-function MSI_GetDTMInfo(which: Integer): TIntegerArray;
+function MSI_GetDTMPoints(which: Integer): TPointArray;
 begin
   case which of
     HATCHET_BRONZE..HATCHET_RUNE:
-      Result := [ 586, 243, 587, 249, 574, 261, 575, 248, 587, 240 ];
+      Result := [
+                  Point(586, 243),  // Main Point
+                  Point(587, 249),
+                  Point(574, 261),
+                  Point(575, 248),
+                  Point(587, 240)
+                ];
 
     LOGS_NORMAL..LOGS_YEW:
-      Result := [ 623, 291, 624, 279, 635, 296, 614, 299, 609, 289 ];
+      Result := [
+                  Point(623, 291),  // Main Point
+                  Point(624, 279),
+                  Point(635, 296),
+                  Point(614, 299),
+                  Point(609, 289)
+                ];
 
     else
       MSI_Debug('MSI_GetDTMInfo', 'Invalid item constant!', DEBUG_FUNCTIONS);
@@ -38,6 +51,7 @@ end;
 {******************************************************************************}
 { function MSI_GetItemColor(which: Integer): Integer;                          }
 { By: The MSI Team                                                             }
+{ Date: 10 June 2010                                                           }
 { Description: Loads the item's (which) color - used for DTMs                  }
 {******************************************************************************}
 function MSI_GetItemColor(which: Integer): Integer;
@@ -64,6 +78,7 @@ end;
 {******************************************************************************}
 { function MSI_LoadDTM(which: Integer): Integer;                               }
 { By: Coh3n and Ejjman1                                                        }
+{ Date: 10 June 2010                                                           }
 { Description: Loads the DTM specified by 'which'                              }
 {******************************************************************************}
 function MSI_LoadDTM(which: Integer): Integer;
@@ -71,16 +86,16 @@ var
   dtmMainPoint: TDTMPointDef;
   dtmSubPoints: Array [0..4] of TDTMPointDef;
   TempTDTM: TDTM;
-  pts: TIntegerArray;
+  pts: TPointArray;
   clr, i: Integer;
 begin
-  pts := MSI_GetDTMInfo(which);
+  pts := MSI_GetDTMPoints(which);
   clr := MSI_GetItemColor(which);
 
   with dtmMainPoint do
   begin
-    x := pts[DTM_X1];
-    y := pts[DTM_Y1];
+    x := pts[DTM_POINT_1].x;
+    y := pts[DTM_POINT_1].y;
     AreaSize := 0;
     AreaShape := 0;
     Color := clr;
@@ -103,20 +118,20 @@ begin
       end;
     end;
 
-  dtmSubPoints[0].x := pts[DTM_X1];
-  dtmSubPoints[0].y := pts[DTM_Y1];
+  dtmSubPoints[0].x := pts[DTM_POINT_1].x;
+  dtmSubPoints[0].y := pts[DTM_POINT_1].y;
 
-  dtmSubPoints[1].x := pts[DTM_X2];
-  dtmSubPoints[1].y := pts[DTM_Y2];
+  dtmSubPoints[1].x := pts[DTM_POINT_2].x;
+  dtmSubPoints[1].y := pts[DTM_POINT_2].y;
 
-  dtmSubPoints[2].x := pts[DTM_X3];
-  dtmSubPoints[2].y := pts[DTM_Y3];
+  dtmSubPoints[2].x := pts[DTM_POINT_3].x;
+  dtmSubPoints[2].y := pts[DTM_POINT_3].y;
 
-  dtmSubPoints[3].x := pts[DTM_X4];
-  dtmSubPoints[3].y := pts[DTM_Y4];
+  dtmSubPoints[3].x := pts[DTM_POINT_4].x;
+  dtmSubPoints[3].y := pts[DTM_POINT_4].y;
 
-  dtmSubPoints[4].x := pts[DTM_X5];
-  dtmSubPoints[4].y := pts[DTM_Y5];
+  dtmSubPoints[4].x := pts[DTM_POINT_5].x;
+  dtmSubPoints[4].y := pts[DTM_POINT_5].y;
 
   TempTDTM.MainPoint := dtmMainPoint;
   TempTDTM.SubPoints := dtmSubPoints;
@@ -126,6 +141,7 @@ end;
 {******************************************************************************}
 { Function MSI_GetItem(ID : Integer) : Boolean;                                }
 { By: Coh3n and Naum                                                           }
+{ Date: 10 June 2010                                                           }
 { Description: Gets the TItem record for a certain item defined by 'ID'        }
 {******************************************************************************}
 Function MSI_GetItem(ID : Integer) : Boolean;
@@ -418,6 +434,7 @@ End;
 {******************************************************************************}
 { Procedure MSI_LoadItems(IDs : TIntegerArray);                                }
 { By: Naum                                                                     }
+{ Date: 10 June 2010                                                           }
 { Description: Gets the TItem records for all items in the array               }
 {******************************************************************************}
 Procedure MSI_LoadItems(IDs : TIntegerArray);
@@ -430,6 +447,7 @@ End;
 {******************************************************************************}
 { Procedure MSI_LoadItemRange(StartID, EndID : Integer);                       }
 { By: Naum edited by RM                                                        }
+{ Date: 10 June 2010                                                           }
 { Description: Gets the TItem records for all items in the range               }
 {******************************************************************************}
 Procedure MSI_LoadItemRange(StartID, EndID : Integer);
@@ -451,6 +469,7 @@ End;
 {******************************************************************************}
 { Procedure MSI_FreeItemEx(Which : Integer);                                   }
 { By: Naum                                                                     }
+{ Date: 10 June 2010                                                           }
 { Description: Frees the TItem record for the item 'which'                     }
 {******************************************************************************}
 Procedure MSI_FreeItemEx(Which : Integer);
@@ -478,6 +497,7 @@ End;
 {******************************************************************************}
 { Procedure MSI_FreeItemArray(TIArray : TIntegerArray);                        }
 { By: Naum                                                                     }
+{ Date: 10 June 2010                                                           }
 { Description: Frees the TItem records for all items in the array              }
 {******************************************************************************}
 Procedure MSI_FreeItemArray(TIArray : TIntegerArray);
@@ -493,6 +513,7 @@ end;
 {******************************************************************************}
 { Procedure MSI_FreeItems;                                                     }
 { By: Naum                                                                     }
+{ Date: 10 June 2010                                                           }
 { Description: Frees all loaded Items                                          }
 {******************************************************************************}
 Procedure MSI_FreeItems;
@@ -505,6 +526,7 @@ end;
 {******************************************************************************}
 { Procedure MSI_FreeItemRange(StartID, EndID: Integer);                        }
 { By: Naum edited by RM                                                        }
+{ Date: 10 June 2010                                                           }
 { Description: Frees the TItem records for all items in the range              }
 {******************************************************************************}
 Procedure MSI_FreeItemRange(StartID, EndID: Integer);

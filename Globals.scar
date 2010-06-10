@@ -128,16 +128,11 @@ const
   Description: Constants representing the DDTM points }
 const
   DTM_TOLERANCE = 12;
-  DTM_X1     = 0;
-  DTM_Y1     = 1;
-  DTM_X2     = 2;
-  DTM_Y2     = 3;
-  DTM_X3     = 4;
-  DTM_Y3     = 5;
-  DTM_X4     = 6;
-  DTM_Y4     = 7;
-  DTM_X5     = 8;
-  DTM_Y5     = 9;
+  DTM_POINT_1 = 0;    //corresponds to the TPA returned in MSI_GetDTMPoints
+  DTM_POINT_2 = 1;
+  DTM_POINT_3 = 2;
+  DTM_POINT_4 = 3;
+  DTM_POINT_5 = 4;
 
 { const Hatchet/Pickaze requirements.
   Constants representing the requirements to use each tool }

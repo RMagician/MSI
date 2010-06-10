@@ -10,7 +10,8 @@
 
 {******************************************************************************}
 { Procedure MSI_AntiBan(HowLong, ChancePerc: Integer);                         }
-{ By: Naum, edited by Coh3n, RM & Zyt3x                                        }
+{ By: Naum                                                                     }
+{ Date: 10 June 2010                                                           }
 { Description: The AntiBan procedure to be used throughout the scripts.        }
 {******************************************************************************}
 Procedure MSI_AntiBan(HowLong, ChancePerc: Integer);
@@ -71,6 +72,7 @@ End;
 {******************************************************************************}
 { procedure MSI_FindRandoms;                                                   }
 { By: Coh3n                                                                    }
+{ Date: 10 June 2010                                                           }
 { Description: Checks for random events                                        }
 {******************************************************************************}
 procedure MSI_FindRandoms;
