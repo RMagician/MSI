@@ -541,107 +541,78 @@ end;
 { Description: Uses radial walking if MSI_WalkToColorIndex fails               }
 {******************************************************************************}
 function MSI_CreateWalkFailsafe(index: Integer): Boolean;
-var
-  RockColor, TreeColor: Integer;
 begin
   if not MSI_WalkToColorIndex(index) then
   begin
     case index of
       WALK_WC_VE_TREE_1:
-        begin
-          RoadColor := MSI_AutoColor(srl_VarrockRoadColor, COLOR_ROAD_VARROCK);
-          RockColor := MSI_AutoColorMM(COLOR_ROCK);
-          if not RadialWalkTolerance(RoadColor, 45, 90, randomRange(60, 70), random(8), random(8), 10) then
-            if not RadialWalkTolerance(RockColor, 45, 90, randomRange(60, 70), 3, 3, 10) then
-            begin
-              MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_1', DEBUG_FUNCTIONS);
-              Exit;
-            end;
-        end;
-
-      WALK_WC_VE_TREE_2:
-        begin
-          RoadColor := MSI_AutoColor(srl_VarrockRoadColor, COLOR_ROAD_VARROCK);
-          if not RadialWalkTolerance(RoadColor, 75, 105, randomRange(60, 70), random(5), random(5), 10) then
-            if not RadialWalkTolerance(RoadColor, 65, 115, randomRange(60, 70), random(5), random(5), 10) then
-            begin
-              MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_2', DEBUG_FUNCTIONS);
-              Exit;
-            end;
-        end;
-
-      WALK_WC_VE_TREE_3:
-        begin
-          RoadColor := MSI_AutoColor(srl_VarrockRoadColor, COLOR_ROAD_VARROCK);
-          RockColor := MSI_AutoColorMM(COLOR_ROCK);
-          if not RadialWalkTolerance(RoadColor, 0, 35, randomRange(60, 70), 2, 1, 10) then
-            if not RadialWalkTolerance(RockColor, 345, 35, 60, 2, 2, 10) then
-              if not RadialWalkTolerance(RoadColor, 0, 45, randomRange(60, 70), 5, 5, 10) then
-                if not RadialWalkTolerance(RoadColor, 60, 110, 80, 5, 5, 10) then
-                begin
-                  MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_3', DEBUG_FUNCTIONS);
-                  Exit;
-                end;
-        end;
-
-      WALK_WC_VE_TREE_4:
-        begin
-          TreeColor := MSI_AutoColor(srl_TreeColor, COLOR_TREE);
-          if not RadialWalkTolerance(TreeColor, 310, 350, 6, 2, 1, 10) then
-            if not RadialWalkTolerance(TreeColor, 60, 100, 60, 2, 1, 10) then //for if the player ends up in the museum
-            begin
-              MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_TREE_3', DEBUG_FUNCTIONS);
-              Exit;
-            end;
-        end;
-
-      WALK_WC_VE_BANK_1:
-        begin
-          RockColor := MSI_AutoColorMM(COLOR_ROCK);
-          if not RadialWalkTolerance(RockColor, 350, 50, 65, 5, 5, 10) then
+        if not RadialWalkAutoColor(srl_VarrockRoadColor, 45, 90, 55, 4, 4) then
+          if not RadialWalkAutoColor(srl_RockColor, 45, 90, 70, 4, 4) then
           begin
-            mouseBox(631, 114, 667, 130, 1); // random co-ord clicking
-            wait(randomRange(1000, 2000));
-            if FlagPresent then
-            begin
-              result := true;
-              FFlag(randomRange(8, 14));
-            end;
-          end else
-          begin
-            MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_1', DEBUG_FUNCTIONS);
+            MSI_Debug('MSI_CreateWalkFailsafe', 'Failed to WALK_WC_VE_TREE_1', DEBUG_FUNCTIONS);
             Exit;
           end;
+
+      WALK_WC_VE_TREE_2:
+        if not RadialWalkAutoColor(srl_VarrockRoadColor, 75, 105, 65, 4, 4) then
+          if not RadialWalkAutoColor(srl_VarrockRoadColor, 65, 115, 65, 4, 4) then
+          begin
+            MSI_Debug('MSI_CreateWalkFailsafe', 'Failed to WALK_WC_VE_TREE_2', DEBUG_FUNCTIONS);
+            Exit;
+          end;
+
+      WALK_WC_VE_TREE_3:
+        if not RadialWalkAutoColor(srl_VarrockRoadColor, 0, 35, 65, 2, 1) then
+          if not RadialWalkAutoColor(srl_VarrockRoadColor, 345, 35, 60, 2, 2) then
+            if not RadialWalkAutoColor(srl_VarrockRoadColor, 0, 45, 65, 5, 5) then
+              if not RadialWalkAutoColor(srl_VarrockRoadColor, 60, 110, 70, 5, 5) then
+              begin
+                MSI_Debug('MSI_CreateWalkFailsafe', 'Failed to WALK_WC_VE_TREE_3', DEBUG_FUNCTIONS);
+                Exit;
+              end;
+
+      WALK_WC_VE_TREE_4:
+        if not RadialWalkAutoColor(srl_TreeColor, 310, 350, 6, 2, 1) then
+          if not RadialWalkAutoColor(srl_TreeColor, 60, 100, 60, 2, 1) then //for if the player ends up in the museum
+          begin
+            MSI_Debug('MSI_CreateWalkFailsafe', 'Failed to WALK_WC_VE_TREE_3', DEBUG_FUNCTIONS);
+            Exit;
+          end;
+
+      WALK_WC_VE_BANK_1:
+        if not RadialWalkAutoColor(srl_RockColor, 350, 50, 65, 5, 5) then
+        begin
+          MouseBox(631, 114, 667, 130, 1); // random co-ord clicking
+          Wait(RandomRange(1000, 2000));
+          MSI_Flag;
+        end else
+        begin
+          MSI_Debug('MSI_CreateWalkFailsafe', 'Failed to WALK_WC_VE_BANK_1', DEBUG_FUNCTIONS);
+          Exit;
         end;
 
       WALK_WC_VE_BANK_2:
-        begin
-          RoadColor := MSI_AutoColor(srl_VarrockRoadColor, COLOR_ROAD_VARROCK);
-          if not RadialWalkTolerance(RoadColor, 180, 200, randomRange(60, 70), random(5), random(5), 10) then
-            if not RadialWalkTolerance(RoadColor, 170, 220, randomRange(60, 70), 3, 3, 10) then
-            begin
-              MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_2', DEBUG_FUNCTIONS);
-              Exit;
-            end;
-        end;
+        if not RadialWalkAutoColor(srl_VarrockRoadColor, 180, 200, 65, 4, 4) then
+          if not RadialWalkAutoColor(srl_VarrockRoadColor, 170, 220, 65, 4, 4) then
+          begin
+            MSI_Debug('MSI_CreateWalkFailsafe', 'Failed to WALK_WC_VE_BANK_2', DEBUG_FUNCTIONS);
+            Exit;
+          end;
 
       WALK_WC_VE_BANK_3:
-        begin
-          RoadColor := MSI_AutoColor(srl_VarrockRoadColor, COLOR_ROAD_VARROCK);
-          if not RadialWalkTolerance(RoadColor, 255, 280, randomRange(60, 70), random(8), random(8), 10) then
-            if not RadialWalkTolerance(RoadColor, 245, 290, randomRange(60, 70), 5, 5, 10) then
-            begin
-              MSI_Debug('MSI_CreateWalkFailsafe('+inttoStr(index)+');', 'Failed to WALK_WC_VE_BANK_3', DEBUG_FUNCTIONS);
-              Exit;
-            end;
-        end;
+        if not RadialWalkAutoColor(srl_VarrockRoadColor, 255, 280, 70, 4, 4) then
+          if not RadialWalkAutoColor(srl_VarrockRoadColor, 245, 290, 70, 4, 4) then
+          begin
+            MSI_Debug('MSI_CreateWalkFailsafe', 'Failed to WALK_WC_VE_BANK_3', DEBUG_FUNCTIONS);
+            Exit;
+          end;
 
       WALK_WC_VE_BANK_4:
-        begin
-          Exit; // add a DTM of Bankers here.
-        end;
+        Exit; // add a DTM of Bankers here.
+
     end;
   end;
+
   result := true;
 end;
 

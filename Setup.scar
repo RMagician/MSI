@@ -11,9 +11,9 @@
 {.include srl/srl/misc/smart.scar}
 {.include srl/srl.scar}
 
-//{$IFDEF REFLECTION}
-//{.include srl/srl/reflection/reflection.scar}
-//{$ENDIF}
+{$IFDEF REFLECTION}
+{.include reflection/reflection.simba}
+{$ENDIF}
 
 {.include srl/srl/misc/Reports.scar}
 

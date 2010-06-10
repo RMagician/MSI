@@ -29,16 +29,6 @@ const
     - BV: Barbarian Village
 }
 
-{ const Hooks
-  Description: Constants representing all the reflection hooks used for the MSI
-               walking }
-const
-  HOOK_BASE_X  = 'tn.s';
-  HOOK_BASE_Y  = 'wg.y';
-  HOOK_PLAYER  = 'ci.k';
-  HOOK_LOCAL_X = 'n';
-  HOOK_LOCAL_Y = 't';
-
 { const Debug
   Description: The several debugging levels, so the user receives as much
                detail as he wishes to receive. }
@@ -74,7 +64,6 @@ const
 const
   // Integers
   P_LOC  = 0;
-  P_CITY = 1;
 
   // Booleans
   P_BANK = 0;
@@ -87,8 +76,6 @@ const
   LOC_VE_TREES    = 2;
   LOC_VE_BANK     = 3;
   LOC_IN_RANDOM   = 4;
-
-  CITY_VARROCK = 5;
 
 { const AutoColor
   Description: Constants used for autocoloring the minimap }
@@ -265,7 +252,7 @@ Type
     PlayerStatus: boolean;
     FalseReason : string;
     PlayerRandom: string;
-    PlayerCity  : integer;
+    PlayerCity  : string;
     PlayerLoc   : integer;
     PlayerTime  : integer;
     SkillInfo   : array of TPlayerSkillInfo;
@@ -293,8 +280,11 @@ var
   IsItemLoaded: Array[0..(MSI_ITEM_COUNT - 1)] of Boolean;
   
   //Used for saving the debug box
-  scriptStart: String;
-  saveDebug: Boolean;
+  ScriptStart: String;
+  SaveDebug: Boolean;
+
+  //Used to determine whether the reflection hooks are outdated
+  ReflectionBroken: Boolean;
 
   //Used in the stats system
   Stats_UserID, Stats_Password, Stats_ScriptID: string;

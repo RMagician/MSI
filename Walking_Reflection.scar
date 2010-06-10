@@ -17,56 +17,16 @@
 {$IFDEF REFLECTION}
 
 {******************************************************************************}
-{ function MSI_GetMyPos: TPoint;                                               }
-{ By: BenLand100                                                               }
-{ Date: 10 June 2010                                                           }
-{ Description: Calculates the player's tile position                           }
-{******************************************************************************}
-function MSI_GetMyPos: TPoint;
-var
-  me: Integer;
-begin
-  me := SmartGetFieldObject(0, HOOK_PLAYER);
-
-  Result.x := SmartGetFieldInt(0, HOOK_BASE_X) + SmartGetFieldInt(me, HOOK_LOCAL_X) shr 7;
-  Result.y := SmartGetFieldInt(0, HOOK_BASE_Y) + SmartGetFieldInt(me, HOOK_LOCAL_Y) shr 7;
-
-  SmartFreeObject(me);
-end;
-
-{******************************************************************************}
-{ function MSI_TileToMM(Tile: TPoint): TPoint;                                 }
-{ By: BenLand100                                                               }
-{ Date: 10 June 2010                                                           }
-{ Description: Converts the tile position to a minimap location                }
-{******************************************************************************}
-function MSI_TileToMM(tile: TPoint): TPoint;
-var
-  angle: Extended;
-  tX, tY: Integer;
-  tP: TPoint;
-begin
-  angle:= rs_GetCompassAngleRadians;
-
-  tP := MSI_GetMyPos;
-  tX:= (tile.x - tP.x) * 4 - 2;
-  tY:= (tP.y - tile.y) * 4 - 2;
-
-  Result.x:= round(tX * cos(angle) - tY * sin(angle)) + 629;
-  Result.y:= round(tX * sin(angle) + tY * cos(angle)) + 85;
-end;
-
-{******************************************************************************}
 { function MSI_WalkToTile(P: TPoint; Randomness, FlagD: Integer): Boolean;     }
 { By: marpis                                                                   }
 { Date: 10 June 2010                                                           }
 { Description: Walks to tile                                                   }
 {******************************************************************************}
-function MSI_WalkToTile(P: TPoint; Randomness, FlagD: Integer): Boolean;
+function MSI_WalkToTile(P: TTile; Randomness, FlagD: Integer): Boolean;
 var
-  MP: TPoint;
+  MP: TTile;
 begin
-  MP := MSI_TileToMM(P);
+  MP := TileToMM(P);
   if (InCircle(MP.X, MP.Y, MMCX, MMCY, 76)) then
   begin
     MSI_Debug('MSI_WalkToTile', 'Tile on MM', DEBUG_SMALL_DETAILS);
@@ -103,12 +63,12 @@ begin
 end;
 
 {******************************************************************************}
-{ function MSI_RefWalk(StartLoc, EndLoc: Integer): Boolean;                    }
+{ function MSI_ReflectionWalk(StartLoc, EndLoc: Integer): Boolean;             }
 { By: marpis, edited by Coh3n                                                  }
 { Date: 10 June 2010                                                           }
 { Description: Walks from A to B                                               }
 {******************************************************************************}
-function MSI_RefWalk(StartLoc, EndLoc: Integer): Boolean;
+function MSI_ReflectionWalk(StartLoc, EndLoc: Integer): Boolean;
 var
   ThePath: TPointArray;
   I, T: Integer;
@@ -120,7 +80,7 @@ begin
     for I := High(ThePath) downto 0 do
     begin
       if rs_OnMinimap(ThePath[I].x, ThePath[I].y) then
-        if (not MSI_WalkToTile(ThePath[I], 4, 10)) then
+        if (not WalkToTile(ThePath[I], 4, 10)) then
         begin
           MSI_Debug('MSI_RefWalk', 'Failed to walk to tile: ' + IntToStr(i), DEBUG_SMALL_DETAILS);
           Exit;
@@ -135,51 +95,6 @@ begin
     Players[CurrentPlayer].Integers[P_LOC] := EndLoc; // the ending location
   end else
     MSI_Debug('MSI_RefWalk', 'Walking failed!', DEBUG_SMALL_DETAILS);
-end;
-
-{******************************************************************************}
-{ function MSI_HybridWalk(startLoc, endLoc: Integer): Boolean;                 }
-{ By: RM and Coh3n                                                             }
-{ Date: 10 June 2010                                                           }
-{ Description: Will walk the color path if near the reflection point. If not   }
-{              near the point, will walk to the reflection tile                }
-{******************************************************************************}
-function MSI_HybridWalk(startLoc, endLoc: Integer): Boolean;
-var
-  i: Integer;
-  colorPath: TIntegerArray;
-  refPath: TPointArray;
-  colorPoint, refPoint: TPoint;
-begin
-  colorPath := MSI_LoadColorPath(startLoc, endLoc);
-  refPath := MSI_LoadRefPath(startLoc, endLoc);
-
-  for i := 0 to High(colorPath) do
-  begin
-    colorPoint := MSI_CreateWalkIndex(colorPath[i]);
-    refPoint := MSI_TileToMM(refPath[i]);
-
-    if (Distance(refPoint.x, refPoint.y, colorPoint.x, colorPoint.y) > WALK_TOL) then
-    begin
-      MSI_Debug('MSI_HybridWalk', 'Color index too far off path to ' + MSI_LocToText(endLoc) + ', index ' + IntToStr(colorPath[i]), DEBUG_FUNCTIONS);
-      MSI_Debug('MSI_HybridWalk', 'Using reflection backup!', DEBUG_FUNCTIONS);
-      //do color gathering stuff here
-      Mouse(refPoint.x, refPoint.y, 4, 4, True);
-    end else
-      Mouse(colorPoint.x, colorPoint.y, 4, 4, True);
-
-    FFlag(RandomRange(3, 6));
-    MSI_FindRandoms;
-    
-    Result := (i = High(colorPath));
-  end;
-
-  if (Result) then
-  begin
-    MSI_Debug('MSI_HybridWalk', 'Successfully walked to ' + MSI_LocToText(endLoc), DEBUG_SMALL_DETAILS);
-    Players[CurrentPlayer].Integers[P_LOC] := endLoc;
-    Wait(RandomRange(750, 1500));
-  end;
 end;
 
 {******************************************************************************}
@@ -210,10 +125,11 @@ begin
   MakeCompass('n');
   RunEnergy(20);
 
-  {$IFDEF REFLECTION}
-    Result := MSI_HybridWalk(startLoc, endLoc);
-  {$ELSE}
+  if (ReflectionBroken) then
     Result := MSI_ColorWalk(startLoc, endLoc);
+
+  {$IFDEF REFLECTION}
+    Result := MSI_ReflectionWalk(startLoc, endLoc);
   {$ENDIF}
 end;
 

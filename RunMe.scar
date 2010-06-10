@@ -20,10 +20,6 @@
 |      - [[OBJ_TREE_NORMAL, OBJ_TREE_OAK, OBJ_TREE_WILLOW, OBJ_TREE_MAPLE,     |
 |          OBJ_TREE_YEW]]                                                      |
 |                                                                              |
-| -> Valid arguments for Integers[P_CITY]:                                     |
-|    - if power skilling, any city is fine                                     |
-|    - CITY_VARROCK                                                            |
-|                                                                              |
 | -> Valid arguments for Integers[P_LOC]:                                      |
 |    - For banking:                                                            |
 |      - LOC_VE_BANK                                                           |
@@ -41,7 +37,7 @@
  \_____________________________________________________________________________}
 
 program MSIScript;
-//{$DEFINE REFLECTION} // Comment out if you don't want to use reflection walking
+//{$DEFINE REFLECTION} //only comment out if for some reason reflection doesn't compile
 {.include SRL/SRL/MSI/Setup.scar}
 
 const
@@ -69,16 +65,15 @@ begin
 
   with Players[0] do
   begin
-    Name   := 'Run Cohen';
-    Pass   := 'jackaster';
-    Nick   := 'ohe';
+    Name   := '';
+    Pass   := '';
+    Nick   := '';
     Active := True;
     Pin    := '';
     PlayerSkills[0]  := [SKILL_WOODCUTTING];
-    PlayerObjects[0] := [[OBJ_TREE_WILLOW]];
-    Integers[P_CITY] := CITY_VARROCK;
-    Integers[P_LOC]  := LOC_POWER_SKILL;
-    Booleans[P_BANK] := False;
+    PlayerObjects[0] := [[OBJ_TREE_NORMAL]];
+    Integers[P_LOC]  := LOC_VE_BANK;
+    Booleans[P_BANK] := True;
   end;
 {
   with Players[1] do
@@ -90,7 +85,6 @@ begin
     Pin    := '';
     PlayerSkills[1]  := [SKILL_WOODCUTTING];
     PlayerObjects[1] := [[OBJ_TREE_NORMAL]];
-    Integers[P_CITY] := CITY_VARROCK;
     Integers[P_LOC]  := LOC_VE_BANK;
     Booleans[P_BANK] := True;
   end;
@@ -104,7 +98,6 @@ begin
     Pin    := '';
     PlayerSkills[2]  := [SKILL_WOODCUTTING];
     PlayerObjects[2] := [[OBJ_TREE_NORMAL]];
-    Integers[P_CITY] := CITY_VARROCK;
     Integers[P_LOC]  := LOC_VE_BANK;
     Booleans[P_BANK] := True;
   end;
@@ -118,7 +111,6 @@ begin
     Pin    := '';
     PlayerSkills[3]  := [SKILL_WOODCUTTING];
     PlayerObjects[3] := [[OBJ_TREE_NORMAL]];
-    Integers[P_CITY] := CITY_VARROCK;
     Integers[P_LOC]  := LOC_VE_BANK;
     Booleans[P_BANK] := True;
   end;
@@ -132,7 +124,6 @@ begin
     Pin    := '';
     PlayerSkills[4]  := [SKILL_WOODCUTTING];
     PlayerObjects[4] := [[OBJ_TREE_WILLOW]];
-    Integers[P_CITY] := CITY_VARROCK;
     Integers[P_LOC]  := LOC_POWER_SKILL;
     Booleans[P_BANK] := False;
   end;
@@ -146,7 +137,6 @@ begin
     Pin    := '';
     PlayerSkills[5]  := [SKILL_WOODCUTTING];
     PlayerObjects[5] := [[OBJ_TREE_WILLOW]];
-    Integers[P_CITY] := CITY_VARROCK;
     Integers[P_LOC]  := LOC_POWER_SKILL;
     Booleans[P_BANK] := False;
   end;
@@ -160,7 +150,6 @@ begin
     Pin    := '';
     PlayerSkills[6]  := [SKILL_WOODCUTTING];
     PlayerObjects[6] := [[OBJ_TREE_WILLOW]];
-    Integers[P_CITY] := CITY_VARROCK;
     Integers[P_LOC]  := LOC_POWER_SKILL;
     Booleans[P_BANK] := False;
   end;
@@ -174,7 +163,6 @@ begin
     Pin    := '';
     PlayerSkills[7]  := [SKILL_WOODCUTTING];
     PlayerObjects[7] := [[OBJ_TREE_WILLOW]];
-    Integers[P_CITY] := CITY_VARROCK;
     Integers[P_LOC]  := LOC_POWER_SKILL;
     Booleans[P_BANK] := False;
   end;
@@ -189,7 +177,7 @@ begin
 
       ProgressReportArray[i].PlayerName := Name;
       ProgressReportArray[i].PlayerStatus := Active;
-      ProgressReportArray[i].PlayerCity := Integers[P_CITY];
+      ProgressReportArray[i].PlayerCity := MSI_LocToCity(Integers[P_LOC]);
       ProgressReportArray[i].PlayerLoc := Integers[P_LOC];
 
       SetLength(ProgressReportArray[i].SkillInfo, Length(PlayerSkills[i]));
@@ -210,6 +198,14 @@ begin
 
   SetupSRL;
   SetupMSI;
+
+  {$IFDEF REFLECTION}
+    //so if the hooks are outdated, the script will attempt colour walking if the points exist
+    if (not SetupReflectionEx(False)) then
+      ReflectionBroken := True;
+  {$ELSE}
+    ReflectionBroken := True; //set to true because it's not even being used
+  {$ENDIF}
 
   //set global vars
   BreakAfter := BREAK_AFTER;

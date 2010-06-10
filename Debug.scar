@@ -9,6 +9,7 @@
 | * function MSI_SkillActions(): TStringArray;       * by The MSI Team         |
 | * procedure MSI_GetReportInfo();                   * by Coh3n                |
 | * function MSI_LocToText(): String;                * by The MSI Team         |
+| * function MSI_LocToCity(): String;                * by The MSI Team         |
 | * function MSI_GroupDigits(): String;              * PriSoner and Nava2      |
 | * function MSI_PrintSave;                          * by Naum                 |
 | * Procedure MSI_SaveLog;                           * by Naum                 |
@@ -203,11 +204,25 @@ begin
     LOC_IN_RANDOM:
       Result := 'In random';
       
-    CITY_VARROCK:
-      Result := 'Varrock';
-      
     else
       MSI_Debug('MSI_LocToText', 'Invalid location!', debug_Functions);
+  end;
+end;
+
+{******************************************************************************}
+{ function MSI_LocToCity(which: Integer): string;                              }
+{ By: The MSI Team                                                             }
+{ Date: 10 June 2010                                                           }
+{ Description: Converts the location constant to a string of the RS city       }
+{******************************************************************************}
+function MSI_LocToCity(which: Integer): string;
+begin
+  case Which of
+    LOC_VE_BANK, LOC_VE_TREES:
+      Result := 'Varrock';
+
+    else
+      Result := 'The wonderful world of Runescape!';
   end;
 end;
 
@@ -291,8 +306,8 @@ begin
       begin
         MSI_PrintSave(FileH, '{                                                                }');
         MSI_PrintSave(FileH, '{     ' + PadR('Player ' + IntToStr(i) + ': ' + Capitalize(PlayerName), 59) + '}');       //PlayerName
-        MSI_PrintSave(FileH, '{     ' + PadR('City: ' + MSI_LocToText(PlayerCity), 59) + '}');                          //PlayerCity
-        MSI_PrintSave(FileH, '{     ' + PadR('Location: ' + MSI_LocToText(PlayerLoc), 59) + '}');                       //PlayerLoc
+        MSI_PrintSave(FileH, '{     ' + PadR('City: ' + PlayerCity, 59) + '}');                          //PlayerCity
+        MSI_PrintSave(FileH, '{     ' + PadR('Location: ' + MSI_LocToText(PlayerLoc), 59) + '}');                                      //PlayerLoc
         MSI_PrintSave(FileH, '{     ' + PadR('Time: ' + MsToTime(PlayerTime, Time_Short), 59) + '}');                   //TotalTime
         MSI_PrintSave(FileH, '{     ' + PadR('Active: ' + Capitalize(BoolToStr(PlayerStatus)), 59) + '}');              //PlayerStatus
 
